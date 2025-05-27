@@ -5,7 +5,12 @@ Includes pathfinding AI, item collection, and enemy avoidance.
 
 ## How to Build
 
-1. Install SDL2 and SDL2_image
+1. Install SDL2 library 
+2. 🔧 SDL2 Setup:
+
+    Before building, set your SDL2 path (ajust to match yours) `build.bat` file. For example 
+    ```bat 
+    set SDL2_PATH=D:\sdl2
 2. Run `build.bat` file in the project folder
 
 ## Features
