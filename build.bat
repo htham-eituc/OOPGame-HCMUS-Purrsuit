@@ -2,7 +2,7 @@
 echo Building your game...
 
 :: Set your SDL2 paths (adjust these to match your SDL installation)
-set SDL2_PATH=D:\sdl2
+set SDL2_PATH=C:\sdl2
 set INCLUDE_PATH=%SDL2_PATH%\include\SDL2
 set LIB_PATH=%SDL2_PATH%\lib
 
