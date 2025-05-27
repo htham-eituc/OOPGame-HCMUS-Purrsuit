@@ -18,6 +18,7 @@ g++ -Iinclude -I%INCLUDE_PATH% %SOURCES% -L%LIB_PATH% -lmingw32 -lSDL2main -lSDL
 if %errorlevel% neq 0 (
     echo.
     echo Build failed!
+    pause
     exit /b %errorlevel%
 ) else (
     echo.
