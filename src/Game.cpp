@@ -25,7 +25,7 @@ bool Game::init(const char* title, int width, int height) {
     if (!renderer) return false;
 
     player = new Player(renderer, 100, 100);
-
+    gameMap = new Map(renderer);
     running = true;
     return true;
 }
@@ -61,6 +61,7 @@ void Game::update(float deltaTime) {
 void Game::render() {
     SDL_SetRenderDrawColor(renderer, 225, 225, 225, 255);
     SDL_RenderClear(renderer);
+    gameMap->render(); 
     player->render(renderer);
     SDL_RenderPresent(renderer);
 }

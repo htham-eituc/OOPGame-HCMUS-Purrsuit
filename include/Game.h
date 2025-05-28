@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include "Player.h"
+#include "Map.h"
 
 class Game {
 public:
@@ -20,6 +21,7 @@ private:
     bool running = false;
 
     Player* player = nullptr;
+    Map* gameMap = nullptr;
 
     void handleEvents();
     void update(float deltaTime);
