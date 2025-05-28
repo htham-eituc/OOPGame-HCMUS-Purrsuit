@@ -5,7 +5,7 @@
 #include <cstring>  // Added for memcpy
 
 Map::Map(SDL_Renderer* renderer) : renderer(renderer) {
-    tileset = loadTexture("assets/tiles/map.png");
+    tileset = loadTexture("assets/tiles/map1Tiles.png");
 
     // Simple tile map (0: grass, 1: wall)
     int layout[MAP_WIDTH][MAP_HEIGHT] = {
