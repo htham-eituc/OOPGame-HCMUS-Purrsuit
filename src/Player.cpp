@@ -39,14 +39,14 @@ const float moveSpeed = 200.0f; // pixels per second
 void Player::move(const Uint8* keystate) {
     velocity = Vector2(0, 0);
 
-    if (keystate[SDL_SCANCODE_W]) velocity.y = -1;
-    if (keystate[SDL_SCANCODE_S]) velocity.y =  1;
-    if (keystate[SDL_SCANCODE_A]) { velocity.x = -1; flip = true; }
-    if (keystate[SDL_SCANCODE_D]) { velocity.x =  1; flip = false; }
+    if (keystate[SDL_SCANCODE_W]) velocity.y -= 1;
+    if (keystate[SDL_SCANCODE_S]) velocity.y += 1;
+    if (keystate[SDL_SCANCODE_A]) { velocity.x -= 1; flip = true; }
+    if (keystate[SDL_SCANCODE_D]) { velocity.x += 1; flip = false; }
 
     if (velocity.magnitude() > 0) {
         velocity = velocity.normalized() * moveSpeed;
-}
+    }
 }
 
 void Player::handleEvent(const SDL_Event& e) {
