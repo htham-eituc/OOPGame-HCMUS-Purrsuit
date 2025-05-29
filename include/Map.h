@@ -14,6 +14,7 @@ public:
     ~Map();
 
     void render();
+    bool isSolidTile(int tileX, int tileY) const;
 
 private:
     SDL_Renderer* renderer;

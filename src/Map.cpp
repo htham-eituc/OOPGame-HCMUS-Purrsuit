@@ -67,3 +67,10 @@ SDL_Texture* Map::loadTexture(const char* path) {
     }
     return tex;
 }
+
+bool Map::isSolidTile(int tileX, int tileY) const {
+    if (tileX < 0 || tileX >= MAP_WIDTH || tileY < 0 || tileY >= MAP_HEIGHT) {
+        return true;
+    }
+    return tileMap[tileY][tileX] == 1; // 1 is wall tile
+}

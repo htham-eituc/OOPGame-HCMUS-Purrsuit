@@ -17,13 +17,17 @@ public:
     virtual void move(const Uint8* keystate) {}
     virtual void handleEvent(const SDL_Event& e) {}
     virtual void update(float deltaTime);
-    virtual void render(SDL_Renderer* renderer);
+    virtual void render(SDL_Renderer* renderer);  
+    SDL_Rect getBoundingBox() const;  
 
 protected:
     SDL_Texture* loadTexture(SDL_Renderer* renderer, const char* path);
 
     Vector2 position;
     Vector2 velocity;
+
+    int width = 32;
+    int height = 32;
 
     SDL_Texture* currentTexture = nullptr;
     SDL_Rect srcRect;

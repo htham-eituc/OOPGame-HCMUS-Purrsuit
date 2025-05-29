@@ -46,3 +46,13 @@ void Character::setAnimation(CharacterState newState) {
         lastFrameTime = SDL_GetTicks();
     }
 }
+
+SDL_Rect Character::getBoundingBox() const
+{
+    return{
+        static_cast<int>(position.x),
+        static_cast<int>(position.y),
+        width,
+        height,
+    };
+}

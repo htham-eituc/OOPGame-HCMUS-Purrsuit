@@ -4,8 +4,8 @@
 
 const float moveSpeed = 200.0f;
 
-Player::Player(SDL_Renderer* renderer, int x, int y)
-    : Character(renderer, x, y)
+Player::Player(SDL_Renderer* renderer, int x, int y, Map *mapRef)
+    : Character(renderer, x, y), map(mapRef)
 {
     idleTexture = loadTexture(renderer, "assets/character/PirateCatIdle.png");
     walkTexture = loadTexture(renderer, "assets/character/PirateCatRun.png");
@@ -44,6 +44,29 @@ void Player::handleEvent(const SDL_Event& e) {
 void Player::update(float deltaTime) {
     if (velocity.x != 0 || velocity.y != 0) {
         setAnimation(CharacterState::Walking);
+
+        // Try new position
+        float newX = position.x + velocity.x * deltaTime;
+        float newY = position.y + velocity.y * deltaTime;
+
+        // Check horizontal movement
+        float tempX = position.x;
+        int centerOffsetX = 16;
+        int centerOffsetY = 16;
+
+        int tileX = static_cast<int>((newX + centerOffsetX) / TILE_SIZE);
+        int tileY = static_cast<int>((position.y + centerOffsetY) / TILE_SIZE);
+
+        if (!map->isSolidTile(tileX, tileY))
+            position.x = newX;
+
+        // Check vertical movement
+        tileX = static_cast<int>((position.x + centerOffsetX) / TILE_SIZE);
+        tileY = static_cast<int>((newY + centerOffsetY) / TILE_SIZE);
+
+        if (!map->isSolidTile(tileX, tileY))
+            position.y = newY;
+
     } else {
         setAnimation(CharacterState::Idle);
     }

@@ -1,10 +1,11 @@
 #pragma once 
 
 #include "Character.h"
+#include "Map.h"
 
 class Player : public Character {
 public:
-    Player(SDL_Renderer* renderer, int x, int y);
+    Player(SDL_Renderer* renderer, int x, int y, Map* map);
     ~Player();
 
     void move(const Uint8* keystate) override;
@@ -15,6 +16,8 @@ public:
 private:
     SDL_Texture* idleTexture = nullptr;
     SDL_Texture* walkTexture = nullptr;
-    
-    const float moveSpeed = 200.0f;
+
+    Map* map = nullptr;
+
+    const float moveSpeed = 100.0f;
 };
