@@ -127,8 +127,8 @@ void Game::render() {
 }
 
 void Game::clean() {
+    delete gameMap;
     delete player;
-
     if (titleTexture) SDL_DestroyTexture(titleTexture);
 
     if (bgm) 
