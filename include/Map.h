@@ -24,6 +24,7 @@ public:
 
     void render();             // Regular layers
     void renderAboveLayer();  // "Above" layer, after characters
+    bool checkCollision(const SDL_Rect& box) const;
     bool isCollidable(int x, int y) const;
     const int TILE_SIZE = 32;
 
