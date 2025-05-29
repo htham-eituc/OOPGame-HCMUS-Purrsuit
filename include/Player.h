@@ -4,7 +4,7 @@
 
 class Player : public Character {
 public:
-    Player(SDL_Renderer* renderer, int x, int y);
+    Player(SDL_Renderer* renderer, int x, int y, Map *map);
     ~Player();
 
     void move(const Uint8* keystate) override;
@@ -16,5 +16,5 @@ private:
     SDL_Texture* idleTexture = nullptr;
     SDL_Texture* walkTexture = nullptr;
     
-    const float moveSpeed = 200.0f;
+    const float moveSpeed = 150.0f;
 };

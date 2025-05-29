@@ -3,6 +3,7 @@
 #include <SDL_image.h>
 #include <string>
 #include "DataStruct.h"
+#include "Map.h"
 
 enum class CharacterState {
     Idle,
@@ -11,7 +12,7 @@ enum class CharacterState {
 
 class Character {
 public:
-    Character(SDL_Renderer* renderer, int x, int y);
+    Character(SDL_Renderer* renderer, int x, int y, Map* map);
     virtual ~Character();
 
     virtual void move(const Uint8* keystate) {}
@@ -36,8 +37,11 @@ protected:
     int frame = 0;
     Uint32 lastFrameTime = 0;
     Uint32 frameDelay = 100; // ms per frame
-
+    
     CharacterState currentState = CharacterState::Idle;
-
+    
+    Map* map = nullptr;
+    
+    SDL_Rect getCollisionBox(const Vector2& pos) const;
     virtual void setAnimation(CharacterState newState);
 };
