@@ -19,7 +19,7 @@ private:
     SDL_Renderer* renderer;
     SDL_Texture* tileset = nullptr;
     int tileSize = TILE_SIZE;
-    int tilesetCols = 0;
+    int tilesetCols = 3;
     int tileMap[MAP_HEIGHT][MAP_WIDTH];  // Changed from vector to 2D array
     
     SDL_Texture* loadTexture(const char* path);  // Changed parameter type
