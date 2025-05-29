@@ -6,6 +6,13 @@
 #include "Player.h"
 #include "Map.h"
 
+enum class GameState
+{
+    TITLE,
+    LEVEL1,
+    EXIT
+};
+
 class Game {
 public:
     Game();
@@ -20,8 +27,11 @@ private:
     SDL_Renderer* renderer = nullptr;
     bool running = false;
 
+    GameState state = GameState::TITLE;
+
     Player* player = nullptr;
     Map* gameMap = nullptr;
+    SDL_Texture* titleTexture = nullptr;
 
     void handleEvents();
     void update(float deltaTime);

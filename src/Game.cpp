@@ -18,14 +18,25 @@ bool Game::init(const char* title, int width, int height) {
     window = SDL_CreateWindow(title,
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-
     if (!window) return false;
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (!renderer) return false;
 
+    SDL_Surface* temp = IMG_Load("assets/ui/forg2kg.png"); // <-- Your image path
+    if (temp) {
+        titleTexture = SDL_CreateTextureFromSurface(renderer, temp);
+        SDL_FreeSurface(temp);
+    } else {
+        SDL_Log("Failed to load title screen: %s", IMG_GetError());
+    }
+    /*
     player = new Player(renderer, 100, 100);
     gameMap = new Map(renderer);
+    */
+    gameMap = nullptr;
+    player = nullptr;
+
     running = true;
     return true;
 }
@@ -43,13 +54,27 @@ void Game::run() {
             if (event.type == SDL_QUIT)
                 running = false;
 
-            player->handleEvent(event);
+            if (state == GameState::TITLE) {
+                if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_9) {
+                    state = GameState::LEVEL1;
+
+                    // Initialize game objects now
+                    player = new Player(renderer, 100, 100); // if map collision needed
+                    gameMap = new Map(renderer);
+                }
+            } 
+            else if (state == GameState::LEVEL1) {
+                player->handleEvent(event);
+            }    
         }
 
         const Uint8* keystate = SDL_GetKeyboardState(NULL);
-        player->move(keystate);
-
-        update(deltaTime);
+        
+        if(state == GameState::LEVEL1)
+        {
+            player->move(keystate);
+            update(deltaTime);
+        }
         render();
     }
 }
@@ -61,13 +86,23 @@ void Game::update(float deltaTime) {
 void Game::render() {
     SDL_SetRenderDrawColor(renderer, 225, 225, 225, 255);
     SDL_RenderClear(renderer);
-    gameMap->render(); 
-    player->render(renderer);
+    
+    if (state == GameState::TITLE) {
+        SDL_RenderCopy(renderer, titleTexture, nullptr, nullptr); // Full screen image
+    } 
+    else if (state == GameState::LEVEL1) {
+        if (gameMap) gameMap->render();
+        if (player) player->render(renderer);
+    }
     SDL_RenderPresent(renderer);
 }
 
 void Game::clean() {
     delete player;
+
+    if (titleTexture) SDL_DestroyTexture(titleTexture);
+
+
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     IMG_Quit();
