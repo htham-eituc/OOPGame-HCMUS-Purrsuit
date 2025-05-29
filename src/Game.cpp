@@ -127,17 +127,23 @@ void Game::render() {
 }
 
 void Game::clean() {
-    delete gameMap;
-    delete player;
+    if(gameMap) {
+        delete gameMap;
+        gameMap = nullptr;
+    }
+
+    if (player) {
+        delete player;
+        player = nullptr;
+    }
+
     if (titleTexture) SDL_DestroyTexture(titleTexture);
 
-    if (bgm) 
-    {
+    if (bgm) {
         Mix_FreeMusic(bgm);
         bgm = nullptr;
     }    
-    if(lv1m)
-    {
+    if(lv1m) {
         Mix_FreeMusic(lv1m);
         lv1m = nullptr;
     }
