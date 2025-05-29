@@ -24,29 +24,35 @@ SDL_Rect Character::getCollisionBox(const Vector2& pos) const {
 }
 
 void Character::update(float deltaTime) {
-    // Proposed new position
-    Vector2 newPos = position + velocity * deltaTime;
+    Vector2 fullMove = velocity * deltaTime;
+    Vector2 newPos = position;
 
-    SDL_Rect futureBox = getCollisionBox(newPos);
-    bool blocked = false;
+    bool movedX = false;
+    bool movedY = false;
 
-    int tileSize = map->TILE_SIZE;
-    int leftTile   = futureBox.x / tileSize;
-    int rightTile  = (futureBox.x + futureBox.w - 1) / tileSize;
-    int topTile    = futureBox.y / tileSize;
-    int bottomTile = (futureBox.y + futureBox.h - 1) / tileSize;
+    // Try horizontal movement
+    if (velocity.x != 0.0f) {
+        Vector2 tryX = { position.x + fullMove.x, position.y };
+        SDL_Rect boxX = getCollisionBox(tryX);
 
-    for (int ty = topTile; ty <= bottomTile && !blocked; ++ty) {
-        for (int tx = leftTile; tx <= rightTile && !blocked; ++tx) {
-            if (map->isCollidable(tx, ty)) {
-                blocked = true;
-            }
+        if (!map->checkCollision(boxX)) {
+            newPos.x = tryX.x;
+            movedX = true;
         }
     }
 
-    if (!blocked) {
-        position = newPos;
+    // Try vertical movement
+    if (velocity.y != 0.0f) {
+        Vector2 tryY = { newPos.x, position.y + fullMove.y }; // use updated X pos
+        SDL_Rect boxY = getCollisionBox(tryY);
+
+        if (!map->checkCollision(boxY)) {
+            newPos.y = tryY.y;
+            movedY = true;
+        }
     }
+
+    position = newPos;
 
     destRect.x = static_cast<int>(position.x);
     destRect.y = static_cast<int>(position.y);

@@ -131,6 +131,23 @@ void Map::drawLayer(const TileLayer& layer) {
     }
 }
 
+bool Map::checkCollision(const SDL_Rect& box) const {
+    int tileSize = TILE_SIZE;
+
+    int leftTile   = box.x / tileSize;
+    int rightTile  = (box.x + box.w - 1) / tileSize;
+    int topTile    = box.y / tileSize;
+    int bottomTile = (box.y + box.h - 1) / tileSize;
+
+    for (int y = topTile; y <= bottomTile; ++y) {
+        for (int x = leftTile; x <= rightTile; ++x) {
+            if (isCollidable(x, y)) return true;
+        }
+    }
+
+    return false;
+}
+
 bool Map::isCollidable(int x, int y) const {
     if (y < 0 || y >= mapHeight || x < 0 || x >= mapWidth)
         return true; // Out of bounds is collidable
