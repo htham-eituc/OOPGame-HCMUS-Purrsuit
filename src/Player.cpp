@@ -1,11 +1,12 @@
 // Player.cpp
 #include "Player.h"
+#include <iostream>
 #include <SDL_image.h>
 
 const float moveSpeed = 200.0f;
 
-Player::Player(SDL_Renderer* renderer, int x, int y)
-    : Character(renderer, x, y)
+Player::Player(SDL_Renderer* renderer, int x, int y, Map *map)
+    : Character(renderer, x, y, map)
 {
     idleTexture = loadTexture(renderer, "assets/character/PirateCatIdle.png");
     walkTexture = loadTexture(renderer, "assets/character/PirateCatRun.png");
@@ -32,7 +33,6 @@ void Player::move(const Uint8* keystate) {
     if (keystate[SDL_SCANCODE_S]) velocity.y += 1;
     if (keystate[SDL_SCANCODE_A]) { velocity.x -= 1; flipFlag = SDL_FLIP_HORIZONTAL; }
     if (keystate[SDL_SCANCODE_D]) { velocity.x += 1; flipFlag = SDL_FLIP_NONE; }
-
     if (velocity.magnitude() > 0)
         velocity = velocity.normalized() * moveSpeed;
 }
@@ -47,7 +47,6 @@ void Player::update(float deltaTime) {
     } else {
         setAnimation(CharacterState::Idle);
     }
-
     Character::update(deltaTime); // reuse base logic
 }
 

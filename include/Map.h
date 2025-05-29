@@ -1,26 +1,46 @@
 #pragma once
 #include <SDL.h>
-#include <SDL_image.h>
-#include <vector>
 #include <string>
+#include <vector>
 
-const int TILE_SIZE = 32;
-const int MAP_WIDTH = 25;
-const int MAP_HEIGHT = 20;
+struct TileLayer {
+    std::string name;
+    std::vector<int> data;
+    int width, height;
+};
+
+struct Tileset {
+    int firstgid;
+    int tilecount;
+    int tileWidth, tileHeight;
+    int columns;
+    SDL_Texture* texture = nullptr;
+};
 
 class Map {
 public:
     Map(SDL_Renderer* renderer);
     ~Map();
 
-    void render();
+    void render();             // Regular layers
+    void renderAboveLayer();  // "Above" layer, after characters
+    bool isCollidable(int x, int y) const;
+    const int TILE_SIZE = 32;
 
 private:
+    void loadMap(const std::string& path);
+    SDL_Texture* loadTexture(const std::string& path);
+    void drawLayer(const TileLayer& layer);
+
+
     SDL_Renderer* renderer;
-    SDL_Texture* tileset = nullptr;
-    int tileSize = TILE_SIZE;
-    int tilesetCols = 3;
-    int tileMap[MAP_HEIGHT][MAP_WIDTH];  // Changed from vector to 2D array
-    
-    SDL_Texture* loadTexture(const char* path);  // Changed parameter type
+
+    int mapWidth = 0, mapHeight = 0;
+    int tileWidth = 0, tileHeight = 0;
+
+    std::vector<Tileset> tilesets;
+    std::vector<TileLayer> layers;
+    std::vector<std::vector<bool>> collisionMap;
+    TileLayer aboveLayer;
+
 };

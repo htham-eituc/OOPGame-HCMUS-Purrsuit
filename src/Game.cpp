@@ -30,14 +30,9 @@ bool Game::init(const char* title, int width, int height) {
     } else {
         SDL_Log("Failed to load title screen: %s", IMG_GetError());
     }
-    /*
-    player = new Player(renderer, 100, 100);
-    gameMap = new Map(renderer);
-    */
-    gameMap = nullptr;
-    player = nullptr;
 
     running = true;
+
     return true;
 }
 
@@ -58,9 +53,9 @@ void Game::run() {
                 if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_9) {
                     state = GameState::LEVEL1;
 
-                    // Initialize game objects now
-                    player = new Player(renderer, 100, 100); // if map collision needed
+                    // Always render map before player!!
                     gameMap = new Map(renderer);
+                    player = new Player(renderer, 100, 100, gameMap);
                 }
             } 
             else if (state == GameState::LEVEL1) {
@@ -93,6 +88,7 @@ void Game::render() {
     else if (state == GameState::LEVEL1) {
         if (gameMap) gameMap->render();
         if (player) player->render(renderer);
+        if (gameMap) gameMap->renderAboveLayer();
     }
     SDL_RenderPresent(renderer);
 }
@@ -101,7 +97,6 @@ void Game::clean() {
     delete player;
 
     if (titleTexture) SDL_DestroyTexture(titleTexture);
-
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
