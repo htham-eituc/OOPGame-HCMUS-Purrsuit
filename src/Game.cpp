@@ -15,6 +15,25 @@ bool Game::init(const char* title, int width, int height) {
         return false;
     }
 
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        SDL_Log("SDL_mixer could not initialize! SDL_mixer Error: %s", Mix_GetError());
+        return false;
+    }
+
+    // Load title soundtrack
+    bgm = Mix_LoadMUS("assets/music/titleSoundtrack.mp3");
+    if (!bgm) {
+        SDL_Log("Failed to load title music: %s", Mix_GetError());
+        return false;
+    }
+
+    lv1m = Mix_LoadMUS("assets/music/level1Soundtrack.mp3");
+    if (!lv1m) {
+        SDL_Log("Failed to load level1 music: %s", Mix_GetError());
+        return false;
+    }
+
+
     window = SDL_CreateWindow(title,
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
@@ -54,6 +73,16 @@ void Game::run() {
                     state = GameState::LEVEL1;
 
                     // Always render map before player!!
+                    if(Mix_PlayingMusic())
+                    {
+                        Mix_HaltMusic();
+                    }
+                    if(lv1m)
+                    {
+                        Mix_PlayMusic(lv1m, -1);
+                    }
+                    musicPlaying = false;
+
                     gameMap = new Map(renderer);
                     player = new Player(renderer, 100, 100, gameMap);
                 }
@@ -69,6 +98,10 @@ void Game::run() {
         {
             player->move(keystate);
             update(deltaTime);
+        }
+        if (state == GameState::TITLE && !Mix_PlayingMusic()) {
+            Mix_PlayMusic(bgm, -1); // loop
+            musicPlaying = true;
         }
         render();
     }
@@ -97,6 +130,18 @@ void Game::clean() {
     delete player;
 
     if (titleTexture) SDL_DestroyTexture(titleTexture);
+
+    if (bgm) 
+    {
+        Mix_FreeMusic(bgm);
+        bgm = nullptr;
+    }    
+    if(lv1m)
+    {
+        Mix_FreeMusic(lv1m);
+        lv1m = nullptr;
+    }
+    Mix_CloseAudio();
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

@@ -13,7 +13,7 @@ set OUTPUT=game.exe
 set SOURCES=src\*.cpp
 
 :: Compile
-g++ -Iinclude -I%INCLUDE_PATH% %SOURCES% -L%LIB_PATH% -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -o %OUTPUT%
+g++ -Iinclude -I%INCLUDE_PATH% %SOURCES% -L%LIB_PATH% -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -o %OUTPUT%
 
 if %errorlevel% neq 0 (
     echo.

@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_mixer.h>
 #include "Player.h"
 #include "Map.h"
 
@@ -28,6 +29,10 @@ private:
     bool running = false;
 
     GameState state = GameState::TITLE;
+
+    Mix_Music* bgm = nullptr;
+    Mix_Music* lv1m = nullptr;
+    bool musicPlaying = false;
 
     Player* player = nullptr;
     Map* gameMap = nullptr;
