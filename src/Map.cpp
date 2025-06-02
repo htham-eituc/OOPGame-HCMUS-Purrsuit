@@ -4,7 +4,7 @@
 #include <iostream>
 
 Map::Map(SDL_Renderer* renderer) : renderer(renderer) {
-    loadMap("assets/maps/test1.json");
+    loadMap("assets/maps/map2.json");
 }
 
 Map::~Map() {
@@ -76,14 +76,54 @@ void Map::loadMap(const std::string& path) {
         }
         if (tileLayer.name == "Above")
             aboveLayer = tileLayer;
-        else
+        else 
             layers.push_back(tileLayer);
     }
+
+    items = LoadItemsFromMap(path);
+}
+
+std::vector<Item> Map::LoadItemsFromMap(const std::string& path) {
+    tson::Tileson parser;
+    std::unique_ptr<tson::Map> map = parser.parse(fs::path(path));
+
+    std::vector<Item> items;
+
+    if (map->getStatus() != tson::ParseStatus::OK) {
+        std::cerr << "Failed to load map: " << path << "\n";
+        return items;
+    }
+
+    tson::Layer* objectLayer = map->getLayer("Object");
+
+    if (objectLayer && objectLayer->getType() == tson::LayerType::ObjectGroup) {
+        for (auto& obj : objectLayer->getObjects()) {
+            std::string name = obj.getName();
+            auto pos = obj.getPosition(); 
+            auto size = obj.getSize();   
+            int gid = obj.getGid();
+            int SCALE = TILE_SIZE/size.x;
+            
+            SDL_Rect rect = {
+                static_cast<int>(pos.x * SCALE),
+                static_cast<int>(pos.y * SCALE),
+                static_cast<int>(size.x * SCALE),
+                static_cast<int>(size.y * SCALE)
+            };
+
+            items.emplace_back(name, rect, gid);
+        }
+    }
+
+    return items;
 }
 
 void Map::render() {
     for (const auto& layer : layers)
         drawLayer(layer);
+        
+    for (auto& item : items) 
+        item.render(renderer, tilesets);
 }
 
 void Map::renderAboveLayer() {
@@ -152,4 +192,8 @@ bool Map::isCollidable(int x, int y) const {
     if (y < 0 || y >= mapHeight || x < 0 || x >= mapWidth)
         return true; // Out of bounds is collidable
     return collisionMap[y][x];
+}
+
+std::vector<Item>& Map::getItems() { 
+    return items; 
 }
