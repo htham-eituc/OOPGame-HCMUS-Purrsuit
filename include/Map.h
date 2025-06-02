@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <string>
 #include <vector>
+#include "Item.h"
 
 struct TileLayer {
     std::string name;
@@ -26,13 +27,14 @@ public:
     void renderAboveLayer();  // "Above" layer, after characters
     bool checkCollision(const SDL_Rect& box) const;
     bool isCollidable(int x, int y) const;
+    std::vector<Item>& getItems();
     const int TILE_SIZE = 32;
 
 private:
     void loadMap(const std::string& path);
     SDL_Texture* loadTexture(const std::string& path);
+    std::vector<Item> LoadItemsFromMap(const std::string& path);
     void drawLayer(const TileLayer& layer);
-
 
     SDL_Renderer* renderer;
 
@@ -41,7 +43,7 @@ private:
 
     std::vector<Tileset> tilesets;
     std::vector<TileLayer> layers;
+    std::vector<Item> items;
     std::vector<std::vector<bool>> collisionMap;
     TileLayer aboveLayer;
-
 };

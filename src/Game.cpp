@@ -72,19 +72,11 @@ void Game::run() {
                 if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_9) {
                     state = GameState::LEVEL1;
 
-                    // Always render map before player!!
-                    if(Mix_PlayingMusic())
-                    {
-                        Mix_HaltMusic();
-                    }
-                    if(lv1m)
-                    {
-                        Mix_PlayMusic(lv1m, -1);
-                    }
-                    musicPlaying = false;
-
+                    // Initialize game objects now
                     gameMap = new Map(renderer);
                     player = new Player(renderer, 100, 100, gameMap);
+                    inventory = new Inventory(); 
+                    auto items = gameMap->getItems();
                 }
             } 
             else if (state == GameState::LEVEL1) {
@@ -119,6 +111,14 @@ void Game::render() {
         SDL_RenderCopy(renderer, titleTexture, nullptr, nullptr); // Full screen image
     } 
     else if (state == GameState::LEVEL1) {
+        for (auto& item : gameMap->getItems()) {
+            SDL_Rect playerRect = player->getBounds();
+            SDL_Rect itemRect = item.getBounds();
+            if (!item.collected && SDL_HasIntersection(&playerRect, &itemRect)) {
+                item.collected = true;
+                inventory->addItem(item.name);
+            }
+        }
         if (gameMap) gameMap->render();
         if (player) player->render(renderer);
         if (gameMap) gameMap->renderAboveLayer();
@@ -127,15 +127,8 @@ void Game::render() {
 }
 
 void Game::clean() {
-    if(gameMap) {
-        delete gameMap;
-        gameMap = nullptr;
-    }
-
-    if (player) {
-        delete player;
-        player = nullptr;
-    }
+    delete gameMap;
+    delete player;
 
     if (titleTexture) SDL_DestroyTexture(titleTexture);
 

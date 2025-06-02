@@ -6,6 +6,7 @@
 #include <SDL_mixer.h>
 #include "Player.h"
 #include "Map.h"
+#include "Inventory.h"
 
 enum class GameState
 {
@@ -36,6 +37,7 @@ private:
 
     Player* player = nullptr;
     Map* gameMap = nullptr;
+    Inventory* inventory = nullptr;
     SDL_Texture* titleTexture = nullptr;
 
     void handleEvents();

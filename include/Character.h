@@ -19,6 +19,7 @@ public:
     virtual void handleEvent(const SDL_Event& e) {}
     virtual void update(float deltaTime);
     virtual void render(SDL_Renderer* renderer);
+    SDL_Rect getBounds();
 
 protected:
     SDL_Texture* loadTexture(SDL_Renderer* renderer, const char* path);
