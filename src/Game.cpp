@@ -72,7 +72,12 @@ void Game::run() {
                 if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_9) {
                     state = GameState::LEVEL1;
 
-                    // Initialize game objects now
+                    if (Mix_PlayingMusic()) {
+                        Mix_HaltMusic();
+                    }
+                    Mix_PlayMusic(lv1m, -1); 
+                    musicPlaying = true;
+                    
                     gameMap = new Map(renderer);
                     player = new Player(renderer, 100, 100, gameMap);
                     inventory = new Inventory(); 
