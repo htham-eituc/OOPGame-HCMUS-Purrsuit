@@ -33,6 +33,11 @@ bool Game::init(const char* title, int width, int height) {
         return false;
     }
 
+    itemPickupSound = Mix_LoadWAV("assets/music/itemPickupSound.wav");
+    if (!itemPickupSound) {
+        SDL_Log("Failed to load item pickup sound: %s", Mix_GetError());
+        return false;
+    }
 
     window = SDL_CreateWindow(title,
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -106,6 +111,17 @@ void Game::run() {
 
 void Game::update(float deltaTime) {
     player->update(deltaTime);
+
+    for (auto& item : gameMap->getItems()) {
+        SDL_Rect playerRect = player->getBounds();
+        SDL_Rect itemRect = item.getBounds();
+        if (!item.collected && SDL_HasIntersection(&playerRect, &itemRect)) {
+            item.collected = true;
+            inventory->addItem(item.name);
+
+            Mix_PlayChannel(-1, itemPickupSound, 0);
+        }
+    }
 }
 
 void Game::render() {
@@ -116,14 +132,6 @@ void Game::render() {
         SDL_RenderCopy(renderer, titleTexture, nullptr, nullptr); // Full screen image
     } 
     else if (state == GameState::LEVEL1) {
-        for (auto& item : gameMap->getItems()) {
-            SDL_Rect playerRect = player->getBounds();
-            SDL_Rect itemRect = item.getBounds();
-            if (!item.collected && SDL_HasIntersection(&playerRect, &itemRect)) {
-                item.collected = true;
-                inventory->addItem(item.name);
-            }
-        }
         if (gameMap) gameMap->render();
         if (player) player->render(renderer);
         if (gameMap) gameMap->renderAboveLayer();
@@ -144,6 +152,11 @@ void Game::clean() {
     if(lv1m) {
         Mix_FreeMusic(lv1m);
         lv1m = nullptr;
+    }
+    if(itemPickupSound)
+    {
+        Mix_FreeChunk(itemPickupSound);
+        itemPickupSound = nullptr;
     }
     Mix_CloseAudio();
 

@@ -33,6 +33,7 @@ private:
 
     Mix_Music* bgm = nullptr;
     Mix_Music* lv1m = nullptr;
+    Mix_Chunk* itemPickupSound = nullptr;
     bool musicPlaying = false;
 
     Player* player = nullptr;
