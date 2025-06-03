@@ -1,30 +1,28 @@
 @echo off
-echo Building your game...
+setlocal
 
-:: Set your SDL2 paths (adjust these to match your SDL installation)
-set SDL2_PATH=D:\sdl2
-set INCLUDE_PATH=%SDL2_PATH%\include\SDL2
-set LIB_PATH=%SDL2_PATH%\lib
-
-:: Output settings
-set OUTPUT=game.exe
-
-:: Source files
-set SOURCES=src\*.cpp
-
-:: Compile
-g++ -Iinclude -I%INCLUDE_PATH% %SOURCES% -L%LIB_PATH% -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -o %OUTPUT%
-
-if %errorlevel% neq 0 (
-    echo.
-    echo Build failed!
-    pause
-    exit /b %errorlevel%
-) else (
-    echo.
-    echo Build succeeded! Run .\%OUTPUT%
-    echo.
-    start %OUTPUT% 
+:: Clean build
+if exist build (
+    echo Cleaning previous build...
+    rd /s /q build
 )
+mkdir build
+cd build
 
-pause
+echo Configuring with CMake...
+cmake .. -G "MinGW Makefiles"
+if errorlevel 1 goto :error
+
+echo Building...
+mingw32-make
+if errorlevel 1 goto :error
+
+cd ..
+echo.
+echo Running game...
+Purrsuit.exe
+goto :eof
+
+:error
+echo [ERROR] Build failed!
+exit /b 1

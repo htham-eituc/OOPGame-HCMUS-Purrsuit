@@ -1,4 +1,3 @@
-// Player.cpp
 #include "Player.h"
 #include <iostream>
 #include <SDL_image.h>

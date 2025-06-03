@@ -4,7 +4,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_mixer.h>
-#include "Player.h"
+#include "character/Player.h"
 #include "Map.h"
 #include "Inventory.h"
 
