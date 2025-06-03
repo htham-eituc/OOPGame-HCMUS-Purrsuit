@@ -44,8 +44,15 @@ void Player::handleEvent(const SDL_Event& e) {
 void Player::update(float deltaTime) {
     if (velocity.x != 0 || velocity.y != 0) {
         setAnimation(CharacterState::Walking);
+        if (movementSound && movementChannel == -1) {
+            movementChannel = Mix_PlayChannel(-1, movementSound, -1);
+        }
     } else {
         setAnimation(CharacterState::Idle);
+        if (movementChannel != -1) {
+            Mix_HaltChannel(movementChannel);
+            movementChannel = -1;
+        }
     }
     Character::update(deltaTime); // reuse base logic
 }

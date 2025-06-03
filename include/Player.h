@@ -15,6 +15,6 @@ public:
 private:
     SDL_Texture* idleTexture = nullptr;
     SDL_Texture* walkTexture = nullptr;
-    
+
     const float moveSpeed = 150.0f;
 };

@@ -39,6 +39,12 @@ bool Game::init(const char* title, int width, int height) {
         return false;
     }
 
+    movingOnGrassSound = Mix_LoadWAV("assets/music/walkOnGrassSound.wav");
+    if (!movingOnGrassSound) {
+        SDL_Log("Failed to load walk on grass sound: %s", Mix_GetError());
+        return false;
+    }
+
     window = SDL_CreateWindow(title,
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
@@ -54,6 +60,16 @@ bool Game::init(const char* title, int width, int height) {
     } else {
         SDL_Log("Failed to load title screen: %s", IMG_GetError());
     }
+
+
+    SDL_Surface* btnSurface = IMG_Load("assets/ui/startButton.png");
+    if (btnSurface) {
+        startButtonTexture = SDL_CreateTextureFromSurface(renderer, btnSurface);
+        SDL_FreeSurface(btnSurface);
+    } else {
+        SDL_Log("Failed to load start button image: %s", IMG_GetError());
+    }
+    startButtonRect = { 300, 400, 200, 73 };
 
     running = true;
 
@@ -75,18 +91,16 @@ void Game::run() {
 
             if (state == GameState::TITLE) {
                 if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_9) {
-                    state = GameState::LEVEL1;
+                    startLevel1();
+                }
+                else if (event.type == SDL_MOUSEBUTTONDOWN) {
+                    int mx = event.button.x;
+                    int my = event.button.y;
 
-                    if (Mix_PlayingMusic()) {
-                        Mix_HaltMusic();
+                    if (mx >= startButtonRect.x && mx <= startButtonRect.x + startButtonRect.w &&
+                        my >= startButtonRect.y && my <= startButtonRect.y + startButtonRect.h) {
+                        startLevel1();
                     }
-                    Mix_PlayMusic(lv1m, -1); 
-                    musicPlaying = true;
-                    
-                    gameMap = new Map(renderer);
-                    player = new Player(renderer, 100, 100, gameMap);
-                    inventory = new Inventory(); 
-                    auto items = gameMap->getItems();
                 }
             } 
             else if (state == GameState::LEVEL1) {
@@ -130,6 +144,8 @@ void Game::render() {
     
     if (state == GameState::TITLE) {
         SDL_RenderCopy(renderer, titleTexture, nullptr, nullptr); // Full screen image
+        if (startButtonTexture)
+            SDL_RenderCopy(renderer, startButtonTexture, nullptr, &startButtonRect);
     } 
     else if (state == GameState::LEVEL1) {
         if (gameMap) gameMap->render();
@@ -137,6 +153,27 @@ void Game::render() {
         if (gameMap) gameMap->renderAboveLayer();
     }
     SDL_RenderPresent(renderer);
+}
+
+void Game::startLevel1()
+{
+    state = GameState::LEVEL1;
+    if(gameMap) delete gameMap;
+    if(player) delete player;
+    if(inventory) delete inventory;
+    
+    gameMap = new Map(renderer);
+    player = new Player(renderer, 100, 100, gameMap);
+    player->setMovementSound(movingOnGrassSound);
+    inventory = new Inventory(); 
+
+    if (Mix_PlayingMusic()) {
+        Mix_HaltMusic();
+    }
+    Mix_PlayMusic(lv1m, -1); 
+    musicPlaying = true;
+    
+    auto items = gameMap->getItems();
 }
 
 void Game::clean() {
@@ -157,6 +194,11 @@ void Game::clean() {
     {
         Mix_FreeChunk(itemPickupSound);
         itemPickupSound = nullptr;
+    }
+    if(movingOnGrassSound)
+    {
+        Mix_FreeChunk(movingOnGrassSound);
+        movingOnGrassSound = nullptr;
     }
     Mix_CloseAudio();
 

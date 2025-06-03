@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_mixer.h>
 #include <string>
 #include "DataStruct.h"
 #include "Map.h"
@@ -19,6 +20,7 @@ public:
     virtual void handleEvent(const SDL_Event& e) {}
     virtual void update(float deltaTime);
     virtual void render(SDL_Renderer* renderer);
+    void setMovementSound(Mix_Chunk* sound) { movementSound = sound; }
     SDL_Rect getBounds();
 
 protected:
@@ -41,6 +43,9 @@ protected:
     
     CharacterState currentState = CharacterState::Idle;
     
+    Mix_Chunk* movementSound = nullptr;
+    int movementChannel = -1;
+
     Map* map = nullptr;
     
     SDL_Rect getCollisionBox(const Vector2& pos) const;
