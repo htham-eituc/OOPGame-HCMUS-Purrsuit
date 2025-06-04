@@ -1,12 +1,13 @@
-#ifndef GAME_H
-#define GAME_H
-
+#pragma once
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_mixer.h>
 #include "character/Player.h"
 #include "Map.h"
+#include "Constants.h"
+#include "MapFactory.h"
 #include "Inventory.h"
+#include "MemoryUtils.h"
 
 enum class GameState
 {
@@ -50,5 +51,3 @@ private:
     void update(float deltaTime);
     void render();
 };
-
-#endif

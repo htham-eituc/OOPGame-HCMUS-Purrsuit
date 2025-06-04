@@ -1,4 +1,6 @@
 #include "Game.h"
+#include "Item.h"
+#include "MapFactory.h"
 #include <iostream>
 
 Game::Game() {}
@@ -162,7 +164,7 @@ void Game::startLevel1()
     if(player) delete player;
     if(inventory) delete inventory;
     
-    gameMap = new Map(renderer);
+    gameMap = MapFactory::create(renderer, MAP_PATH_1);
     player = new Player(renderer, 100, 100, gameMap);
     player->setMovementSound(movingOnGrassSound);
     inventory = new Inventory(); 
@@ -177,31 +179,16 @@ void Game::startLevel1()
 }
 
 void Game::clean() {
-    delete gameMap;
-    delete player;
+    safeDelete(gameMap);
+    safeDelete(player);
 
-    if (titleTexture) SDL_DestroyTexture(titleTexture);
+    safeDestroyTexture(titleTexture);
+    safeFreeMusic(bgm);
+    safeFreeMusic(lv1m);
+    safeFreeChunk(itemPickupSound);
+    safeFreeChunk(movingOnGrassSound);
 
-    if (bgm) {
-        Mix_FreeMusic(bgm);
-        bgm = nullptr;
-    }    
-    if(lv1m) {
-        Mix_FreeMusic(lv1m);
-        lv1m = nullptr;
-    }
-    if(itemPickupSound)
-    {
-        Mix_FreeChunk(itemPickupSound);
-        itemPickupSound = nullptr;
-    }
-    if(movingOnGrassSound)
-    {
-        Mix_FreeChunk(movingOnGrassSound);
-        movingOnGrassSound = nullptr;
-    }
     Mix_CloseAudio();
-
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     IMG_Quit();

@@ -19,8 +19,9 @@ include_directories(
     ${SRC_DIR}/domain/entities
     ${SRC_DIR}/domain/entities/character
     ${SRC_DIR}/domain/entities/items
-    ${SRC_DIR}/domain/entities/world
+    ${SRC_DIR}/domain/entities/map
     ${SRC_DIR}/repo
+    ${SRC_DIR}/repo/map
     ${SRC_DIR}/ui
     ${CMAKE_SOURCE_DIR}/external  # e.g., for Tileson header-only
 )
