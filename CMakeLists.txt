@@ -15,6 +15,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}
     ${SRC_DIR}/app
     ${SRC_DIR}/core 
+    ${SRC_DIR}/core/assets
     ${SRC_DIR}/domain
     ${SRC_DIR}/domain/entities
     ${SRC_DIR}/domain/entities/character

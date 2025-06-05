@@ -8,6 +8,5 @@ int main(int argc, char* argv[]) {
     if (game.init("Purrsuit: A Whisper, A Whisker", 800, 640)) {
         game.run();
     }
-    game.clean();
     return 0;
 }

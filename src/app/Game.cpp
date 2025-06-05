@@ -1,10 +1,24 @@
 #include "Game.h"
 #include "Item.h"
+#include "Services.h"
 #include "MapFactory.h"
+#include "Constants.h"
 #include <iostream>
 
 Game::Game() {}
-Game::~Game() {}
+Game::~Game() {
+    safeDelete(gameMap);
+    safeDelete(player);
+
+    delete core::audio;
+    safeDestroyTexture(titleTexture);
+
+    Mix_CloseAudio();
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    IMG_Quit();
+    SDL_Quit();
+}
 
 bool Game::init(const char* title, int width, int height) {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -22,30 +36,15 @@ bool Game::init(const char* title, int width, int height) {
         return false;
     }
 
-    // Load title soundtrack
-    bgm = Mix_LoadMUS("assets/music/titleSoundtrack.mp3");
-    if (!bgm) {
-        SDL_Log("Failed to load title music: %s", Mix_GetError());
-        return false;
-    }
+    // Creat Managers
+    core::audio = new AudioManager();
+    //core::textures = new TextureManager();
 
-    lv1m = Mix_LoadMUS("assets/music/level1Soundtrack.mp3");
-    if (!lv1m) {
-        SDL_Log("Failed to load level1 music: %s", Mix_GetError());
-        return false;
-    }
-
-    itemPickupSound = Mix_LoadWAV("assets/music/itemPickupSound.wav");
-    if (!itemPickupSound) {
-        SDL_Log("Failed to load item pickup sound: %s", Mix_GetError());
-        return false;
-    }
-
-    movingOnGrassSound = Mix_LoadWAV("assets/music/walkOnGrassSound.wav");
-    if (!movingOnGrassSound) {
-        SDL_Log("Failed to load walk on grass sound: %s", Mix_GetError());
-        return false;
-    }
+    // Load soundtrack
+    core::audio->loadMusic(audio::title, "assets/music/titleSoundtrack.mp3");
+    core::audio->loadMusic(audio::lv1m, "assets/music/level1Soundtrack.mp3");
+    core::audio->loadSound(audio::ping, "assets/music/itemPickupSound.wav");
+    core::audio->loadSound(audio::grass, "assets/music/walkOnGrassSound.wav");
 
     window = SDL_CreateWindow(title,
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -117,9 +116,8 @@ void Game::run() {
             player->move(keystate);
             update(deltaTime);
         }
-        if (state == GameState::TITLE && !Mix_PlayingMusic()) {
-            Mix_PlayMusic(bgm, -1); // loop
-            musicPlaying = true;
+        if (state == GameState::TITLE && !core::audio->isPlayingMusic()) {
+            core::audio->playMusic(audio::title);  
         }
         render();
     }
@@ -134,8 +132,7 @@ void Game::update(float deltaTime) {
         if (!item.collected && SDL_HasIntersection(&playerRect, &itemRect)) {
             item.collected = true;
             inventory->addItem(item.name);
-
-            Mix_PlayChannel(-1, itemPickupSound, 0);
+            core::audio->playSound(audio::ping, 0);
         }
     }
 }
@@ -166,31 +163,10 @@ void Game::startLevel1()
     
     gameMap = MapFactory::create(renderer, MAP_PATH_1);
     player = new Player(renderer, 100, 100, gameMap);
-    player->setMovementSound(movingOnGrassSound);
     inventory = new Inventory(); 
 
-    if (Mix_PlayingMusic()) {
-        Mix_HaltMusic();
-    }
-    Mix_PlayMusic(lv1m, -1); 
-    musicPlaying = true;
+    core::audio->stopMusic();
+    core::audio->playMusic(audio::lv1m);
     
     auto items = gameMap->getItems();
-}
-
-void Game::clean() {
-    safeDelete(gameMap);
-    safeDelete(player);
-
-    safeDestroyTexture(titleTexture);
-    safeFreeMusic(bgm);
-    safeFreeMusic(lv1m);
-    safeFreeChunk(itemPickupSound);
-    safeFreeChunk(movingOnGrassSound);
-
-    Mix_CloseAudio();
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    IMG_Quit();
-    SDL_Quit();
 }

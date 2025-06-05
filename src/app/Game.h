@@ -23,7 +23,6 @@ public:
 
     bool init(const char* title, int width, int height);
     void run();
-    void clean();
     void startLevel1();
 
 private:
@@ -32,12 +31,6 @@ private:
     bool running = false;
 
     GameState state = GameState::TITLE;
-
-    Mix_Music* bgm = nullptr;
-    Mix_Music* lv1m = nullptr;
-    Mix_Chunk* itemPickupSound = nullptr;
-    Mix_Chunk* movingOnGrassSound = nullptr;
-    bool musicPlaying = false;
 
     SDL_Rect startButtonRect;
     SDL_Texture* startButtonTexture = nullptr;
