@@ -3,6 +3,7 @@
 #include "Services.h"
 #include "MapFactory.h"
 #include "Constants.h"
+#include "Initializers.h"
 #include <iostream>
 
 Game::Game() {}
@@ -12,8 +13,6 @@ Game::~Game() {
 
     delete core::audio;
     safeDestroyTexture(titleTexture);
-
-    Mix_CloseAudio();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     IMG_Quit();
@@ -21,30 +20,11 @@ Game::~Game() {
 }
 
 bool Game::init(const char* title, int width, int height) {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        SDL_Log("SDL_Init failed: %s", SDL_GetError());
-        return false;
-    }
 
-    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
-        SDL_Log("IMG_Init failed: %s", IMG_GetError());
-        return false;
-    }
+    if(!app::init::initSDL()) return false;
+    app::init::registerCoreServices(renderer);
+    app::init::loadAssets();
 
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
-        SDL_Log("SDL_mixer could not initialize! SDL_mixer Error: %s", Mix_GetError());
-        return false;
-    }
-
-    // Creat Managers
-    core::audio = new AudioManager();
-    //core::textures = new TextureManager();
-
-    // Load soundtrack
-    core::audio->loadMusic(audio::title, "assets/music/titleSoundtrack.mp3");
-    core::audio->loadMusic(audio::lv1m, "assets/music/level1Soundtrack.mp3");
-    core::audio->loadSound(audio::ping, "assets/music/itemPickupSound.wav");
-    core::audio->loadSound(audio::grass, "assets/music/walkOnGrassSound.wav");
 
     window = SDL_CreateWindow(title,
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
