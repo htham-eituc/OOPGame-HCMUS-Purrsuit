@@ -9,23 +9,22 @@ class Item;
 
 class Map {
 public:
-    Map(SDL_Renderer* renderer); 
-    ~Map();
+    Map() = default;
+    virtual ~Map() = default;
 
-    void loadFromData(const MapData& data);
-    void render();             // Regular layers
-    void renderAboveLayer();  // "Above" layer, after characters
+    void loadFromData(const MapData& data) { mapData = data; }
 
-    bool checkCollision(const SDL_Rect& box) const;
+    const std::vector<Item>& getItems() const { return mapData.items; }
+    std::vector<Item>& getItems() { return mapData.items; }
+
     bool isCollidable(int x, int y) const;
 
-    std::vector<Item>& getItems();
-    const MapData& getMapData() const; // For Minimap or AI
-
-private:
-    void drawLayer(const TileLayer& layer);
-
-    SDL_Renderer* renderer;
-
+protected:
     MapData mapData;
 };
+
+inline bool Map::isCollidable(int x, int y) const {
+    if (y < 0 || y >= mapData.mapHeight || x < 0 || x >= mapData.mapWidth)
+        return true; // Treat out-of-bounds as solid
+    return mapData.collisionMap[y][x];
+}

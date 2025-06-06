@@ -3,6 +3,7 @@
 #include "Services.h"
 #include "MapFactory.h"
 #include "Constants.h"
+#include "CollisionHandler.h"
 #include "Initializers.h"
 #include <iostream>
 
@@ -109,7 +110,7 @@ void Game::update(float deltaTime) {
     for (auto& item : gameMap->getItems()) {
         SDL_Rect playerRect = player->getBounds();
         SDL_Rect itemRect = item.getBounds();
-        if (!item.collected && SDL_HasIntersection(&playerRect, &itemRect)) {
+        if (!item.collected && CollisionHandler::checkCollision(playerRect, itemRect)) {
             item.collected = true;
             inventory->addItem(item.name);
             core::audio->playSound(audio::ping, 0);
@@ -137,9 +138,9 @@ void Game::render() {
 void Game::startLevel1()
 {
     state = GameState::LEVEL1;
-    if(gameMap) delete gameMap;
-    if(player) delete player;
-    if(inventory) delete inventory;
+    safeDelete(gameMap);
+    safeDelete(player);
+    safeDelete(inventory);
     
     gameMap = MapFactory::create(renderer, MAP_PATH_1);
     player = new Player(renderer, 100, 100, gameMap);

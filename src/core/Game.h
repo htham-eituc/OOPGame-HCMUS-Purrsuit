@@ -2,10 +2,10 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_mixer.h>
-#include "character/Player.h"
-#include "Map.h"
+#include "Player.h"
 #include "Constants.h"
 #include "MapFactory.h"
+
 #include "Inventory.h"
 #include "MemoryUtils.h"
 
@@ -36,7 +36,7 @@ private:
     SDL_Texture* startButtonTexture = nullptr;
 
     Player* player = nullptr;
-    Map* gameMap = nullptr;
+    GameMap* gameMap = nullptr;
     Inventory* inventory = nullptr;
     SDL_Texture* titleTexture = nullptr;
 

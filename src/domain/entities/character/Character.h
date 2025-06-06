@@ -4,7 +4,7 @@
 #include <SDL_mixer.h>
 #include <string>
 #include "DataStruct.h"
-#include "Map.h"
+#include "GameMap.h"
 
 enum class CharacterState {
     Idle,

@@ -1,10 +1,10 @@
 #pragma once
 #include <string>
 
-class Map;
+class GameMap;
 struct SDL_Renderer;
 
 class MapFactory {
 public:
-    static Map* create(SDL_Renderer* renderer, const std::string& path);
+    static GameMap* create(SDL_Renderer* renderer, const std::string& path);
 };

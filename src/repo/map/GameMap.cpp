@@ -1,35 +1,30 @@
-#include <SDL_image.h>
-#include <iostream>
-#include "Map.h"
+#include "GameMap.h"
 #include "MemoryUtils.h"
-#include "Item.h"
+#include "Constants.h"
 
-Map::Map(SDL_Renderer* renderer) : renderer(renderer) {}
+GameMap::GameMap(SDL_Renderer* renderer)
+    : renderer(renderer) {}
 
-Map::~Map() {
-    for (auto& ts : mapData.tilesets) 
+GameMap::~GameMap() {
+    for (auto& ts : mapData.tilesets) {
         safeDestroyTexture(ts.texture);
+    }
 }
 
-void Map::loadFromData(const MapData &data) {
-    mapData = data;
-}
-
-void Map::render()
-{
+void GameMap::render() {
     for (const auto& layer : mapData.layers)
         drawLayer(layer);
-        
-    for (auto& item : mapData.items) 
+
+    for (auto& item : mapData.items)
         item.render(renderer, mapData.tilesets);
 }
 
-void Map::renderAboveLayer() {
+void GameMap::renderAboveLayer() {
     if (!mapData.aboveLayer.data.empty())
         drawLayer(mapData.aboveLayer);
 }
 
-void Map::drawLayer(const TileLayer& layer) {
+void GameMap::drawLayer(const TileLayer& layer) {
     for (int y = 0; y < layer.height; ++y) {
         for (int x = 0; x < layer.width; ++x) {
             int index = y * layer.width + x;
@@ -67,31 +62,4 @@ void Map::drawLayer(const TileLayer& layer) {
             SDL_RenderCopy(renderer, tileset->texture, &srcRect, &destRect);
         }
     }
-}
-
-bool Map::checkCollision(const SDL_Rect& box) const {
-    int tileSize = TILE_SIZE;
-
-    int leftTile   = box.x / tileSize;
-    int rightTile  = (box.x + box.w - 1) / tileSize;
-    int topTile    = box.y / tileSize;
-    int bottomTile = (box.y + box.h - 1) / tileSize;
-
-    for (int y = topTile; y <= bottomTile; ++y) {
-        for (int x = leftTile; x <= rightTile; ++x) {
-            if (isCollidable(x, y)) return true;
-        }
-    }
-
-    return false;
-}
-
-bool Map::isCollidable(int x, int y) const {
-    if (y < 0 || y >= mapData.mapHeight || x < 0 || x >= mapData.mapWidth)
-        return true; // Out of bounds
-    return mapData.collisionMap[y][x];
-}
-
-std::vector<Item>& Map::getItems() { 
-    return mapData.items; 
 }
