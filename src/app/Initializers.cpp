@@ -43,7 +43,7 @@ namespace app::init {
         core::textures->loadTexture(texture::player_walk, texture::player_walk);
         core::textures->loadTexture(texture::title_screen, texture::title_screen);
         core::textures->loadTexture(texture::start_button, texture::start_button);
-
+        core::textures->loadTexture(texture::level1_exit_zone, texture::level1_exit_zone);
 
     }
 }

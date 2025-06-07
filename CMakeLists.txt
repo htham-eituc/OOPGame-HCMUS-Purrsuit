@@ -14,7 +14,8 @@ set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
 include_directories(
     ${CMAKE_SOURCE_DIR}
     ${SRC_DIR}/app
-    ${SRC_DIR}/app/loader
+    ${SRC_DIR}/app/loader    
+    ${SRC_DIR}/app/state
     ${SRC_DIR}/core 
     ${SRC_DIR}/core/assets
     ${SRC_DIR}/domain

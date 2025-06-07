@@ -36,8 +36,9 @@ bool Game::init(const char* title, int width, int height) {
     app::init::loadAssets();
 
     startButtonRect = { 300, 400, 200, 73 };
-
     running = true;
+    
+    stateMachine.changeState(GameState::TITLE);
 
     return true;
 }
@@ -55,7 +56,7 @@ void Game::run() {
             if (event.type == SDL_QUIT)
                 running = false;
 
-            if (state == GameState::TITLE) {
+            if (stateMachine.getCurrentState() == GameState::TITLE) {
                 if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_9) {
                     startLevel1();
                 }
@@ -69,19 +70,22 @@ void Game::run() {
                     }
                 }
             } 
-            else if (state == GameState::LEVEL1) {
+            else if (stateMachine.getCurrentState() == GameState::LEVEL1) {
                 player->handleEvent(event);
-            }    
+            }
+            else if (stateMachine.getCurrentState() == GameState::LEVEL2) {
+                player->handleEvent(event);
+            }
         }
 
         const Uint8* keystate = SDL_GetKeyboardState(NULL);
         
-        if(state == GameState::LEVEL1)
+        if(stateMachine.getCurrentState() == GameState::LEVEL1 || stateMachine.getCurrentState() == GameState::LEVEL2)
         {
             player->move(keystate);
             update(deltaTime);
         }
-        if (state == GameState::TITLE && !core::audio->isPlayingMusic()) {
+        if (stateMachine.getCurrentState() == GameState::TITLE && !core::audio->isPlayingMusic()) {
             core::audio->playMusic(audio::title);  
         }
         render();
@@ -100,20 +104,33 @@ void Game::update(float deltaTime) {
             core::audio->playSound(audio::ping, 0);
         }
     }
+
+    SDL_Rect playerRect = player->getBounds();
+    if (CollisionHandler::checkCollision(playerRect, level1ExitZoneRect)) {
+        startLevel2();
+    }
 }
 
 void Game::render() {
     SDL_SetRenderDrawColor(renderer, 225, 225, 225, 255);
     SDL_RenderClear(renderer);
     
-    if (state == GameState::TITLE) {
+    if (stateMachine.getCurrentState() == GameState::TITLE) {
         SDL_Texture* titleTexture = core::textures->getTexture(texture::title_screen);
         SDL_RenderCopy(renderer, titleTexture, nullptr, nullptr); // Full screen image
 
         SDL_Texture* startButtonTexture = core::textures->getTexture(texture::start_button);
         SDL_RenderCopy(renderer, startButtonTexture, nullptr, &startButtonRect);
     } 
-    else if (state == GameState::LEVEL1) {
+    else if (stateMachine.getCurrentState() == GameState::LEVEL1) {
+        if (gameMap) gameMap->render();
+        if (player) player->render(renderer);
+        if (gameMap) gameMap->renderAboveLayer();
+        
+        SDL_Texture* level1ExitZoneTexture = core::textures->getTexture(texture::level1_exit_zone);
+        SDL_RenderCopy(renderer, level1ExitZoneTexture, nullptr, &level1ExitZoneRect);
+    }
+    else if (stateMachine.getCurrentState() == GameState::LEVEL2) {
         if (gameMap) gameMap->render();
         if (player) player->render(renderer);
         if (gameMap) gameMap->renderAboveLayer();
@@ -122,7 +139,7 @@ void Game::render() {
 }
 
 void Game::startLevel1() {
-    state = GameState::LEVEL1;
+    stateMachine.changeState(GameState::LEVEL1);
     safeDelete(gameMap);
     safeDelete(player);
     safeDelete(inventory);
@@ -130,9 +147,27 @@ void Game::startLevel1() {
     gameMap = MapFactory::create(renderer, MAP_PATH_1);
     player = new Player(renderer, 100, 100, gameMap);
     inventory = new Inventory(); 
+    level1ExitZoneRect = { 200, 200, 64, 64 };
 
     core::audio->stopMusic();
     core::audio->playMusic(audio::lv1m);
+    
+    auto items = gameMap->getItems();
+}
+
+void Game::startLevel2(){
+    stateMachine.changeState(GameState::LEVEL2);
+    safeDelete(gameMap);
+    safeDelete(player);
+    safeDelete(inventory);
+    
+    gameMap = MapFactory::create(renderer, MAP_PATH_2);
+    player = new Player(renderer, 100, 100, gameMap);
+    inventory = new Inventory(); 
+    level1ExitZoneRect = { 0, 0, 0, 0 }; // Trickery
+
+    core::audio->stopMusic();
+    core::audio->playMusic(audio::title);
     
     auto items = gameMap->getItems();
 }

@@ -2,6 +2,8 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_mixer.h>
+#include "GameStateType.h"
+#include "GameStateMachine.h"
 #include "Player.h"
 #include "Constants.h"
 #include "Inventory.h"
@@ -9,13 +11,6 @@
 class Player;
 class Inventory;
 class MapRender;
-
-enum class GameState
-{
-    TITLE,
-    LEVEL1,
-    EXIT
-};
 
 class Game {
 public:
@@ -25,15 +20,17 @@ public:
     bool init(const char* title, int width, int height);
     void run();
     void startLevel1();
+    void startLevel2();
 
 private:
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;
     bool running = false;
 
-    GameState state = GameState::TITLE;
+    GameStateMachine stateMachine;
 
     SDL_Rect startButtonRect;
+    SDL_Rect level1ExitZoneRect;
 
     Player* player = nullptr;
     MapRender* gameMap = nullptr;

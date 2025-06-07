@@ -5,11 +5,12 @@ inline constexpr int SCREEN_HEIGHT = 600;
 inline constexpr int TILE_SIZE = 32;
 
 inline const char* MAP_PATH_1 = "assets/maps/map2.json";
+inline const char* MAP_PATH_2 = "assets/maps/testMap2.json";
 
 namespace audio {
     // music
     constexpr const char* title = "assets/music/titleSoundtrack.mp3";
-    constexpr const char* lv1m = "assets/music/level1Soundtrack.mp3";
+    constexpr const char* lv1m = "assets/music/level1-soundtrack.mp3";
 
     // sfx
     constexpr const char* ping = "assets/music/itemPickupSound.wav";
@@ -23,7 +24,7 @@ namespace texture {
 
     constexpr const char* title_screen = "assets/ui/forg2kg.png";
     constexpr const char* start_button = "assets/ui/startButton.png";
-
+    constexpr const char* level1_exit_zone = "assets/ui/level1_exit_zone.png";
 
     // UI
 }
