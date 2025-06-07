@@ -2,10 +2,10 @@
 #include <SDL.h>
 #include "Map.h"
 
-class GameMap : public Map {
+class MapRender : public Map {
 public:
-    GameMap(SDL_Renderer* renderer);
-    ~GameMap();
+    MapRender(SDL_Renderer* renderer);
+    ~MapRender();
 
     void render();
     void renderAboveLayer();

@@ -28,14 +28,22 @@ namespace app::init {
 
     void registerCoreServices(SDL_Renderer* renderer) {
         core::audio = new AudioManager();
-        // core::textures = new TextureManager(renderer);
+        core::textures = new TextureManager(renderer);
     }
 
     void loadAssets() {
-        core::audio->loadMusic(audio::title, "assets/music/titleSoundtrack.mp3");
-        core::audio->loadMusic(audio::lv1m, "assets/music/level1Soundtrack.mp3");
-        core::audio->loadSound(audio::ping, "assets/music/itemPickupSound.wav");
-        core::audio->loadSound(audio::grass, "assets/music/walkOnGrassSound.wav");
-    }
+        // audio
+        core::audio->loadMusic(audio::title, audio::title);
+        core::audio->loadMusic(audio::lv1m, audio::lv1m);
+        core::audio->loadSound(audio::ping, audio::ping);
+        core::audio->loadSound(audio::move, audio::move);
 
+        // texture
+        core::textures->loadTexture(texture::player_idle, texture::player_idle);
+        core::textures->loadTexture(texture::player_walk, texture::player_walk);
+        core::textures->loadTexture(texture::title_screen, texture::title_screen);
+        core::textures->loadTexture(texture::start_button, texture::start_button);
+
+
+    }
 }

@@ -1,17 +1,17 @@
-#include "GameMap.h"
+#include "MapRender.h"
 #include "MemoryUtils.h"
 #include "Constants.h"
 
-GameMap::GameMap(SDL_Renderer* renderer)
+MapRender::MapRender(SDL_Renderer* renderer)
     : renderer(renderer) {}
 
-GameMap::~GameMap() {
+MapRender::~MapRender() {
     for (auto& ts : mapData.tilesets) {
         safeDestroyTexture(ts.texture);
     }
 }
 
-void GameMap::render() {
+void MapRender::render() {
     for (const auto& layer : mapData.layers)
         drawLayer(layer);
 
@@ -19,12 +19,12 @@ void GameMap::render() {
         item.render(renderer, mapData.tilesets);
 }
 
-void GameMap::renderAboveLayer() {
+void MapRender::renderAboveLayer() {
     if (!mapData.aboveLayer.data.empty())
         drawLayer(mapData.aboveLayer);
 }
 
-void GameMap::drawLayer(const TileLayer& layer) {
+void MapRender::drawLayer(const TileLayer& layer) {
     for (int y = 0; y < layer.height; ++y) {
         for (int x = 0; x < layer.width; ++x) {
             int index = y * layer.width + x;

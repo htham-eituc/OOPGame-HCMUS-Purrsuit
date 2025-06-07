@@ -1,11 +1,13 @@
+#include <iostream>
 #include "Game.h"
 #include "Item.h"
 #include "Services.h"
 #include "MapFactory.h"
+#include "MapRender.h"
 #include "Constants.h"
 #include "CollisionHandler.h"
 #include "Initializers.h"
-#include <iostream>
+#include "MemoryUtils.h"
 
 Game::Game() {}
 Game::~Game() {
@@ -13,7 +15,6 @@ Game::~Game() {
     safeDelete(player);
 
     delete core::audio;
-    safeDestroyTexture(titleTexture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     IMG_Quit();
@@ -21,11 +22,7 @@ Game::~Game() {
 }
 
 bool Game::init(const char* title, int width, int height) {
-
     if(!app::init::initSDL()) return false;
-    app::init::registerCoreServices(renderer);
-    app::init::loadAssets();
-
 
     window = SDL_CreateWindow(title,
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -35,22 +32,9 @@ bool Game::init(const char* title, int width, int height) {
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (!renderer) return false;
 
-    SDL_Surface* temp = IMG_Load("assets/ui/forg2kg.png"); // <-- Your image path
-    if (temp) {
-        titleTexture = SDL_CreateTextureFromSurface(renderer, temp);
-        SDL_FreeSurface(temp);
-    } else {
-        SDL_Log("Failed to load title screen: %s", IMG_GetError());
-    }
+    app::init::registerCoreServices(renderer);
+    app::init::loadAssets();
 
-
-    SDL_Surface* btnSurface = IMG_Load("assets/ui/startButton.png");
-    if (btnSurface) {
-        startButtonTexture = SDL_CreateTextureFromSurface(renderer, btnSurface);
-        SDL_FreeSurface(btnSurface);
-    } else {
-        SDL_Log("Failed to load start button image: %s", IMG_GetError());
-    }
     startButtonRect = { 300, 400, 200, 73 };
 
     running = true;
@@ -123,9 +107,11 @@ void Game::render() {
     SDL_RenderClear(renderer);
     
     if (state == GameState::TITLE) {
+        SDL_Texture* titleTexture = core::textures->getTexture(texture::title_screen);
         SDL_RenderCopy(renderer, titleTexture, nullptr, nullptr); // Full screen image
-        if (startButtonTexture)
-            SDL_RenderCopy(renderer, startButtonTexture, nullptr, &startButtonRect);
+
+        SDL_Texture* startButtonTexture = core::textures->getTexture(texture::start_button);
+        SDL_RenderCopy(renderer, startButtonTexture, nullptr, &startButtonRect);
     } 
     else if (state == GameState::LEVEL1) {
         if (gameMap) gameMap->render();
@@ -135,8 +121,7 @@ void Game::render() {
     SDL_RenderPresent(renderer);
 }
 
-void Game::startLevel1()
-{
+void Game::startLevel1() {
     state = GameState::LEVEL1;
     safeDelete(gameMap);
     safeDelete(player);

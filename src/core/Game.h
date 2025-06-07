@@ -4,10 +4,11 @@
 #include <SDL_mixer.h>
 #include "Player.h"
 #include "Constants.h"
-#include "MapFactory.h"
-
 #include "Inventory.h"
-#include "MemoryUtils.h"
+
+class Player;
+class Inventory;
+class MapRender;
 
 enum class GameState
 {
@@ -33,12 +34,10 @@ private:
     GameState state = GameState::TITLE;
 
     SDL_Rect startButtonRect;
-    SDL_Texture* startButtonTexture = nullptr;
 
     Player* player = nullptr;
-    GameMap* gameMap = nullptr;
+    MapRender* gameMap = nullptr;
     Inventory* inventory = nullptr;
-    SDL_Texture* titleTexture = nullptr;
 
     void handleEvents();
     void update(float deltaTime);

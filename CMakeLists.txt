@@ -14,7 +14,7 @@ set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
 include_directories(
     ${CMAKE_SOURCE_DIR}
     ${SRC_DIR}/app
-    ${SRC_DIR}/app/init
+    ${SRC_DIR}/app/loader
     ${SRC_DIR}/core 
     ${SRC_DIR}/core/assets
     ${SRC_DIR}/domain
@@ -22,9 +22,11 @@ include_directories(
     ${SRC_DIR}/domain/entities/character
     ${SRC_DIR}/domain/entities/items
     ${SRC_DIR}/domain/entities/map
+    ${SRC_DIR}/domain/value_object
     ${SRC_DIR}/repo
     ${SRC_DIR}/repo/map
     ${SRC_DIR}/ui
+    ${SRC_DIR}/ui/renderer
     ${CMAKE_SOURCE_DIR}/external  # e.g., for Tileson header-only
 )
 

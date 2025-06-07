@@ -3,6 +3,7 @@
 #include "TiledMapLoader.h"
 #include "Map.h"
 #include "Item.h"
+#include "Services.h"
 #include "tileson.hpp"
 
 SDL_Texture* TiledMapLoader::loadTexture(const std::string& path, SDL_Renderer* renderer) {
@@ -38,7 +39,9 @@ MapData TiledMapLoader::loadMap(const std::string& path, SDL_Renderer* renderer)
         tileset.tilecount = ts.getTileCount();
 
         std::string imgPath = "assets/tiles/" + ts.getImagePath().u8string();
-        tileset.texture = loadTexture(imgPath, renderer);
+        std::string imageId = ts.getImagePath().filename().string();
+        core::textures->loadTexture(imageId, imgPath);
+        tileset.texture = core::textures->getTexture(imageId);
 
         mapData.tilesets.push_back(tileset);
     }

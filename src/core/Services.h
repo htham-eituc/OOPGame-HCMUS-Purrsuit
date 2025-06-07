@@ -5,7 +5,7 @@
 
 namespace core {
     inline AudioManager* audio = nullptr;
-    // inline TextureManager* textures = nullptr;
+    inline TextureManager* textures = nullptr;
     // Future:
     // inline InputManager* input = nullptr;
     // inline EventBus* events = nullptr;
