@@ -1,29 +1,21 @@
-// Player.cpp
 #include "Player.h"
+#include "MemoryUtils.h"
+#include "Services.h"
+#include "Constants.h"
 #include <iostream>
 #include <SDL_image.h>
 
 const float moveSpeed = 200.0f;
 
 Player::Player(SDL_Renderer* renderer, int x, int y, Map *map)
-    : Character(renderer, x, y, map)
-{
-    idleTexture = loadTexture(renderer, "assets/character/PirateCatIdle.png");
-    walkTexture = loadTexture(renderer, "assets/character/PirateCatRun.png");
-
-    currentTexture = idleTexture;
+    : Character(renderer, x, y, map) {
+    currentTexture = core::textures->getTexture(texture::player_idle);
     setAnimation(CharacterState::Idle);
 }
 
 Player::~Player() {
-    if (idleTexture) {
-        SDL_DestroyTexture(idleTexture);
-        idleTexture = nullptr;
-    }
-    if (walkTexture) {
-        SDL_DestroyTexture(walkTexture);
-        walkTexture = nullptr;
-    }
+    safeDestroyTexture(idleTexture);
+    safeDestroyTexture(walkTexture);
 }
 
 void Player::move(const Uint8* keystate) {
@@ -44,15 +36,10 @@ void Player::handleEvent(const SDL_Event& e) {
 void Player::update(float deltaTime) {
     if (velocity.x != 0 || velocity.y != 0) {
         setAnimation(CharacterState::Walking);
-        if (movementSound && movementChannel == -1) {
-            movementChannel = Mix_PlayChannel(-1, movementSound, -1);
-        }
+        core::audio->playSound(audio::move);
     } else {
         setAnimation(CharacterState::Idle);
-        if (movementChannel != -1) {
-            Mix_HaltChannel(movementChannel);
-            movementChannel = -1;
-        }
+        core::audio->stopSound(audio::move);
     }
     Character::update(deltaTime); // reuse base logic
 }
@@ -64,15 +51,15 @@ void Player::setAnimation(CharacterState newState) {
 
     switch (newState) {
         case CharacterState::Idle:
-            currentTexture = idleTexture;
+            currentTexture = core::textures->getTexture(texture::player_idle);
             frameCount = 3;
             break;
         case CharacterState::Walking:
-            currentTexture = walkTexture;
+            currentTexture = core::textures->getTexture(texture::player_walk);
             frameCount = 7;
             break;
         default:
-            currentTexture = idleTexture;
+            currentTexture = core::textures->getTexture(texture::player_idle);
             frameCount = 3;
             break;
     }

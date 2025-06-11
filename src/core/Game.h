@@ -1,12 +1,14 @@
-#ifndef GAME_H
-#define GAME_H
-
+#pragma once
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_mixer.h>
 #include "Player.h"
-#include "Map.h"
+#include "Constants.h"
 #include "Inventory.h"
+
+class Player;
+class Inventory;
+class MapRender;
 
 enum class GameState
 {
@@ -22,7 +24,6 @@ public:
 
     bool init(const char* title, int width, int height);
     void run();
-    void clean();
     void startLevel1();
 
 private:
@@ -32,23 +33,13 @@ private:
 
     GameState state = GameState::TITLE;
 
-    Mix_Music* bgm = nullptr;
-    Mix_Music* lv1m = nullptr;
-    Mix_Chunk* itemPickupSound = nullptr;
-    Mix_Chunk* movingOnGrassSound = nullptr;
-    bool musicPlaying = false;
-
     SDL_Rect startButtonRect;
-    SDL_Texture* startButtonTexture = nullptr;
 
     Player* player = nullptr;
-    Map* gameMap = nullptr;
+    MapRender* gameMap = nullptr;
     Inventory* inventory = nullptr;
-    SDL_Texture* titleTexture = nullptr;
 
     void handleEvents();
     void update(float deltaTime);
     void render();
 };
-
-#endif

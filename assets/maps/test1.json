@@ -125,29 +125,6 @@
          "width":25,
          "x":0,
          "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":4,
-         "name":"Object",
-         "objects":[
-                {
-                 "gid":75,
-                 "height":16,
-                 "id":3,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":16,
-                 "x":272,
-                 "y":95.3333
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
         }],
  "nextlayerid":6,
  "nextobjectid":5,

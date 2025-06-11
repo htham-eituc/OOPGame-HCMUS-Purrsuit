@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Character.h"
+#include "CollisionHandler.h"
 
 Character::Character(SDL_Renderer* renderer, int x, int y, Map* map)
     : position(x, y), velocity(0, 0), lastFrameTime(SDL_GetTicks()), map(map) {
@@ -39,7 +40,7 @@ void Character::update(float deltaTime) {
         Vector2 tryX = { position.x + fullMove.x, position.y };
         SDL_Rect boxX = getCollisionBox(tryX);
 
-        if (!map->checkCollision(boxX)) {
+        if (!CollisionHandler::checkMapCollision(boxX, *map)) {
             newPos.x = tryX.x;
             movedX = true;
         }
@@ -50,7 +51,7 @@ void Character::update(float deltaTime) {
         Vector2 tryY = { newPos.x, position.y + fullMove.y }; // use updated X pos
         SDL_Rect boxY = getCollisionBox(tryY);
 
-        if (!map->checkCollision(boxY)) {
+        if (!CollisionHandler::checkMapCollision(boxY, *map)) {
             newPos.y = tryY.y;
             movedY = true;
         }

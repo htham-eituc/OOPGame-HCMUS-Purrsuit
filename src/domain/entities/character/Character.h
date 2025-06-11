@@ -4,7 +4,8 @@
 #include <SDL_mixer.h>
 #include <string>
 #include "DataStruct.h"
-#include "Map.h"
+
+class Map;
 
 enum class CharacterState {
     Idle,
@@ -20,7 +21,6 @@ public:
     virtual void handleEvent(const SDL_Event& e) {}
     virtual void update(float deltaTime);
     virtual void render(SDL_Renderer* renderer);
-    void setMovementSound(Mix_Chunk* sound) { movementSound = sound; }
     SDL_Rect getBounds();
 
 protected:
@@ -43,7 +43,6 @@ protected:
     
     CharacterState currentState = CharacterState::Idle;
     
-    Mix_Chunk* movementSound = nullptr;
     int movementChannel = -1;
 
     Map* map = nullptr;
