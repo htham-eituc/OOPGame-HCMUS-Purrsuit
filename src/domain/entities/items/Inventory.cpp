@@ -16,3 +16,8 @@ void Inventory::render() {
         std::cout << item << " ";
     std::cout << "\n";
 }
+
+const std::unordered_set<std::string>& Inventory::getItemNames() const {
+    return items; 
+}
+

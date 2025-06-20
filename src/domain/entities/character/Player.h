@@ -11,6 +11,8 @@ public:
     void handleEvent(const SDL_Event& e) override;
     void update(float deltaTime) override;
     void setAnimation(CharacterState newState) override;
+    int getX() const;
+    int getY() const;
 
 private:
     SDL_Texture* idleTexture = nullptr;

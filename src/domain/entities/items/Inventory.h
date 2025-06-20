@@ -9,6 +9,7 @@ public:
     void addItem(const std::string& itemName);
     bool hasItem(const std::string& itemName) const;
     void render(); // For now, prints to console
+    const std::unordered_set<std::string>& getItemNames() const;
 
 private:
     std::unordered_set<std::string> items;

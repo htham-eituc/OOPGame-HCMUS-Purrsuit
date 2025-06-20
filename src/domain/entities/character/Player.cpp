@@ -64,3 +64,6 @@ void Player::setAnimation(CharacterState newState) {
             break;
     }
 }
+
+int Player::getX() const { return position.x; }
+int Player::getY() const { return position.y; }
