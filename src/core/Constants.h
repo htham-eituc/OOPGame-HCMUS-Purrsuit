@@ -19,8 +19,8 @@ namespace audio {
 
 namespace texture {
     // character 
-    constexpr const char* player_idle = "assets/character/PirateCatIdle.png";
-    constexpr const char* player_walk = "assets/character/PirateCatWalk.png";
+    constexpr const char* player_idle = "assets/character/MainCatIdle.png";
+    constexpr const char* player_walk = "assets/character/MainCatWalk.png";
 
     constexpr const char* title_screen = "assets/ui/forg2kg.png";
     constexpr const char* start_button = "assets/ui/startButton.png";
