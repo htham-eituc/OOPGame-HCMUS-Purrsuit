@@ -25,6 +25,8 @@ namespace texture {
     constexpr const char* title_screen = "assets/ui/forg2kg.png";
     constexpr const char* start_button = "assets/ui/startButton.png";
     constexpr const char* level1_exit_zone = "assets/ui/level1_exit_zone.png";
+    constexpr const char* load_button = "assets/ui/load_button.png";
+    constexpr const char* save_button = "assets/ui/save_button.png";
 
     // UI
 }

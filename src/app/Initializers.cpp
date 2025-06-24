@@ -44,6 +44,7 @@ namespace app::init {
         core::textures->loadTexture(texture::title_screen, texture::title_screen);
         core::textures->loadTexture(texture::start_button, texture::start_button);
         core::textures->loadTexture(texture::level1_exit_zone, texture::level1_exit_zone);
-
+        core::textures->loadTexture(texture::load_button, texture::load_button);
+        core::textures->loadTexture(texture::save_button, texture::save_button);
     }
 }

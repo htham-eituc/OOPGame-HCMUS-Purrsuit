@@ -25,4 +25,6 @@ goto :eof
 
 :error
 echo [ERROR] Build failed!
+pause
 exit /b 1
+

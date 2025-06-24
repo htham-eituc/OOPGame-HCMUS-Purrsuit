@@ -16,6 +16,7 @@ include_directories(
     ${SRC_DIR}/app
     ${SRC_DIR}/app/loader    
     ${SRC_DIR}/app/state
+    ${SRC_DIR}/app/saveGame
     ${SRC_DIR}/core 
     ${SRC_DIR}/core/assets
     ${SRC_DIR}/domain
@@ -24,6 +25,7 @@ include_directories(
     ${SRC_DIR}/domain/entities/items
     ${SRC_DIR}/domain/entities/map
     ${SRC_DIR}/domain/value_object
+    ${SRC_DIR}/domain/services
     ${SRC_DIR}/repo
     ${SRC_DIR}/repo/map
     ${SRC_DIR}/ui
