@@ -21,16 +21,21 @@ Game::~Game() {
     SDL_Quit();
 }
 
-bool Game::init(const char* title, int width, int height) {
+bool Game::init(const char* title) {
     if(!app::init::initSDL()) return false;
 
     window = SDL_CreateWindow(title,
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+        SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     if (!window) return false;
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (!renderer) return false;
+
+    SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+// Now when you go fullscreen:
+    SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
     app::init::registerCoreServices(renderer);
     app::init::loadAssets();
@@ -112,7 +117,7 @@ void Game::update(float deltaTime) {
 }
 
 void Game::render() {
-    SDL_SetRenderDrawColor(renderer, 225, 225, 225, 255);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
     SDL_RenderClear(renderer);
     
     if (stateMachine.getCurrentState() == GameState::TITLE) {

@@ -17,7 +17,7 @@ public:
     Game();
     ~Game();
 
-    bool init(const char* title, int width, int height);
+    bool init(const char* title);
     void run();
     void startLevel1();
     void startLevel2();
