@@ -3,6 +3,7 @@
 #include <SDL_image.h>
 #include <SDL_mixer.h>
 #include <string>
+#include <vector>
 #include "GameStateType.h"
 #include "GameStateMachine.h"
 #include "Player.h"
@@ -20,6 +21,7 @@ public:
 
     bool init(const char* title);
     void run();
+    void startCutscene1();
     void startLevel1(int x, int y);
     void startLevel2(int x, int y);
 
@@ -39,10 +41,17 @@ private:
     MapRender* gameMap = nullptr;
     Inventory* inventory = nullptr;
 
+    std::vector<SDL_Texture*> cutscene1Images;
+    std::vector<std::string> cutscene1Audios;
+    int currentCutscene1Index = 0;
+    const int maxCutscene1 = 3;
+    float cutscene1Zoom = 1.0f;
+
     void saveGame(const std::string& filename);
     void loadGame(const std::string& filename);
 
     void handleEvents();
+    void updateUILayout();
     void update(float deltaTime);
     void render();
 };
