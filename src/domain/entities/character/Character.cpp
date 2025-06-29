@@ -24,7 +24,12 @@ SDL_Rect Character::getCollisionBox(const Vector2& pos) const {
     };
 }
 
-SDL_Rect Character::getBounds() {
+bool Character::isMoving() const {
+    if (velocity.x != 0 || velocity.y != 0) return true;
+    return false;
+}
+
+SDL_Rect Character::getBounds() const {
     return getCollisionBox(position);
 }
 

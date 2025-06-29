@@ -4,7 +4,7 @@ inline constexpr int SCREEN_WIDTH = 1200;
 inline constexpr int SCREEN_HEIGHT = 750;
 inline constexpr int TILE_SIZE = 32;
 
-inline const char* MAP_PATH_1 = "assets/maps/Stage1.json";
+inline const char* MAP_PATH_1 = "assets/maps/Stage1_ItemsTest.json";
 inline const char* MAP_PATH_2 = "assets/maps/testMap2.json";
 
 namespace audio {

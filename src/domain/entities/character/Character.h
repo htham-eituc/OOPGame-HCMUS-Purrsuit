@@ -21,7 +21,9 @@ public:
     virtual void handleEvent(const SDL_Event& e) {}
     virtual void update(float deltaTime);
     virtual void render(SDL_Renderer* renderer);
-    SDL_Rect getBounds();
+
+    bool isMoving() const;
+    SDL_Rect getBounds() const;
 
 protected:
     SDL_Texture* loadTexture(SDL_Renderer* renderer, const char* path);
@@ -42,8 +44,6 @@ protected:
     Uint32 frameDelay = 100; // ms per frame
     
     CharacterState currentState = CharacterState::Idle;
-    
-    int movementChannel = -1;
 
     Map* map = nullptr;
     
