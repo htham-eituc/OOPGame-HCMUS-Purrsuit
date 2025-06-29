@@ -41,9 +41,8 @@ bool Game::init(const char* title) {
     app::init::registerCoreServices(renderer);
     app::init::loadAssets();
 
-    startButtonRect = { 300, 400, 200, 73 };
+    updateUILayout();
     running = true;
-    loadButtonRect = { 300, 500, 200, 73 };
     saveButtonRect = { 20, 20, 100, 40 };
     stateMachine.changeState(GameState::TITLE);
 
@@ -65,7 +64,7 @@ void Game::run() {
 
             if (stateMachine.getCurrentState() == GameState::TITLE) {
                 if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_9) {
-                    startLevel1(100, 100);
+                        startCutscene1();
                 }
                 else if (event.type == SDL_MOUSEBUTTONDOWN) {
                     int mx = event.button.x;
@@ -77,10 +76,21 @@ void Game::run() {
                     }
                     if (mx >= startButtonRect.x && mx <= startButtonRect.x + startButtonRect.w &&
                         my >= startButtonRect.y && my <= startButtonRect.y + startButtonRect.h) {
+                        startCutscene1();
+                    }
+                }
+            }
+            else if (stateMachine.getCurrentState() == GameState::CUTSCENE1) {
+                if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_SPACE) {
+                    currentCutscene1Index++;
+                    cutscene1Zoom = 1.0f;
+                    if (currentCutscene1Index < cutscene1Images.size()) {
+                        core::audio->playMusic(cutscene1Audios[currentCutscene1Index]);
+                    } else {
                         startLevel1(100, 100);
                     }
                 }
-            } 
+            }
             else if (stateMachine.getCurrentState() == GameState::LEVEL1) {
                 player->handleEvent(event);
                 if (event.type == SDL_MOUSEBUTTONDOWN)
@@ -121,6 +131,15 @@ void Game::run() {
     }
 }
 
+void Game::updateUILayout() {
+    int buttonWidth = SCREEN_WIDTH / 4;
+    int buttonHeight = SCREEN_HEIGHT / 10;
+    int centerX = SCREEN_WIDTH / 2 - buttonWidth / 2;
+
+    startButtonRect = { centerX, SCREEN_HEIGHT / 2, buttonWidth, buttonHeight };
+    loadButtonRect = { centerX, SCREEN_HEIGHT / 2 + buttonHeight + 20, buttonWidth, buttonHeight };
+}
+
 void Game::update(float deltaTime) {
     player->update(deltaTime);
 
@@ -155,6 +174,36 @@ void Game::render() {
         SDL_RenderCopy(renderer, loadButtonTexture, nullptr, &loadButtonRect);
         
     } 
+    else if (stateMachine.getCurrentState() == GameState::CUTSCENE1) {
+        if (currentCutscene1Index < cutscene1Images.size()) {
+            SDL_Texture* currentTex = cutscene1Images[currentCutscene1Index];
+
+            int texW, texH;
+            SDL_QueryTexture(currentTex, nullptr, nullptr, &texW, &texH);
+
+            // Gradual zoom-in over time
+            cutscene1Zoom += 0.000015f; // tweak this lower if still fast
+            cutscene1Zoom = std::min(cutscene1Zoom, 1.1f);
+            // Scale to screen, maintain aspect ratio
+            float scaleX = static_cast<float>(SCREEN_WIDTH) / texW;
+            float scaleY = static_cast<float>(SCREEN_HEIGHT) / texH;
+            float baseScale = std::min(scaleX, scaleY);
+
+            float finalScale = baseScale * cutscene1Zoom;
+
+            int renderW = static_cast<int>(texW * finalScale);
+            int renderH = static_cast<int>(texH * finalScale);
+
+            SDL_Rect dstRect = {
+                (SCREEN_WIDTH - renderW) / 2,
+                (SCREEN_HEIGHT - renderH) / 2,
+                renderW,
+                renderH
+            };
+
+            SDL_RenderCopy(renderer, currentTex, nullptr, &dstRect);
+        }
+    }
     else if (stateMachine.getCurrentState() == GameState::LEVEL1) {
         if (gameMap) gameMap->render();
         if (player) player->render(renderer);
@@ -176,6 +225,26 @@ void Game::render() {
         SDL_RenderCopy(renderer, saveButtonTexture, nullptr, &saveButtonRect);
     }
     SDL_RenderPresent(renderer);
+}
+
+void Game::startCutscene1()
+{
+    stateMachine.changeState(GameState::CUTSCENE1);
+
+    cutscene1Images = {
+        core::textures->getTexture(texture::cutscene_1_1),
+        core::textures->getTexture(texture::cutscene_1_2),
+        core::textures->getTexture(texture::cutscene_1_3)
+    };
+
+    cutscene1Audios = {
+        audio::cutscene_1_1,
+        audio::cutscene_1_2,
+        audio::cutscene_1_3
+    };
+
+    core::audio->stopMusic();
+    core::audio->playMusic(cutscene1Audios[0]);
 }
 
 void Game::startLevel1(int x = 100, int y = 100){
