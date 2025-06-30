@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "Constants.h"
 #include "Inventory.h"
+#include "Camera.h"
 
 class Player;
 class Inventory;
@@ -40,6 +41,7 @@ private:
     Player* player = nullptr;
     MapRender* gameMap = nullptr;
     Inventory* inventory = nullptr;
+    Camera* camera = nullptr;
 
     std::vector<SDL_Texture*> cutscene1Images;
     std::vector<std::string> cutscene1Audios;

@@ -1,5 +1,6 @@
 #include "Item.h"
 #include "Map.h"
+#include "Camera.h"
 
 Item::Item(const std::string& name, const SDL_Rect& rect, int gid)
     : name(name), rect(rect), gid(gid) {}
@@ -27,7 +28,8 @@ void Item::render(SDL_Renderer* renderer, const std::vector<Tileset>& tilesets) 
         ts->tileHeight
     };
 
-    SDL_RenderCopy(renderer, ts->texture, &srcRect, &rect);
+    SDL_Rect camDes = Camera::ToCamView(rect);
+    SDL_RenderCopy(renderer, ts->texture, &srcRect, &camDes);
 }
 
 SDL_Rect Item::getBounds() const {

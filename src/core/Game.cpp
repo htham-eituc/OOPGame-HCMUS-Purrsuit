@@ -14,6 +14,8 @@ Game::Game() {}
 Game::~Game() {
     safeDelete(gameMap);
     safeDelete(player);
+    safeDelete(camera);
+    safeDelete(inventory);
 
     delete core::audio;
     SDL_DestroyRenderer(renderer);
@@ -46,6 +48,7 @@ bool Game::init(const char* title) {
     saveButtonRect = { 20, 20, 100, 40 };
     stateMachine.changeState(GameState::TITLE);
 
+    camera = new Camera(SCREEN_WIDTH, SCREEN_HEIGHT);
     return true;
 }
 
@@ -142,6 +145,7 @@ void Game::updateUILayout() {
 
 void Game::update(float deltaTime) {
     player->update(deltaTime);
+    camera->update(player->getBounds());
 
     for (auto& item : gameMap->getItems()) {
         SDL_Rect playerRect = player->getBounds();
@@ -248,6 +252,7 @@ void Game::startCutscene1()
 }
 
 void Game::startLevel1(int x = 100, int y = 100){
+    
     stateMachine.changeState(GameState::LEVEL1);
     safeDelete(gameMap);
     safeDelete(player);
@@ -258,13 +263,14 @@ void Game::startLevel1(int x = 100, int y = 100){
     inventory = new Inventory(); 
     level1ExitZoneRect = { 200, 200, 64, 64 };
 
+    camera->setNewWorld(gameMap->getMapPixelWidth(), gameMap->getMapPixedHeight());
+
     core::audio->stopMusic();
     core::audio->playMusic(audio::lv1m);
-    
-    auto items = gameMap->getItems();
 }
 
 void Game::startLevel2(int x = 100, int y = 100){
+    camera->setNewWorld(gameMap->getMapPixelWidth(), gameMap->getMapPixedHeight());
     stateMachine.changeState(GameState::LEVEL2);
     safeDelete(gameMap);
     safeDelete(player);
@@ -275,10 +281,10 @@ void Game::startLevel2(int x = 100, int y = 100){
     inventory = new Inventory(); 
     level1ExitZoneRect = { 0, 0, 0, 0 }; // Trickery
 
+    camera->setNewWorld(gameMap->getMapPixelWidth(), gameMap->getMapPixedHeight());
+    
     core::audio->stopMusic();
     core::audio->playMusic(audio::title);
-    
-    auto items = gameMap->getItems();
 }
 
 void Game::saveGame(const std::string& filename)
