@@ -5,8 +5,6 @@
 #include <iostream>
 #include <SDL_image.h>
 
-const float moveSpeed = 200.0f;
-
 Player::Player(SDL_Renderer* renderer, int x, int y, Map *map)
     : Character(renderer, x, y, map) {
     currentTexture = core::textures->getTexture(texture::player_idle);
@@ -14,8 +12,6 @@ Player::Player(SDL_Renderer* renderer, int x, int y, Map *map)
 }
 
 Player::~Player() {
-    safeDestroyTexture(idleTexture);
-    safeDestroyTexture(walkTexture);
 }
 
 void Player::move(const Uint8* keystate) {
@@ -33,10 +29,30 @@ void Player::handleEvent(const SDL_Event& e) {
     // Optional: handle player-specific input
 }
 
+bool Player::canBeHeard() const {
+    return isMoving() && !hasFlag("Silent");
+}
+
+bool Player::canBeKill() const {
+    return !hasFlag("Invincible");
+}
+
+bool Player::hasFlag(const std::string &flag) const {
+    return activeFlags.find(flag) != activeFlags.end();
+}
+
+void Player::addFlag(const std::string &flag) {
+    activeFlags.insert(flag);
+}
+
+void Player::removeFlag(const std::string &flag) {
+    activeFlags.erase(flag);
+}
+
 void Player::update(float deltaTime) {
-    if (velocity.x != 0 || velocity.y != 0) {
+    if (isMoving()) {
         setAnimation(CharacterState::Walking);
-        core::audio->playSound(audio::move);
+        if(canBeHeard()) core::audio->playSound(audio::move);
     } else {
         setAnimation(CharacterState::Idle);
         core::audio->stopSound(audio::move);
@@ -63,6 +79,14 @@ void Player::setAnimation(CharacterState newState) {
             frameCount = 3;
             break;
     }
+}
+
+void Player::setSpeed(const float &newSpeed) {
+    moveSpeed = newSpeed;
+}
+
+float Player::getSpeed() const {
+    return moveSpeed;
 }
 
 int Player::getX() const { return position.x; }
