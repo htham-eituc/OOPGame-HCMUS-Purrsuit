@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Character.h"
 #include "CollisionHandler.h"
+#include "Camera.h"
 
 Character::Character(SDL_Renderer* renderer, int x, int y, Map* map)
     : position(x, y), velocity(0, 0), lastFrameTime(SDL_GetTicks()), map(map) {
@@ -24,7 +25,12 @@ SDL_Rect Character::getCollisionBox(const Vector2& pos) const {
     };
 }
 
-SDL_Rect Character::getBounds() {
+bool Character::isMoving() const {
+    if (velocity.x != 0 || velocity.y != 0) return true;
+    return false;
+}
+
+SDL_Rect Character::getBounds() const {
     return getCollisionBox(position);
 }
 
@@ -74,8 +80,10 @@ void Character::update(float deltaTime) {
 void Character::render(SDL_Renderer* renderer) {
     SDL_Rect colBox = getCollisionBox(position);
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // Red
-    SDL_RenderDrawRect(renderer, &colBox);
-    SDL_RenderCopyEx(renderer, currentTexture, &srcRect, &destRect, 0, nullptr, flipFlag);
+    SDL_Rect camDes = Camera::ToCamView(colBox);
+    SDL_RenderDrawRect(renderer, &camDes);
+    camDes = Camera::ToCamView(destRect);
+    SDL_RenderCopyEx(renderer, currentTexture, &srcRect, &camDes, 0, nullptr, flipFlag);
 }
 
 SDL_Texture* Character::loadTexture(SDL_Renderer* renderer, const char* path) {

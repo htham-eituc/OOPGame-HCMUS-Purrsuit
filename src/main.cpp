@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
         openConsole();
     #endif
     Game game;
-    if (game.init("Purrsuit: A Whisper, A Whisker", 800, 640)) {
+    if (game.init("Purrsuit: A Whisper, A Whisker")) {
         game.run();
     }
     return 0;

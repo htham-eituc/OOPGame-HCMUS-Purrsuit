@@ -1,6 +1,7 @@
 #include "MapRender.h"
 #include "MemoryUtils.h"
 #include "Constants.h"
+#include "Camera.h"
 
 MapRender::MapRender(SDL_Renderer* renderer)
     : renderer(renderer) {}
@@ -58,8 +59,8 @@ void MapRender::drawLayer(const TileLayer& layer) {
                 TILE_SIZE,
                 TILE_SIZE
             };
-
-            SDL_RenderCopy(renderer, tileset->texture, &srcRect, &destRect);
+            SDL_Rect camDes = Camera::ToCamView(destRect);
+            SDL_RenderCopy(renderer, tileset->texture, &srcRect, &camDes);
         }
     }
 }

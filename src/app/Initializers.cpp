@@ -34,6 +34,9 @@ namespace app::init {
     void loadAssets() {
         // audio
         core::audio->loadMusic(audio::title, audio::title);
+        core::audio->loadMusic(audio::cutscene_1_1, audio::cutscene_1_1);
+        core::audio->loadMusic(audio::cutscene_1_2, audio::cutscene_1_2);
+        core::audio->loadMusic(audio::cutscene_1_3, audio::cutscene_1_3);
         core::audio->loadMusic(audio::lv1m, audio::lv1m);
         core::audio->loadSound(audio::ping, audio::ping);
         core::audio->loadSound(audio::move, audio::move);
@@ -44,6 +47,10 @@ namespace app::init {
         core::textures->loadTexture(texture::title_screen, texture::title_screen);
         core::textures->loadTexture(texture::start_button, texture::start_button);
         core::textures->loadTexture(texture::level1_exit_zone, texture::level1_exit_zone);
-
+        core::textures->loadTexture(texture::cutscene_1_1, texture::cutscene_1_1);
+        core::textures->loadTexture(texture::cutscene_1_2, texture::cutscene_1_2);
+        core::textures->loadTexture(texture::cutscene_1_3, texture::cutscene_1_3);
+        core::textures->loadTexture(texture::load_button, texture::load_button);
+        core::textures->loadTexture(texture::save_button, texture::save_button);
     }
 }
