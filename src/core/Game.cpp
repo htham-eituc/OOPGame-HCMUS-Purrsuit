@@ -214,7 +214,15 @@ void Game::render() {
         if (gameMap) gameMap->renderAboveLayer();
         
         SDL_Texture* level1ExitZoneTexture = core::textures->getTexture(texture::level1_exit_zone);
-        SDL_RenderCopy(renderer, level1ExitZoneTexture, nullptr, &level1ExitZoneRect);
+
+        SDL_Rect cam = camera->getView(); // get current camera view rectangle
+        SDL_Rect renderExitZone = {
+            level1ExitZoneRect.x - cam.x,
+            level1ExitZoneRect.y - cam.y,
+            level1ExitZoneRect.w,
+            level1ExitZoneRect.h
+        };
+        SDL_RenderCopy(renderer, level1ExitZoneTexture, nullptr, &renderExitZone);
 
         SDL_Texture* saveButtonTexture = core::textures->getTexture(texture::save_button);
         SDL_RenderCopy(renderer, saveButtonTexture, nullptr, &saveButtonRect);
@@ -264,25 +272,23 @@ void Game::startLevel1(int x = 100, int y = 100){
     level1ExitZoneRect = { 200, 200, 64, 64 };
 
     camera->setNewWorld(gameMap->getMapPixelWidth(), gameMap->getMapPixedHeight());
-
     core::audio->stopMusic();
     core::audio->playMusic(audio::lv1m);
 }
 
 void Game::startLevel2(int x = 100, int y = 100){
-    camera->setNewWorld(gameMap->getMapPixelWidth(), gameMap->getMapPixedHeight());
     stateMachine.changeState(GameState::LEVEL2);
     safeDelete(gameMap);
     safeDelete(player);
     safeDelete(inventory);
     
-    gameMap = MapFactory::create(renderer, MAP_PATH_2);
+    gameMap = MapFactory::create(renderer, MAP_PATH_1);
     player = new Player(renderer, x, y, gameMap);
     inventory = new Inventory(); 
     level1ExitZoneRect = { 0, 0, 0, 0 }; // Trickery
 
     camera->setNewWorld(gameMap->getMapPixelWidth(), gameMap->getMapPixedHeight());
-    
+
     core::audio->stopMusic();
     core::audio->playMusic(audio::title);
 }
@@ -293,7 +299,7 @@ void Game::saveGame(const std::string& filename)
     save.CurrentLevel = stateMachine.getCurrentState();
 
     for (const std::string& item : inventory->getItemNames())
-    {
+    {   
         save.items.insert(item);
     }
 
