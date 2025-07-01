@@ -1,8 +1,16 @@
 #include "UIInputHandler.h"
 #include "UIElement.h"
+#include <algorithm>
 
 void UIInputHandler::registerElement(std::shared_ptr<UIElement> element) {
     elements.push_back(element);
+}
+
+void UIInputHandler::unregisterElement(std::shared_ptr<UIElement> element) {
+    elements.erase(
+        std::remove(elements.begin(), elements.end(), element),
+        elements.end()
+    );
 }
 
 void UIInputHandler::clearElements() {

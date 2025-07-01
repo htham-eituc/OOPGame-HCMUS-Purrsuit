@@ -54,8 +54,13 @@ bool Game::init(const char* title) {
         [this]() { this->startCutscene1(); }  // onClick action
     );
     core::uiInput->registerElement(startButton);
+    loadButton = std::make_shared<UIButton>(
+    loadButtonRect,
+    core::textures->getTexture(texture::load_button),
+    [this]() { this->loadGame("save.json"); }  // onClick action
+    );
+    core::uiInput->registerElement(loadButton);
     running = true;
-    saveButtonRect = { 20, 20, 100, 40 };
     stateMachine.changeState(GameState::TITLE);
 
     camera = new Camera(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -81,13 +86,6 @@ void Game::run() {
                         startCutscene1();
                 }
                 else if (event.type == SDL_MOUSEBUTTONDOWN) {
-                    int mx = event.button.x;
-                    int my = event.button.y;
-
-                    if (mx >= loadButtonRect.x && mx <= loadButtonRect.x + loadButtonRect.w &&
-                        my >= loadButtonRect.y && my <= loadButtonRect.y + loadButtonRect.h) {
-                        loadGame("save.json");  // Load saved game
-                    }
                     // if (mx >= startButtonRect.x && mx <= startButtonRect.x + startButtonRect.w &&
                     //     my >= startButtonRect.y && my <= startButtonRect.y + startButtonRect.h) {
                     //     startCutscene1();
@@ -107,27 +105,9 @@ void Game::run() {
             }
             else if (stateMachine.getCurrentState() == GameState::LEVEL1) {
                 player->handleEvent(event);
-                if (event.type == SDL_MOUSEBUTTONDOWN)
-                {
-                    int mx = event.button.x;
-                    int my = event.button.y;     
-                    if (mx >= saveButtonRect.x && mx <= saveButtonRect.x + saveButtonRect.w &&
-                    my >= saveButtonRect.y && my <= saveButtonRect.y + saveButtonRect.h) {
-                        saveGame("save.json");  // Save current game
-                    }               
-                }
             }
             else if (stateMachine.getCurrentState() == GameState::LEVEL2) {
                 player->handleEvent(event);
-                if (event.type == SDL_MOUSEBUTTONDOWN)
-                {
-                    int mx = event.button.x;
-                    int my = event.button.y;     
-                    if (mx >= saveButtonRect.x && mx <= saveButtonRect.x + saveButtonRect.w &&
-                    my >= saveButtonRect.y && my <= saveButtonRect.y + saveButtonRect.h) {
-                        saveGame("save.json");  // Save current game
-                    }               
-                }
             }
         }
 
@@ -184,9 +164,7 @@ void Game::render() {
 
         if (startButton) startButton->render(core::uiRenderer);
 
-        SDL_Texture* loadButtonTexture = core::textures->getTexture(texture::load_button);
-        SDL_RenderCopy(renderer, loadButtonTexture, nullptr, &loadButtonRect);
-        
+        if (loadButton) loadButton->render(core::uiRenderer);
     } 
     else if (stateMachine.getCurrentState() == GameState::CUTSCENE1) {
         if (currentCutscene1Index < cutscene1Images.size()) {
@@ -234,17 +212,14 @@ void Game::render() {
         };
         SDL_RenderCopy(renderer, level1ExitZoneTexture, nullptr, &renderExitZone);
 
-        SDL_Texture* saveButtonTexture = core::textures->getTexture(texture::save_button);
-        SDL_RenderCopy(renderer, saveButtonTexture, nullptr, &saveButtonRect);
-
+        if (saveButton) saveButton->render(core::uiRenderer);
     }
     else if (stateMachine.getCurrentState() == GameState::LEVEL2) {
         if (gameMap) gameMap->render();
         if (player) player->render(renderer);
         if (gameMap) gameMap->renderAboveLayer();
         
-        SDL_Texture* saveButtonTexture = core::textures->getTexture(texture::save_button);
-        SDL_RenderCopy(renderer, saveButtonTexture, nullptr, &saveButtonRect);
+        if (saveButton) saveButton->render(core::uiRenderer);
     }
     SDL_RenderPresent(renderer);
 }
@@ -264,13 +239,12 @@ void Game::startCutscene1()
         audio::cutscene_1_2,
         audio::cutscene_1_3
     };
-
+    
     core::audio->stopMusic();
     core::audio->playMusic(cutscene1Audios[0]);
 }
 
 void Game::startLevel1(int x = 100, int y = 100){
-    
     stateMachine.changeState(GameState::LEVEL1);
     safeDelete(gameMap);
     safeDelete(player);
@@ -284,6 +258,15 @@ void Game::startLevel1(int x = 100, int y = 100){
     camera->setNewWorld(gameMap->getMapPixelWidth(), gameMap->getMapPixedHeight());
     core::audio->stopMusic();
     core::audio->playMusic(audio::lv1m);
+
+    if (saveButton) core::uiInput->unregisterElement(saveButton);
+    saveButtonRect = { 20, 20, 100, 40 };
+    saveButton = std::make_shared<UIButton>(
+    saveButtonRect,
+    core::textures->getTexture(texture::save_button),
+    [this]() { this->saveGame("save.json"); }
+    );
+    core::uiInput->registerElement(saveButton);
 }
 
 void Game::startLevel2(int x = 100, int y = 100){
@@ -301,6 +284,15 @@ void Game::startLevel2(int x = 100, int y = 100){
 
     core::audio->stopMusic();
     core::audio->playMusic(audio::title);
+
+    if (saveButton) core::uiInput->unregisterElement(saveButton);
+    saveButtonRect = { 20, 20, 100, 40 };
+    saveButton = std::make_shared<UIButton>(
+    saveButtonRect,
+    core::textures->getTexture(texture::save_button),
+    [this]() { this->saveGame("save.json"); }
+    );
+    core::uiInput->registerElement(saveButton);
 }
 
 void Game::saveGame(const std::string& filename)

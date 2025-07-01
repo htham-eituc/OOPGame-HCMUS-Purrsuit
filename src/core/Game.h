@@ -37,6 +37,8 @@ private:
     GameStateMachine stateMachine;
 
     std::shared_ptr<UIButton> startButton;
+    std::shared_ptr<UIButton> loadButton;
+    std::shared_ptr<UIButton> saveButton;
     SDL_Rect startButtonRect;
     SDL_Rect level1ExitZoneRect;
     SDL_Rect loadButtonRect; //For title screen
