@@ -18,6 +18,10 @@ Game::~Game() {
     safeDelete(inventory);
 
     delete core::audio;
+    delete core::textures;
+    delete core::ui;
+    delete core::uiInput;
+    delete core::uiRenderer;
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     IMG_Quit();
@@ -44,6 +48,12 @@ bool Game::init(const char* title) {
     app::init::loadAssets();
 
     updateUILayout();
+    startButton = std::make_shared<UIButton>(
+        startButtonRect,
+        core::textures->getTexture(texture::start_button),
+        [this]() { this->startCutscene1(); }  // onClick action
+    );
+    core::uiInput->registerElement(startButton);
     running = true;
     saveButtonRect = { 20, 20, 100, 40 };
     stateMachine.changeState(GameState::TITLE);
@@ -62,6 +72,7 @@ void Game::run() {
         lastTime = currentTime;
 
         while (SDL_PollEvent(&event)) {
+            core::uiInput->handleEvent(event);
             if (event.type == SDL_QUIT)
                 running = false;
 
@@ -77,10 +88,10 @@ void Game::run() {
                         my >= loadButtonRect.y && my <= loadButtonRect.y + loadButtonRect.h) {
                         loadGame("save.json");  // Load saved game
                     }
-                    if (mx >= startButtonRect.x && mx <= startButtonRect.x + startButtonRect.w &&
-                        my >= startButtonRect.y && my <= startButtonRect.y + startButtonRect.h) {
-                        startCutscene1();
-                    }
+                    // if (mx >= startButtonRect.x && mx <= startButtonRect.x + startButtonRect.w &&
+                    //     my >= startButtonRect.y && my <= startButtonRect.y + startButtonRect.h) {
+                    //     startCutscene1();
+                    // }
                 }
             }
             else if (stateMachine.getCurrentState() == GameState::CUTSCENE1) {
@@ -171,8 +182,7 @@ void Game::render() {
         SDL_Texture* titleTexture = core::textures->getTexture(texture::title_screen);
         SDL_RenderCopy(renderer, titleTexture, nullptr, nullptr); // Full screen image
 
-        SDL_Texture* startButtonTexture = core::textures->getTexture(texture::start_button);
-        SDL_RenderCopy(renderer, startButtonTexture, nullptr, &startButtonRect);
+        if (startButton) startButton->render(core::uiRenderer);
 
         SDL_Texture* loadButtonTexture = core::textures->getTexture(texture::load_button);
         SDL_RenderCopy(renderer, loadButtonTexture, nullptr, &loadButtonRect);

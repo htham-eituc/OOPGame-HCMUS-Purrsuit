@@ -4,16 +4,19 @@
 #include <SDL_mixer.h>
 #include <string>
 #include <vector>
+#include <memory>
 #include "GameStateType.h"
 #include "GameStateMachine.h"
 #include "Player.h"
 #include "Constants.h"
 #include "Inventory.h"
 #include "Camera.h"
+#include "UIButton.h"
 
 class Player;
 class Inventory;
 class MapRender;
+class UIButton;
 
 class Game {
 public:
@@ -33,6 +36,7 @@ private:
 
     GameStateMachine stateMachine;
 
+    std::shared_ptr<UIButton> startButton;
     SDL_Rect startButtonRect;
     SDL_Rect level1ExitZoneRect;
     SDL_Rect loadButtonRect; //For title screen

@@ -33,14 +33,15 @@ namespace texture {
     constexpr const char* player_idle = "assets/character/MainCatIdle.png";
     constexpr const char* player_walk = "assets/character/MainCatWalk.png";
 
+    // Asset
     constexpr const char* title_screen = "assets/ui/forg2kg.png";
-    constexpr const char* start_button = "assets/ui/startButton.png";
     constexpr const char* cutscene_1_1 = "assets/cutscene/cutscene_1_1.png";
     constexpr const char* cutscene_1_2 = "assets/cutscene/cutscene_1_2.png";
     constexpr const char* cutscene_1_3 = "assets/cutscene/cutscene_1_3.png";
     constexpr const char* level1_exit_zone = "assets/ui/level1_exit_zone.png";
-    constexpr const char* load_button = "assets/ui/load_button.png";
-    constexpr const char* save_button = "assets/ui/save_button.png";
 
     // UI
+    constexpr const char* start_button = "assets/ui/startButton.png";
+    constexpr const char* load_button = "assets/ui/load_button.png";
+    constexpr const char* save_button = "assets/ui/save_button.png";
 }
