@@ -4,6 +4,14 @@ inline constexpr int SCREEN_WIDTH = 800;
 inline constexpr int SCREEN_HEIGHT = 600;
 inline constexpr int TILE_SIZE = 32;
 
+inline constexpr SDL_Rect CAMERA_DEADZONE = {
+    SCREEN_WIDTH  / 5,   // x offset from left (20%)
+    SCREEN_HEIGHT / 5,   // y offset from top (20%)
+    SCREEN_WIDTH  * 3 / 5,  // width = 60% of screen
+    SCREEN_HEIGHT * 3 / 5   // height = 60% of screen
+};
+
+
 inline const char* MAP_PATH_1 = "assets/maps/Stage1.json";
 inline const char* MAP_PATH_2 = "assets/maps/testMap2.json";
 
