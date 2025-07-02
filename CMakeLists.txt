@@ -18,6 +18,7 @@ include_directories(
     ${SRC_DIR}/app/state
     ${SRC_DIR}/app/saveGame
     ${SRC_DIR}/app/service
+    ${SRC_DIR}/app/ui
 
     ${SRC_DIR}/core 
     ${SRC_DIR}/core/assets
@@ -29,10 +30,12 @@ include_directories(
     ${SRC_DIR}/domain/value_object
     ${SRC_DIR}/domain/services
     ${SRC_DIR}/domain/services/item
+    ${SRC_DIR}/domain/ui
 
     ${SRC_DIR}/repo
     ${SRC_DIR}/repo/map
     ${SRC_DIR}/ui
+    ${SRC_DIR}/ui/presentation
     ${SRC_DIR}/ui/renderer
     ${CMAKE_SOURCE_DIR}/external  # e.g., for Tileson header-only
 )

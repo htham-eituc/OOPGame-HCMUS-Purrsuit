@@ -29,6 +29,9 @@ namespace app::init {
     void registerCoreServices(SDL_Renderer* renderer) {
         core::audio = new AudioManager();
         core::textures = new TextureManager(renderer);
+        core::uiInput = new UIInputHandler();
+        core::uiRenderer = new UIRenderer(renderer);
+        core::ui = new UIManager(core::uiRenderer);
     }
 
     void loadAssets() {
