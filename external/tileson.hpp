@@ -60,6 +60,7 @@
 
 #include <string>
 #include <vector>
+#include <algorithm>
 #include <map>
 #include <memory>
 #include <initializer_list>

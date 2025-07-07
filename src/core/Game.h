@@ -24,6 +24,10 @@ public:
     ~Game();
 
     bool init(const char* title);
+    float calculateDeltaTime(Uint32& lastTime);
+    void handleEvents();
+    void handleTitleEvents(const SDL_Event& event);
+    void handleCutsceneEvents(const SDL_Event& event);
     void run();
     void startCutscene1();
     void startLevel1(int x, int y);
@@ -58,7 +62,6 @@ private:
     void saveGame(const std::string& filename);
     void loadGame(const std::string& filename);
 
-    void handleEvents();
     void updateUILayout();
     void update(float deltaTime);
     void render();
