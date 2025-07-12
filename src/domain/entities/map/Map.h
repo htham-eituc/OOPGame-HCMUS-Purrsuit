@@ -27,7 +27,7 @@ public:
         return mapData.mapWidth * mapData.tileWidth; 
     }
 
-    int getMapPixedHeight() const {
+    int getMapPixelHeight() const {
         return mapData.mapHeight * mapData.tileHeight;
     }
 

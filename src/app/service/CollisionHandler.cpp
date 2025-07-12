@@ -4,12 +4,10 @@
 #include "Item.h"
 
 bool CollisionHandler::checkMapCollision(const SDL_Rect& box, const Map& map) {
-    const int tileSize = 32;
-
-    int leftTile   = box.x / tileSize;
-    int rightTile  = (box.x + box.w - 1) / tileSize;
-    int topTile    = box.y / tileSize;
-    int bottomTile = (box.y + box.h - 1) / tileSize;
+    int leftTile   = (box.x < 0) ? -1 : box.x / TILE_SIZE;
+    int rightTile  = (box.x + box.w - 1) / TILE_SIZE;
+    int topTile    = (box.y < 0) ? -1 : box.y /TILE_SIZE;
+    int bottomTile = (box.y + box.h - 1) / TILE_SIZE;
 
     for (int y = topTile; y <= bottomTile; ++y) {
         for (int x = leftTile; x <= rightTile; ++x) {

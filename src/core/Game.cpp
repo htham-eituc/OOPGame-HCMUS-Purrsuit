@@ -67,46 +67,6 @@ bool Game::init(const char* title) {
     return true;
 }
 
-void Game::run() {
-    Uint32 lastTime = SDL_GetTicks();
-    SDL_Event event;
-
-    while (running) {
-        Uint32 currentTime = SDL_GetTicks();
-        float deltaTime = (currentTime - lastTime) / 1000.0f;
-        lastTime = currentTime;
-
-        while (SDL_PollEvent(&event)) {
-            core::uiInput->handleEvent(event);
-            if (event.type == SDL_QUIT)
-                running = false;
-
-            if (stateMachine.getCurrentState() == GameState::TITLE) {
-                if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_9) {
-                        startCutscene1();
-                }
-                else if (event.type == SDL_MOUSEBUTTONDOWN) {
-                    // if (mx >= startButtonRect.x && mx <= startButtonRect.x + startButtonRect.w &&
-                    //     my >= startButtonRect.y && my <= startButtonRect.y + startButtonRect.h) {
-                    //     startCutscene1();
-                    // }
-                }
-            }
-            else if (stateMachine.getCurrentState() == GameState::CUTSCENE1) {
-                if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_SPACE) {
-                    currentCutscene1Index++;
-                    cutscene1Zoom = 1.0f;
-                    if (currentCutscene1Index < cutscene1Images.size()) {
-                        core::audio->playMusic(cutscene1Audios[currentCutscene1Index]);
-                    } else {
-                        startLevel1(160, 160);
-                    }
-                }
-            }
-            else if (stateMachine.getCurrentState() == GameState::LEVEL1) {
-                player->handleEvent(event);
-            }
-            else if (stateMachine.getCurrentState() == GameState::LEVEL2) {
 float Game::calculateDeltaTime(Uint32& lastTime) {
     Uint32 currentTime = SDL_GetTicks();
     float deltaTime = (currentTime - lastTime) / 1000.0f;
@@ -127,7 +87,7 @@ void Game::handleCutsceneEvents(const SDL_Event& event) {
         if (currentCutscene1Index < cutscene1Images.size()) {
             core::audio->playMusic(cutscene1Audios[currentCutscene1Index]);
         } else {
-            startLevel1(100, 100);
+            startLevel1(100, 240);
         }
     }
 }
@@ -300,8 +260,7 @@ void Game::startCutscene1()
     core::audio->playMusic(cutscene1Audios[0]);
 }
 
-void Game::startLevel1(int x, int y){
-    x = 100, y = 190;
+void Game::startLevel1(int x = 100, int y = 100){
     stateMachine.changeState(GameState::LEVEL1);
     safeDelete(gameMap);
     safeDelete(player);
@@ -312,7 +271,7 @@ void Game::startLevel1(int x, int y){
     inventory = new Inventory(); 
     level1ExitZoneRect = { 200, 200, 64, 64 };
 
-    camera->setNewWorld(gameMap->getMapPixelWidth(), gameMap->getMapPixedHeight());
+    camera->setNewWorld(gameMap->getMapPixelWidth(), gameMap->getMapPixelHeight());
     core::audio->stopMusic();
     core::audio->playMusic(audio::lv1m);
 
@@ -337,7 +296,7 @@ void Game::startLevel2(int x = 100, int y = 100){
     inventory = new Inventory(); 
     level1ExitZoneRect = { 0, 0, 0, 0 }; // Trickery
 
-    camera->setNewWorld(gameMap->getMapPixelWidth(), gameMap->getMapPixedHeight());
+    camera->setNewWorld(gameMap->getMapPixelWidth(), gameMap->getMapPixelHeight());
 
     core::audio->stopMusic();
     core::audio->playMusic(audio::title);
