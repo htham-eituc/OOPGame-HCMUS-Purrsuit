@@ -25,13 +25,19 @@ namespace audio {
 
     // sfx
     constexpr const char* ping = "assets/music/itemPickupSound.wav";
-    constexpr const char* move = "assets/music/walkOnGrassSound.wav";
+    constexpr const char* move = "assets/music/character_sound/walk_on_grass.wav";
+    constexpr const char* growl = "assets/music/character_sound/zombie_growl.mp3";
+    constexpr const char* zombie_eating = "assets/music/character_sound/zombie_eating_win.mp3";
 }
 
 namespace texture {
     // character 
-    constexpr const char* player_idle = "assets/character/MainCatIdle.png";
-    constexpr const char* player_walk = "assets/character/MainCatWalk.png";
+    constexpr const char* player_idle = "assets/character/main_cat_idle.png";
+    constexpr const char* player_walk = "assets/character/main_cat_walk.png";
+    constexpr const char* zombie_idle = "assets/character/zombie_cat_idle.png";
+    constexpr const char* zombie_walk = "assets/character/zombie_cat_walk.png";
+    constexpr const char* temp_dead = "assets/character/pirate_cat_idle.png";
+
 
     // Asset
     constexpr const char* title_screen = "assets/ui/forg2kg.png";

@@ -24,6 +24,7 @@ public:
 
     bool isMoving() const;
     SDL_Rect getBounds() const;
+    Vector2 getPosition() const;
 
 protected:
     SDL_Texture* loadTexture(SDL_Renderer* renderer, const char* path);

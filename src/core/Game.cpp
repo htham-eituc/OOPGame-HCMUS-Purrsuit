@@ -17,12 +17,15 @@ Game::~Game() {
     safeDelete(camera);
     safeDelete(inventory);
 
-    delete core::audio;
-    delete core::textures;
-    delete core::ui;
-    delete core::uiInput;
-    delete core::uiRenderer;
+    safeDelete(core::audio);
+    safeDelete(core::textures);
+    safeDelete(core::soundEvent);
+    safeDelete(core::itemHandler);
+    safeDelete(core::ui);
+    safeDelete(core::uiInput);
+    safeDelete(core::uiRenderer);
     SDL_DestroyRenderer(renderer);
+    
     SDL_DestroyWindow(window);
     IMG_Quit();
     SDL_Quit();
@@ -153,14 +156,20 @@ void Game::updateUILayout() {
 void Game::update(float deltaTime) {
     player->update(deltaTime);
     camera->update(player->getBounds());
+    core::itemHandler->update(SDL_GetTicks(), *player);
+    core::soundEvent->update(deltaTime);
+    for (auto& zombie : zombies) {
+        zombie->update(deltaTime);
+    }
 
     for (auto& item : gameMap->getItems()) {
         SDL_Rect playerRect = player->getBounds();
         SDL_Rect itemRect = item.getBounds();
-        if (!item.collected && CollisionHandler::checkCollision(playerRect, itemRect)) {
-            item.collected = true;
-            inventory->addItem(item.name);
+        if (!item.isCollected() && CollisionHandler::checkCollision(playerRect, itemRect)) {
+            item.setCollected();
+            inventory->addItem(item.getName());
             core::audio->playSound(audio::ping, 0);
+            core::itemHandler->addItem(item, *player);
         }
     }
 
@@ -233,6 +242,8 @@ void Game::render() {
     else if (stateMachine.getCurrentState() == GameState::LEVEL2) {
         if (gameMap) gameMap->render();
         if (player) player->render(renderer);
+        for (auto& zombie : zombies)
+            zombie->render(renderer);
         if (gameMap) gameMap->renderAboveLayer();
         
         if (saveButton) saveButton->render(core::uiRenderer);
@@ -295,6 +306,10 @@ void Game::startLevel2(int x = 100, int y = 100){
     player = new Player(renderer, x, y, gameMap);
     inventory = new Inventory(); 
     level1ExitZoneRect = { 0, 0, 0, 0 }; // Trickery
+    if (gameMap && renderer && player) {
+        auto zombie = std::make_shared<ZombieCat>(renderer, 100, 600, gameMap, player);
+        zombies.push_back(zombie);
+    }
 
     camera->setNewWorld(gameMap->getMapPixelWidth(), gameMap->getMapPixelHeight());
 

@@ -5,8 +5,8 @@
 
 class Player : public Character {
 private:
-    float moveSpeed = 150.0f;
     std::unordered_set<std::string> activeFlags;
+    float moveSpeed = 150.0f;
 
 public:
     Player(SDL_Renderer* renderer, int x, int y, Map *map);
@@ -14,6 +14,7 @@ public:
 
     bool canBeHeard() const;
     bool canBeKill() const;
+    bool isAlive() const;
     bool hasFlag(const std::string& flag) const;
     void addFlag(const std::string& flag);
     void removeFlag(const std::string& flag);
@@ -23,6 +24,7 @@ public:
     void update(float deltaTime) override;
     void setAnimation(CharacterState newState) override;
     void setSpeed(const float &newSpeed); 
+    void kill();
     
     float getSpeed() const;
     int getX() const;

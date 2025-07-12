@@ -29,6 +29,8 @@ namespace app::init {
     void registerCoreServices(SDL_Renderer* renderer) {
         core::audio = new AudioManager();
         core::textures = new TextureManager(renderer);
+        core::soundEvent = new SoundEventManager();
+        core::itemHandler = new ItemEffectHandler();
         core::uiInput = new UIInputHandler();
         core::uiRenderer = new UIRenderer(renderer);
         core::ui = new UIManager(core::uiRenderer);
@@ -43,10 +45,15 @@ namespace app::init {
         core::audio->loadMusic(audio::lv1m, audio::lv1m);
         core::audio->loadSound(audio::ping, audio::ping);
         core::audio->loadSound(audio::move, audio::move);
+        core::audio->loadSound(audio::growl, audio::growl);
 
         // texture
         core::textures->loadTexture(texture::player_idle, texture::player_idle);
         core::textures->loadTexture(texture::player_walk, texture::player_walk);
+        core::textures->loadTexture(texture::temp_dead, texture::temp_dead);
+        core::textures->loadTexture(texture::zombie_idle, texture::zombie_idle);
+        core::textures->loadTexture(texture::zombie_walk, texture::zombie_walk);
+
         core::textures->loadTexture(texture::title_screen, texture::title_screen);
         core::textures->loadTexture(texture::start_button, texture::start_button);
         core::textures->loadTexture(texture::level1_exit_zone, texture::level1_exit_zone);
