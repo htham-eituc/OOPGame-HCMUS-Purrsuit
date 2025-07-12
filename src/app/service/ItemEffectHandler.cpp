@@ -3,6 +3,7 @@
 #include "Services.h"
 #include "Item.h"
 #include "DataStruct.h"
+#include <iostream>
 
 void ItemEffectHandler::addEffect(uint32_t endTime, IItemEffect* effect) {
     activeEffects.push_back({endTime, effect});
@@ -36,7 +37,7 @@ void ItemEffectHandler::addItem(Item item, Player& player) {
         core::soundEvent->emitSound({
             Vector2::fromRectCenter(item.getBounds()), 
             1000.0f,
-            1.0f
+            SDL_GetTicks() / 1000.0f
         });
     }
 

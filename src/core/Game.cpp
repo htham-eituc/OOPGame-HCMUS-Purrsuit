@@ -157,6 +157,7 @@ void Game::update(float deltaTime) {
     player->update(deltaTime);
     camera->update(player->getBounds());
     core::itemHandler->update(SDL_GetTicks(), *player);
+    core::soundEvent->update(deltaTime);
     for (auto& zombie : zombies) {
         zombie->update(deltaTime);
     }

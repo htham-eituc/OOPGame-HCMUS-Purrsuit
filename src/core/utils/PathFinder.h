@@ -9,7 +9,7 @@ public:
     std::vector<Vector2> findPath(const Vector2& startWorld, const Vector2& endWorld, int tileSize);
 
 private:
-    const std::vector<std::vector<bool>>& map;
+    const std::vector<std::vector<bool>> map;
     int mapWidth;
     int mapHeight;
 };

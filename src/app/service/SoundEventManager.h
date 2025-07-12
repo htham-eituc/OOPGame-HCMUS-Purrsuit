@@ -7,7 +7,6 @@ struct SoundEvent {
     Vector2 position;
     float radius; // how far it can be heard
     float timestamp; // to allow fade or lifetime
-    //std::string sourceTag; // optional, e.g., "player", "explosion"
 };
 
 class SoundEventManager {
@@ -20,5 +19,5 @@ public:
 
 private:
     std::vector<SoundEvent> activeEvents;
-    float eventLifetime = 1.0f; // seconds
+    float eventLifetime = 3.0f; // seconds
 };

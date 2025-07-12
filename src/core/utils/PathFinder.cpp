@@ -3,7 +3,6 @@
 #include <unordered_map>
 #include <cmath>
 #include <algorithm>
-#include <iostream>
 
 struct AStarNode {
     int x, y;
@@ -22,15 +21,14 @@ inline float heuristic(int x1, int y1, int x2, int y2) {
 }
 
 PathFinder::PathFinder(const std::vector<std::vector<bool>>& collisionMap, int width, int height)
-    : map(collisionMap), mapWidth(width), mapHeight(height) {}
+    : map(collisionMap), mapWidth(width), mapHeight(height) {
+    }
 
 std::vector<Vector2> PathFinder::findPath(const Vector2& startWorld, const Vector2& endWorld, int tileSize) {
     int sx = static_cast<int>(startWorld.x / tileSize);
     int sy = static_cast<int>(startWorld.y / tileSize);
     int ex = static_cast<int>(endWorld.x / tileSize);
     int ey = static_cast<int>(endWorld.y / tileSize);
-    std::cout << "Start: (" << sx << ", " << sy << "), End: (" << ex << ", " << ey << ")\n";
-
     struct NodeCmp {
         bool operator()(const AStarNode* a, const AStarNode* b) const {
             return a->fCost() > b->fCost();
@@ -60,7 +58,6 @@ std::vector<Vector2> PathFinder::findPath(const Vector2& startWorld, const Vecto
     openSet.push(startNode);
 
     std::vector<std::pair<int, int>> directions = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
-
     while (!openSet.empty()) {
         AStarNode* current = openSet.top();
         openSet.pop();
@@ -79,13 +76,11 @@ std::vector<Vector2> PathFinder::findPath(const Vector2& startWorld, const Vecto
         for (auto& [dx, dy] : directions) {
             int nx = current->x + dx;
             int ny = current->y + dy;
-
-            if (nx < 0 || ny < 0 || nx >= mapWidth || ny >= mapHeight || map[ny][nx])
+            if (nx < 0 || ny < 0 || nx >= mapWidth || ny >= mapHeight)
                 continue;
-
+            if (map.at(ny).at(nx)) continue;
             AStarNode* neighbor = getNode(nx, ny);
             float tentativeG = current->gCost + 1.0f;
-
             if (tentativeG < neighbor->gCost) {
                 neighbor->gCost = tentativeG;
                 neighbor->hCost = heuristic(nx, ny, ex, ey);
