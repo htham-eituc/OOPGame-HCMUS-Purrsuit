@@ -107,20 +107,76 @@ void Game::run() {
                 player->handleEvent(event);
             }
             else if (stateMachine.getCurrentState() == GameState::LEVEL2) {
-                player->handleEvent(event);
-            }
+float Game::calculateDeltaTime(Uint32& lastTime) {
+    Uint32 currentTime = SDL_GetTicks();
+    float deltaTime = (currentTime - lastTime) / 1000.0f;
+    lastTime = currentTime;
+    return deltaTime;
+}
+
+void Game::handleTitleEvents(const SDL_Event& event) {
+    if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_9) {
+        startCutscene1();
+    }
+}
+
+void Game::handleCutsceneEvents(const SDL_Event& event) {
+    if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_SPACE) {
+        currentCutscene1Index++;
+        cutscene1Zoom = 1.0f;
+        if (currentCutscene1Index < cutscene1Images.size()) {
+            core::audio->playMusic(cutscene1Audios[currentCutscene1Index]);
+        } else {
+            startLevel1(100, 100);
+        }
+    }
+}
+
+void Game::handleEvents() {
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        core::uiInput->handleEvent(event);
+
+        if (event.type == SDL_QUIT) {
+            running = false;
+            return;
         }
 
-        const Uint8* keystate = SDL_GetKeyboardState(NULL);
-        
-        if(stateMachine.getCurrentState() == GameState::LEVEL1 || stateMachine.getCurrentState() == GameState::LEVEL2)
-        {
+        switch (stateMachine.getCurrentState()) {
+            case GameState::TITLE:
+                handleTitleEvents(event);
+                break;
+            case GameState::CUTSCENE1:
+                handleCutsceneEvents(event);
+                break;
+            case GameState::LEVEL1:
+            case GameState::LEVEL2:
+                player->handleEvent(event);
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+void Game::run() {
+    Uint32 lastTime = SDL_GetTicks();
+    
+    while (running) {
+        float deltaTime = calculateDeltaTime(lastTime);
+        handleEvents();
+
+        if (stateMachine.getCurrentState() == GameState::LEVEL1 || 
+            stateMachine.getCurrentState() == GameState::LEVEL2) {
+            const Uint8* keystate = SDL_GetKeyboardState(NULL);
             player->move(keystate);
             update(deltaTime);
         }
+
         if (stateMachine.getCurrentState() == GameState::TITLE && !core::audio->isPlayingMusic()) {
-            core::audio->playMusic(audio::title);  
+            core::audio->playMusic(audio::title);
         }
+
         render();
     }
 }
