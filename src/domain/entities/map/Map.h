@@ -8,6 +8,9 @@
 class Item;
 
 class Map {
+protected:
+    MapData mapData;
+
 public:
     Map() = default;
     virtual ~Map() = default;
@@ -31,6 +34,15 @@ public:
         return mapData.mapHeight * mapData.tileHeight;
     }
 
-protected:
-    MapData mapData;
+    int getWidth() const {
+        return mapData.mapWidth;
+    }
+
+    int getHeight() const {
+        return mapData.mapHeight;
+    }  
+
+    std::vector< std::vector<bool> > getCollisionMap() const {
+        return mapData.collisionMap;
+    }
 };

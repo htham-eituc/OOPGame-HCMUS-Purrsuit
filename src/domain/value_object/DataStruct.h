@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <SDL.h>
 
 struct Vector2 {
     float x;
@@ -34,5 +35,12 @@ struct Vector2 {
     Vector2 normalized() const {
         float mag = magnitude();
         return (mag > 0) ? Vector2(x / mag, y / mag) : Vector2();
+    }
+
+    static Vector2 fromRectCenter(const SDL_Rect& rect) {
+        return Vector2{
+            static_cast<float>(rect.x + rect.w / 2),
+            static_cast<float>(rect.y + rect.h / 2)
+        };
     }
 };

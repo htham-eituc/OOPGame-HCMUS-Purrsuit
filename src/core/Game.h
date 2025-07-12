@@ -8,6 +8,7 @@
 #include "GameStateType.h"
 #include "GameStateMachine.h"
 #include "Player.h"
+#include "ZombieCat.h"
 #include "Constants.h"
 #include "Inventory.h"
 #include "Camera.h"
@@ -52,6 +53,7 @@ private:
     MapRender* gameMap = nullptr;
     Inventory* inventory = nullptr;
     Camera* camera = nullptr;
+    std::vector<std::shared_ptr<ZombieCat>> zombies;
 
     std::vector<SDL_Texture*> cutscene1Images;
     std::vector<std::string> cutscene1Audios;

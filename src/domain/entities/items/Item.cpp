@@ -1,6 +1,7 @@
 #include "Item.h"
 #include "Map.h"
 #include "Camera.h"
+#include "Services.h"
 
 Item::Item(const std::string& name, const SDL_Rect& rect, int gid)
     : name(name), rect(rect), gid(gid) {}
@@ -32,6 +33,19 @@ void Item::render(SDL_Renderer* renderer, const std::vector<Tileset>& tilesets) 
     SDL_RenderCopy(renderer, ts->texture, &srcRect, &camDes);
 }
 
+bool Item::isCollected() const {
+    return collected;
+}
+
+std::string Item::getName() const {
+    return name;
+}
+
 SDL_Rect Item::getBounds() const {
     return rect;
 }
+
+void Item::setCollected() {
+    collected = true;
+}
+

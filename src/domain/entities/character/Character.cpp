@@ -34,6 +34,11 @@ SDL_Rect Character::getBounds() const {
     return getCollisionBox(position);
 }
 
+Vector2 Character::getPosition() const {
+    return position;
+}
+
+
 void Character::update(float deltaTime) {
     Vector2 fullMove = velocity * deltaTime;
     Vector2 newPos = position;

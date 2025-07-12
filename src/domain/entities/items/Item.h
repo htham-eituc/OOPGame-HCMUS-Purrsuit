@@ -6,13 +6,18 @@
 struct Tileset;
 
 class Item {
-public:
+private: 
     std::string name;
     SDL_Rect rect;
     bool collected = false;
     int gid = 0;
-
+public:
     Item(const std::string& name, const SDL_Rect& rect, int gid);
     void render(SDL_Renderer* renderer, const std::vector<Tileset>& tilesets);
+    
+    std::string getName() const;
+    bool isCollected() const;
     SDL_Rect getBounds() const;
+
+    void setCollected(); 
 };

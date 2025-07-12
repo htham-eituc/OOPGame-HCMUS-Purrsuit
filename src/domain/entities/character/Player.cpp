@@ -37,6 +37,10 @@ bool Player::canBeKill() const {
     return !hasFlag("Invincible");
 }
 
+bool Player::isAlive() const {
+    return !hasFlag("Killed");
+}
+
 bool Player::hasFlag(const std::string &flag) const {
     return activeFlags.find(flag) != activeFlags.end();
 }
@@ -53,6 +57,7 @@ void Player::update(float deltaTime) {
     if (isMoving()) {
         setAnimation(CharacterState::Walking);
         if(canBeHeard()) core::audio->playSound(audio::move);
+        else core::audio->stopSound(audio::move);
     } else {
         setAnimation(CharacterState::Idle);
         core::audio->stopSound(audio::move);
@@ -83,6 +88,22 @@ void Player::setAnimation(CharacterState newState) {
 
 void Player::setSpeed(const float &newSpeed) {
     moveSpeed = newSpeed;
+}
+
+void Player::kill() {
+    if(!isAlive()) return;
+    addFlag("Killed");
+
+    // Optional: Stop movement and play death animation
+    velocity = {0, 0};
+    setAnimation(CharacterState::Idle);
+    currentTexture = core::textures->getTexture(texture::temp_dead); // if you have one
+
+    // Play sound
+    core::audio->playSound(audio::zombie_eating, 1); 
+
+    // Optional: trigger game over / restart logic
+    std::cout << "Player has died!\n";
 }
 
 float Player::getSpeed() const {
