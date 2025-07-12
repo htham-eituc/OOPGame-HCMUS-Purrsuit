@@ -99,7 +99,7 @@ void Game::run() {
                     if (currentCutscene1Index < cutscene1Images.size()) {
                         core::audio->playMusic(cutscene1Audios[currentCutscene1Index]);
                     } else {
-                        startLevel1(100, 100);
+                        startLevel1(160, 160);
                     }
                 }
             }
@@ -244,7 +244,8 @@ void Game::startCutscene1()
     core::audio->playMusic(cutscene1Audios[0]);
 }
 
-void Game::startLevel1(int x = 100, int y = 100){
+void Game::startLevel1(int x, int y){
+    x = 100, y = 190;
     stateMachine.changeState(GameState::LEVEL1);
     safeDelete(gameMap);
     safeDelete(player);
@@ -275,7 +276,7 @@ void Game::startLevel2(int x = 100, int y = 100){
     safeDelete(player);
     safeDelete(inventory);
     
-    gameMap = MapFactory::create(renderer, MAP_PATH_1);
+    gameMap = MapFactory::create(renderer, MAP_PATH_2);
     player = new Player(renderer, x, y, gameMap);
     inventory = new Inventory(); 
     level1ExitZoneRect = { 0, 0, 0, 0 }; // Trickery

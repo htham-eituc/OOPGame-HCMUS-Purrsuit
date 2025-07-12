@@ -12,8 +12,8 @@ inline constexpr SDL_Rect CAMERA_DEADZONE = {
 };
 
 
-inline const char* MAP_PATH_1 = "assets/maps/Stage1_ItemsTest.json";
-inline const char* MAP_PATH_2 = "assets/maps/testMap2.json";
+inline const char* MAP_PATH_1 = "assets/maps/TransitionMap.json";
+inline const char* MAP_PATH_2 = "assets/maps/Stage1.json";
 
 namespace audio {
     // music
