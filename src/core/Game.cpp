@@ -305,10 +305,10 @@ void Game::startLevel2(int x = 100, int y = 100){
     player = new Player(renderer, x, y, gameMap);
     inventory = new Inventory(); 
     level1ExitZoneRect = { 0, 0, 0, 0 }; // Trickery
-    // if (gameMap && renderer && player) {
-    //     auto zombie = std::make_shared<ZombieCat>(renderer, 100, 200, gameMap, player);
-    //     zombies.push_back(zombie);
-    // }
+    if (gameMap && renderer && player) {
+        auto zombie = std::make_shared<ZombieCat>(renderer, 100, 600, gameMap, player);
+        zombies.push_back(zombie);
+    }
 
     camera->setNewWorld(gameMap->getMapPixelWidth(), gameMap->getMapPixelHeight());
 

@@ -19,8 +19,8 @@ void Player::move(const Uint8* keystate) {
 
     if (keystate[SDL_SCANCODE_W]) velocity.y -= 1;
     if (keystate[SDL_SCANCODE_S]) velocity.y += 1;
-    if (keystate[SDL_SCANCODE_A]) { velocity.x -= 1; flipFlag = SDL_FLIP_HORIZONTAL; }
-    if (keystate[SDL_SCANCODE_D]) { velocity.x += 1; flipFlag = SDL_FLIP_NONE; }
+    if (keystate[SDL_SCANCODE_A]) velocity.x -= 1; 
+    if (keystate[SDL_SCANCODE_D]) velocity.x += 1;  
     if (velocity.magnitude() > 0)
         velocity = velocity.normalized() * moveSpeed;
 }

@@ -1,3 +1,4 @@
+#include <SDL.h>
 #include "ZombieCat.h"
 #include "Player.h"
 #include "Camera.h" 
@@ -6,6 +7,7 @@
 #include "Constants.h"
 #include "CollisionHandler.h"
 #include "Map.h"
+#include <iostream>
 
 ZombieCat::ZombieCat(SDL_Renderer* renderer, int x, int y, Map* map, Player* player)
     : Character(renderer, x, y, map)
@@ -18,7 +20,7 @@ ZombieCat::ZombieCat(SDL_Renderer* renderer, int x, int y, Map* map, Player* pla
 }
 
 ZombieCat::~ZombieCat() {
-    safeDelete(pathFinder);
+    //safeDelete(pathFinder);
 }
 
 void ZombieCat::update(float deltaTime) {
@@ -39,8 +41,8 @@ void ZombieCat::zombieAI(float deltaTime) {
         static_cast<float>(frameWidth) / 2.0f,
         static_cast<float>(frameHeight) / 2.0f
     };
-    
-    switch (state) {
+
+    switch (zombieState) {
         case ZombieState::Idle:
             // Check for sound
             for (auto& evt : core::soundEvent->getActiveEvents()) {
@@ -60,24 +62,49 @@ void ZombieCat::zombieAI(float deltaTime) {
 
             // Otherwise, wander slowly
             idleTimer += deltaTime;
-            if (idleTimer > 3.0f) {
+            if (idleTimer > 1.0f) {
                 idleTimer = 0;
                 transitionTo(ZombieState::Wandering);
             }
             break;
 
-        case ZombieState::Wandering:
-            // Random slow move
+        case ZombieState::Wandering: {
             wanderTimer += deltaTime;
-            velocity.x = (rand() % 2 == 0 ? -20 : 20);
 
+            // Pick a direction only once per wandering phase
+            if (wanderDirection == Vector2{0, 0}) {
+                int dx = (rand() % 3) - 1; // -1, 0, or 1
+                int dy = (rand() % 3) - 1;
+                if (dx != 0 || dy != 0)
+                    wanderDirection = Vector2{ static_cast<float>(dx), static_cast<float>(dy) }.normalized();
+                else
+                    wanderDirection = Vector2{1, 0}; // fallback
+            }
+
+            velocity = wanderDirection * 30.0f;
+
+            // Predict the position after movement
+            SDL_Rect futureBox = getCollisionBox(position + velocity * deltaTime);
+
+            if (map && CollisionHandler::checkMapCollision(futureBox, *map)) {
+                // If we hit a wall, cancel wandering
+                velocity = {0, 0};
+                wanderTimer = 0;
+                wanderDirection = {0, 0};
+                transitionTo(ZombieState::Idle);
+                break;
+            }
+
+            // Stop wandering after a few seconds
             if (wanderTimer > 2.0f) {
                 wanderTimer = 0;
-                velocity.x = 0;
+                wanderDirection = {0, 0};
+                velocity = {0, 0};
                 transitionTo(ZombieState::Idle);
             }
             break;
-
+        }
+        
         case ZombieState::InvestigatingSound:
             pathTimer += deltaTime;
 
@@ -99,8 +126,6 @@ void ZombieCat::zombieAI(float deltaTime) {
             if (!player->canBeHeard() || (player->getPosition() - position).magnitude() > hearingRadius) {
                 transitionTo(ZombieState::Idle);
             }
-            // Use A* or simple direct walk to targetPos
-            // If reached or timeout, return to idle/wandering
             break;
 
         case ZombieState::ChasingPlayer:
@@ -136,13 +161,14 @@ void ZombieCat::zombieAI(float deltaTime) {
 }
 
 void ZombieCat::transitionTo(ZombieState newState) {
-    if (state == newState)
+    std::cout << "Zombie update: state = " << (int)zombieState << std::endl;
+    if (zombieState == newState)
         return;
 
-    state = newState;
+    zombieState = newState;
     velocity = {0, 0}; // Reset movement on transition
 
-    switch (state) {
+    switch (zombieState) {
         case ZombieState::Idle:
             setAnimation(CharacterState::Idle);
             break;

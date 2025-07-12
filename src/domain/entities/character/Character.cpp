@@ -40,6 +40,8 @@ Vector2 Character::getPosition() const {
 
 
 void Character::update(float deltaTime) {
+    if(velocity.x < 0) flipFlag = SDL_FLIP_HORIZONTAL;
+    if(velocity.x > 0) flipFlag = SDL_FLIP_NONE;
     Vector2 fullMove = velocity * deltaTime;
     Vector2 newPos = position;
 

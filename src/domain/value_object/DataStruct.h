@@ -28,6 +28,9 @@ struct Vector2 {
         return *this;
     }
 
+    bool operator==(const Vector2& other) {
+        return x == other.x && y == other.y;
+    }
     float magnitude() const {
         return std::sqrt(x * x + y * y);
     }

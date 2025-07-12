@@ -16,7 +16,7 @@ class ZombieCat : public Character {
 private:
     Player* player = nullptr;
 
-    ZombieState state = ZombieState::Idle;
+    ZombieState zombieState = ZombieState::Idle;
     void setAnimation(CharacterState newState) override;
     void zombieAI(float deltaTime); 
     void transitionTo(ZombieState newState);
@@ -30,6 +30,7 @@ private:
     float pathTimer = 0.0f;
 
     Vector2 targetPos;              // for A*
+    Vector2 wanderDirection = {0, 0};
     float wanderTimer = 0;
     float idleTimer = 0;
 

@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <cmath>
 #include <algorithm>
+#include <iostream>
 
 struct AStarNode {
     int x, y;
@@ -28,6 +29,7 @@ std::vector<Vector2> PathFinder::findPath(const Vector2& startWorld, const Vecto
     int sy = static_cast<int>(startWorld.y / tileSize);
     int ex = static_cast<int>(endWorld.x / tileSize);
     int ey = static_cast<int>(endWorld.y / tileSize);
+    std::cout << "Start: (" << sx << ", " << sy << "), End: (" << ex << ", " << ey << ")\n";
 
     struct NodeCmp {
         bool operator()(const AStarNode* a, const AStarNode* b) const {
