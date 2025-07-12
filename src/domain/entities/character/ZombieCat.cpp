@@ -7,7 +7,6 @@
 #include "Constants.h"
 #include "CollisionHandler.h"
 #include "Map.h"
-#include <iostream>
 
 ZombieCat::ZombieCat(SDL_Renderer* renderer, int x, int y, Map* map, Player* player)
     : Character(renderer, x, y, map)

@@ -1,7 +1,6 @@
 #include <algorithm>
 #include "SoundEventManager.h"
 #include "SDL.h"
-#include <iostream>
 
 void SoundEventManager::emitSound(const SoundEvent& event) {
     activeEvents.push_back(event);
