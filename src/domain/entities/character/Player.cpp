@@ -97,7 +97,7 @@ void Player::kill() {
     // Optional: Stop movement and play death animation
     velocity = {0, 0};
     setAnimation(CharacterState::Idle);
-    currentTexture = core::textures->getTexture(texture::temp_dead); // if you have one
+    currentTexture = core::textures->getTexture(texture::player_dead); // if you have one
 
     // Play sound
     core::audio->playSound(audio::zombie_eating, 1); 

@@ -50,9 +50,10 @@ namespace app::init {
         // texture
         core::textures->loadTexture(texture::player_idle, texture::player_idle);
         core::textures->loadTexture(texture::player_walk, texture::player_walk);
-        core::textures->loadTexture(texture::temp_dead, texture::temp_dead);
+        core::textures->loadTexture(texture::player_dead, texture::player_dead);
         core::textures->loadTexture(texture::zombie_idle, texture::zombie_idle);
         core::textures->loadTexture(texture::zombie_walk, texture::zombie_walk);
+        core::textures->loadTexture(texture::zombie_stand_walk, texture::zombie_stand_walk);
 
         core::textures->loadTexture(texture::title_screen, texture::title_screen);
         core::textures->loadTexture(texture::start_button, texture::start_button);

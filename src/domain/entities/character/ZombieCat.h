@@ -17,7 +17,9 @@ private:
     Player* player = nullptr;
 
     ZombieState zombieState = ZombieState::Idle;
-    void setAnimation(CharacterState newState) override;
+    ZombieState currentAnimationState = ZombieState::Idle;
+    
+    void setAnimation(ZombieState newState);
     void zombieAI(float deltaTime); 
     void transitionTo(ZombieState newState);
 
