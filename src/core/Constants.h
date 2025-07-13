@@ -36,7 +36,8 @@ namespace texture {
     constexpr const char* player_walk = "assets/character/main_cat_walk.png";
     constexpr const char* zombie_idle = "assets/character/zombie_cat_idle.png";
     constexpr const char* zombie_walk = "assets/character/zombie_cat_walk.png";
-    constexpr const char* temp_dead = "assets/character/pirate_cat_idle.png";
+    constexpr const char* zombie_stand_walk = "assets/character/pirate_cat_walk.png";
+    constexpr const char* player_dead = "assets/character/pirate_cat_idle.png";
 
 
     // Asset

@@ -13,13 +13,13 @@ ZombieCat::ZombieCat(SDL_Renderer* renderer, int x, int y, Map* map, Player* pla
 {
     this->player = player;
     currentTexture = core::textures->getTexture(texture::zombie_idle);
-    setAnimation(CharacterState::Idle);
+    setAnimation(ZombieState::Idle);
     transitionTo(ZombieState::Idle);
     pathFinder = new PathFinder(map->getCollisionMap(), map->getWidth(), map->getHeight());
 }
 
 ZombieCat::~ZombieCat() {
-    //safeDelete(pathFinder);
+    safeDelete(pathFinder);
 }
 
 void ZombieCat::update(float deltaTime) {
@@ -36,10 +36,9 @@ void ZombieCat::update(float deltaTime) {
 }
 
 void ZombieCat::render(SDL_Renderer *renderer) {
-        // Call base render
     Character::render(renderer);
 
-    // 🔍 Debug draw path
+    // Debug draw path
     SDL_SetRenderDrawColor(renderer, 0, 255, 255, 255); // Cyan
 
     for (const Vector2& p : path) {
@@ -69,7 +68,8 @@ void ZombieCat::zombieAI(float deltaTime) {
             }
 
             // If near player and player is moving
-            if (player->canBeHeard() && (player->getPosition() - zombieCenter).magnitude() < hearingRadius) {
+            Vector2 playerCenter = Vector2::fromRectCenter(player->getBounds());
+            if (player->canBeHeard() && (playerCenter - zombieCenter).magnitude() < hearingRadius) {
                 transitionTo(ZombieState::ChasingPlayer);
                 return;
             }
@@ -84,6 +84,23 @@ void ZombieCat::zombieAI(float deltaTime) {
         }
         case ZombieState::Wandering: {
             wanderTimer += deltaTime;
+            
+            // Check for sound
+            for (auto& evt : core::soundEvent->getActiveEvents()) {
+                float dist = (evt.position - zombieCenter).magnitude();
+                if (dist <= soundAttractRadius) {
+                    targetPos = evt.position;
+                    transitionTo(ZombieState::InvestigatingSound);
+                    return;
+                }
+            }
+
+            // If near player and player is moving
+            Vector2 playerCenter = Vector2::fromRectCenter(player->getBounds());
+            if (player->canBeHeard() && (playerCenter - zombieCenter).magnitude() < hearingRadius) {
+                transitionTo(ZombieState::ChasingPlayer);
+                return;
+            }
 
             // Pick a direction only once per wandering phase
             if (wanderDirection == Vector2{0, 0}) {
@@ -166,6 +183,13 @@ void ZombieCat::zombieAI(float deltaTime) {
                 // No path available, go back to idle
                 velocity = {0, 0};
                 transitionTo(ZombieState::Idle);
+            }
+
+            // If near player and player is moving
+            Vector2 playerCenter = Vector2::fromRectCenter(player->getBounds());
+            if (player->canBeHeard() && (playerCenter - zombieCenter).magnitude() < hearingRadius) {
+                transitionTo(ZombieState::ChasingPlayer);
+                return;
             }
 
             // Timeout - if investigating too long, give up
@@ -258,12 +282,6 @@ void ZombieCat::zombieAI(float deltaTime) {
             break;
         }
     }
-
-    // Set animation based on movement
-    if (velocity.x != 0 || velocity.y != 0)
-        setAnimation(CharacterState::Walking);
-    else
-        setAnimation(CharacterState::Idle);
 }
 
 void ZombieCat::transitionTo(ZombieState newState) {
@@ -278,38 +296,47 @@ void ZombieCat::transitionTo(ZombieState newState) {
 
     switch (zombieState) {
         case ZombieState::Idle:
-            setAnimation(CharacterState::Idle);
+            setAnimation(zombieState);
             break;
 
         case ZombieState::Wandering:
-            setAnimation(CharacterState::Walking);
+            setAnimation(zombieState);
             break;
 
         case ZombieState::InvestigatingSound:
             // play alert animation or walking
             core::audio->playSound(audio::growl, 0);
-            setAnimation(CharacterState::Walking);
+            setAnimation(zombieState);
             break;
 
         case ZombieState::ChasingPlayer:
             core::audio->playSound(audio::growl, 0);
-            setAnimation(CharacterState::Walking);
+            setAnimation(zombieState);
             break;
     }
 }
 
-void ZombieCat::setAnimation(CharacterState newState) {
-    if (newState == currentState) return;
-    currentState = newState;
+void ZombieCat::setAnimation(ZombieState newState) {
+    if (newState == currentAnimationState) return;
+    currentAnimationState = newState;
 
     switch (newState) {
-        case CharacterState::Idle:
+        case ZombieState::Idle:
             currentTexture = core::textures->getTexture(texture::zombie_idle);
             frameCount = 3;
             break;
-        case CharacterState::Walking:
+        case ZombieState::Wandering:
+            currentTexture = core::textures->getTexture(texture::zombie_stand_walk);
+            frameCount = 6;
+            break;
+        case ZombieState::InvestigatingSound:
+        case ZombieState::ChasingPlayer:
             currentTexture = core::textures->getTexture(texture::zombie_walk);
             frameCount = 6;
+            break;
+        default:            
+            currentTexture = core::textures->getTexture     (texture::zombie_idle);
+            frameCount = 3;
             break;
     }
 
