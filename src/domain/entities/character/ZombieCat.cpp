@@ -19,7 +19,7 @@ ZombieCat::ZombieCat(SDL_Renderer* renderer, int x, int y, Map* map, Player* pla
 }
 
 ZombieCat::~ZombieCat() {
-    //safeDelete(pathFinder);
+    safeDelete(pathFinder);
 }
 
 void ZombieCat::update(float deltaTime) {
@@ -36,7 +36,6 @@ void ZombieCat::update(float deltaTime) {
 }
 
 void ZombieCat::render(SDL_Renderer *renderer) {
-        // Call base render
     Character::render(renderer);
 
     // 🔍 Debug draw path
@@ -84,6 +83,22 @@ void ZombieCat::zombieAI(float deltaTime) {
         }
         case ZombieState::Wandering: {
             wanderTimer += deltaTime;
+            
+            // Check for sound
+            for (auto& evt : core::soundEvent->getActiveEvents()) {
+                float dist = (evt.position - zombieCenter).magnitude();
+                if (dist <= soundAttractRadius) {
+                    targetPos = evt.position;
+                    transitionTo(ZombieState::InvestigatingSound);
+                    return;
+                }
+            }
+
+            // If near player and player is moving
+            if (player->canBeHeard() && (player->getPosition() - zombieCenter).magnitude() < hearingRadius) {
+                transitionTo(ZombieState::ChasingPlayer);
+                return;
+            }
 
             // Pick a direction only once per wandering phase
             if (wanderDirection == Vector2{0, 0}) {
