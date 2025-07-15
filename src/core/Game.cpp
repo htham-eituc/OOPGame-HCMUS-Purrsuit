@@ -86,11 +86,23 @@ void Game::handleTitleEvents(const SDL_Event& event) {
 void Game::handleCutsceneEvents(const SDL_Event& event) {
     if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_SPACE) {
         currentCutscene1Index++;
+        currentSubtitleIndex = 0;          // 🔁 Reset to first subtitle of next scene
+        subtitleTimer = 0.0f;              // 🔁 Reset timer
         cutscene1Zoom = 1.0f;
+
         if (currentCutscene1Index < cutscene1Images.size()) {
             core::audio->playMusic(cutscene1Audios[currentCutscene1Index]);
+
+            // Show first subtitle of next scene
+            if (currentCutscene1Index < cutscene1Subtitles.size()
+                && !cutscene1Subtitles[currentCutscene1Index].empty()) {
+                cutsceneSubtitleLabel->setText(cutscene1Subtitles[currentCutscene1Index][0].first);
+            } else {
+                cutsceneSubtitleLabel->setText("");
+            }
+
         } else {
-            startLevel1(100, 240);
+            startLevel1(100, 240); // Done with cutscene
         }
     }
 }
@@ -133,9 +145,8 @@ void Game::run() {
             stateMachine.getCurrentState() == GameState::LEVEL2) {
             const Uint8* keystate = SDL_GetKeyboardState(NULL);
             player->move(keystate);
-            update(deltaTime);
         }
-
+        update(deltaTime);
         if (stateMachine.getCurrentState() == GameState::TITLE && !core::audio->isPlayingMusic()) {
             core::audio->playMusic(audio::title);
         }
@@ -154,27 +165,56 @@ void Game::updateUILayout() {
 }
 
 void Game::update(float deltaTime) {
-    player->update(deltaTime);
-    camera->update(player->getBounds());
-    core::itemHandler->update(SDL_GetTicks(), *player);
-    core::soundEvent->update(deltaTime);
+    if (player) player->update(deltaTime);
+    if (camera && player) camera->update(player->getBounds());
+
+    if (core::itemHandler && player)
+        core::itemHandler->update(SDL_GetTicks(), *player);
+
+    if (core::soundEvent)
+        core::soundEvent->update(deltaTime);
+
     for (auto& zombie : zombies) {
         zombie->update(deltaTime);
     }
 
-    for (auto& item : gameMap->getItems()) {
-        SDL_Rect playerRect = player->getBounds();
-        SDL_Rect itemRect = item.getBounds();
-        if (!item.isCollected() && CollisionHandler::checkCollision(playerRect, itemRect)) {
-            item.setCollected();
-            inventory->addItem(item.getName());
-            core::audio->playSound(audio::ping, 0);
-            core::itemHandler->addItem(item, *player);
+    if (player && gameMap) {
+        for (auto& item : gameMap->getItems()) {
+            SDL_Rect playerRect = player->getBounds();
+            SDL_Rect itemRect = item.getBounds();
+            if (!item.isCollected() && CollisionHandler::checkCollision(playerRect, itemRect)) {
+                item.setCollected();
+                inventory->addItem(item.getName());
+                core::audio->playSound(audio::ping, 0);
+                core::itemHandler->addItem(item, *player);
+            }
         }
     }
 
-    SDL_Rect playerRect = player->getBounds();
-    if (CollisionHandler::checkCollision(playerRect, level1ExitZoneRect)) {
+    if (stateMachine.getCurrentState() == GameState::CUTSCENE1) {
+        subtitleTimer += deltaTime;
+
+        if (currentCutscene1Index < cutscene1Subtitles.size()) {
+            const auto& currentSceneSubs = cutscene1Subtitles[currentCutscene1Index];
+
+            if (currentSubtitleIndex < currentSceneSubs.size()) {
+                float duration = currentSceneSubs[currentSubtitleIndex].second;
+
+                if (subtitleTimer >= duration) {
+                    subtitleTimer = 0.0f;
+                    currentSubtitleIndex++;
+
+                    if (currentSubtitleIndex < currentSceneSubs.size()) {
+                        cutsceneSubtitleLabel->setText(currentSceneSubs[currentSubtitleIndex].first);
+                    } else {
+                        cutsceneSubtitleLabel->setText(""); // No more subtitles in this scene
+                    }
+                }
+            }
+        }
+    }
+
+    if (player && CollisionHandler::checkCollision(player->getBounds(), level1ExitZoneRect)) {
         startLevel2(100, 100);
     }
 }
@@ -219,6 +259,10 @@ void Game::render() {
             };
 
             SDL_RenderCopy(renderer, currentTex, nullptr, &dstRect);
+
+            if (cutsceneSubtitleLabel && currentSubtitleIndex < cutscene1Subtitles[currentCutscene1Index].size()) {
+                cutsceneSubtitleLabel->render(core::uiRenderer);
+            }
         }
     }
     else if (stateMachine.getCurrentState() == GameState::LEVEL1) {
@@ -253,8 +297,45 @@ void Game::render() {
 
 void Game::startCutscene1()
 {
+    if (startButton) core::uiInput->unregisterElement(startButton);
+    if (loadButton) core::uiInput->unregisterElement(loadButton);
+    cutscene1Subtitles = {
+        {
+            {"He came from the shadows.", 3.0f},
+            {"But the world wasn't ready for him.", 6.0f}
+        },
+        {
+            {"They feared what they couldn't understand.", 5.0f}
+        },
+        {
+            {"Yet, silence could no longer protect them.", 5.0f}
+        }
+    };
     stateMachine.changeState(GameState::CUTSCENE1);
 
+    TTF_Font* subtitleFont = TTF_OpenFont("assets/fonts/Pixel12x10Mono-v1.1.0.ttf", 24);
+    if (!subtitleFont) {
+        SDL_Log("Failed to load subtitle font: %s", TTF_GetError());
+        return;
+    }
+    if (!cutsceneSubtitleLabel) {
+        cutsceneSubtitleLabel = std::make_shared<UILabel>(
+            Vector2(60, SCREEN_HEIGHT - 100),
+            Vector2(SCREEN_WIDTH - 120, 30),
+            "", // start empty
+            Color(255, 255, 255, 255),
+            Color(0, 0, 0, 255),
+            subtitleFont
+        );
+        cutsceneSubtitleLabel->enableOutline((Color(0, 0, 0, 255)));
+    }    
+    else {
+        cutsceneSubtitleLabel->setFont(subtitleFont);
+    }
+    currentSubtitleIndex = 0;
+    subtitleTimer = 0.0f;
+    cutsceneSubtitleLabel->setText(cutscene1Subtitles[currentCutscene1Index][0].first);
+    
     cutscene1Images = {
         core::textures->getTexture(texture::cutscene_1_1),
         core::textures->getTexture(texture::cutscene_1_2),
@@ -272,6 +353,9 @@ void Game::startCutscene1()
 }
 
 void Game::startLevel1(int x = 100, int y = 100){
+    if (startButton) core::uiInput->unregisterElement(startButton);
+    if (loadButton) core::uiInput->unregisterElement(loadButton);
+    if (saveButton) core::uiInput->unregisterElement(saveButton);
     stateMachine.changeState(GameState::LEVEL1);
     safeDelete(gameMap);
     safeDelete(player);
@@ -297,6 +381,9 @@ void Game::startLevel1(int x = 100, int y = 100){
 }
 
 void Game::startLevel2(int x = 100, int y = 100){
+    if (startButton) core::uiInput->unregisterElement(startButton);
+    if (loadButton) core::uiInput->unregisterElement(loadButton);
+    if (saveButton) core::uiInput->unregisterElement(saveButton);
     stateMachine.changeState(GameState::LEVEL2);
     safeDelete(gameMap);
     safeDelete(player);

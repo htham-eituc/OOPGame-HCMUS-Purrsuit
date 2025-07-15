@@ -23,6 +23,11 @@ namespace app::init {
             SDL_Log("SDL_mixer could not initialize! SDL_mixer Error: %s", Mix_GetError());
             return false;
         }
+
+        if (TTF_Init() == -1) {
+            SDL_Log("Failed to init SDL_ttf: %s", TTF_GetError());
+            return false;
+        }
         return true;
     }
 
