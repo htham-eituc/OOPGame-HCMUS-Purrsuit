@@ -1,5 +1,6 @@
 #pragma once
 #include <SDL.h>
+#include <float.h>
 #include <algorithm>
 #include "Constants.h"
 
