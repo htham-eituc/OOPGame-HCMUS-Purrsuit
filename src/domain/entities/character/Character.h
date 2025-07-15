@@ -9,7 +9,8 @@ class Map;
 
 enum class CharacterState {
     Idle,
-    Walking
+    Walking,
+    Dead
 };
 
 class Character {

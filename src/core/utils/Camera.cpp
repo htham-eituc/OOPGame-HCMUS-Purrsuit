@@ -34,8 +34,10 @@ void Camera::update(const SDL_Rect& target) {
     y = lerp(view.y, y, 0.1f);
 
     // Clamp to map
-    x = std::clamp(x, 0.0f, static_cast<float>(mapW - screenW));
-    y = std::clamp(y, 0.0f, static_cast<float>(mapH - screenH));
+    float maxX = std::max(0.0f, static_cast<float>(mapW - screenW));
+    float maxY = std::max(0.0f, static_cast<float>(mapH - screenH));
+    x = std::clamp(x, 0.0f, maxX);
+    y = std::clamp(y, 0.0f, maxY);
 
     view.x = static_cast<int>(x);
     view.y = static_cast<int>(y);
