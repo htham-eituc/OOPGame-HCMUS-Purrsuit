@@ -68,5 +68,6 @@ namespace app::init {
         core::textures->loadTexture(texture::cutscene_1_3, texture::cutscene_1_3);
         core::textures->loadTexture(texture::load_button, texture::load_button);
         core::textures->loadTexture(texture::save_button, texture::save_button);
+        core::textures->loadTexture(texture::death_screen, texture::death_screen);
     }
 }

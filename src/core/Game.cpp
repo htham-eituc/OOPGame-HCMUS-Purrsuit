@@ -107,6 +107,13 @@ void Game::handleCutsceneEvents(const SDL_Event& event) {
     }
 }
 
+void Game::handleDeathEvents(const SDL_Event& event)
+{
+    if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_SPACE) {
+        startLevel1(100, 240); // Restart level 1
+    }
+}
+
 void Game::handleEvents() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
@@ -127,6 +134,9 @@ void Game::handleEvents() {
             case GameState::LEVEL1:
             case GameState::LEVEL2:
                 player->handleEvent(event);
+                break;
+            case GameState::DEATH:
+                handleDeathEvents(event);
                 break;
             default:
                 break;
@@ -217,6 +227,12 @@ void Game::update(float deltaTime) {
     if (player && CollisionHandler::checkCollision(player->getBounds(), level1ExitZoneRect)) {
         startLevel2(100, 100);
     }
+
+    if (player && !player->isAlive() && stateMachine.getCurrentState() != GameState::DEATH) {
+        stateMachine.changeState(GameState::DEATH);
+        core::audio->stopMusic();
+        return;
+}
 }
 
 void Game::render() {
@@ -292,6 +308,16 @@ void Game::render() {
         
         if (saveButton) saveButton->render(core::uiRenderer);
     }
+    else if (stateMachine.getCurrentState() == GameState::DEATH) {
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
+        SDL_Texture* deathTex = core::textures->getTexture(texture::death_screen);
+        SDL_RenderCopy(renderer, deathTex, nullptr, nullptr); // Fullscreen death image
+
+        SDL_RenderPresent(renderer);
+        return;
+    }
     SDL_RenderPresent(renderer);
 }
 
@@ -353,6 +379,7 @@ void Game::startCutscene1()
 }
 
 void Game::startLevel1(int x = 100, int y = 100){
+    zombies.clear();
     if (startButton) core::uiInput->unregisterElement(startButton);
     if (loadButton) core::uiInput->unregisterElement(loadButton);
     if (saveButton) core::uiInput->unregisterElement(saveButton);
@@ -366,7 +393,10 @@ void Game::startLevel1(int x = 100, int y = 100){
     inventory = new Inventory(); 
     level1ExitZoneRect = { 200, 200, 64, 64 };
 
-    camera->setNewWorld(gameMap->getMapPixelWidth(), gameMap->getMapPixelHeight());
+    if (camera)
+        camera->setNewWorld(gameMap->getMapPixelWidth(), gameMap->getMapPixelHeight());
+    else
+        camera = new Camera(SCREEN_WIDTH, SCREEN_HEIGHT);
     core::audio->stopMusic();
     core::audio->playMusic(audio::lv1m);
 
@@ -381,6 +411,7 @@ void Game::startLevel1(int x = 100, int y = 100){
 }
 
 void Game::startLevel2(int x = 100, int y = 100){
+    zombies.clear();
     if (startButton) core::uiInput->unregisterElement(startButton);
     if (loadButton) core::uiInput->unregisterElement(loadButton);
     if (saveButton) core::uiInput->unregisterElement(saveButton);
@@ -398,7 +429,10 @@ void Game::startLevel2(int x = 100, int y = 100){
         zombies.push_back(zombie);
     }
 
-    camera->setNewWorld(gameMap->getMapPixelWidth(), gameMap->getMapPixelHeight());
+    if (camera)
+        camera->setNewWorld(gameMap->getMapPixelWidth(), gameMap->getMapPixelHeight());
+    else
+        camera = new Camera(SCREEN_WIDTH, SCREEN_HEIGHT);
 
     core::audio->stopMusic();
     core::audio->playMusic(audio::title);

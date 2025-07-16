@@ -6,7 +6,7 @@ enum class GameState
     CUTSCENE1,
     LEVEL1,
     LEVEL2,
-    EXIT
+    DEATH
 };
 
 inline std::string GameStateToString(GameState state)
@@ -17,7 +17,7 @@ inline std::string GameStateToString(GameState state)
         case GameState::CUTSCENE1:  return "CUTSCENE1";
         case GameState::LEVEL1: return "LEVEL1";
         case GameState::LEVEL2: return "LEVEL2";
-        case GameState::EXIT:   return "EXIT";
+        case GameState::DEATH:   return "DEATH";
         default:                return "UNKNOWN";
     }
 }
@@ -28,6 +28,6 @@ inline GameState StringToGameState(const std::string& str)
     if (str == "CUTSCENE1")  return GameState::CUTSCENE1;
     if (str == "LEVEL1") return GameState::LEVEL1;
     if (str == "LEVEL2") return GameState::LEVEL2;
-    if (str == "EXIT")   return GameState::EXIT;
+    if (str == "DEATH")   return GameState::DEATH;
     return GameState::TITLE;
 }

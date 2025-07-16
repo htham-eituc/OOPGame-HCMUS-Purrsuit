@@ -32,6 +32,7 @@ public:
     void handleEvents();
     void handleTitleEvents(const SDL_Event& event);
     void handleCutsceneEvents(const SDL_Event& event);
+    void handleDeathEvents(const SDL_Event& event);
     void run();
     void startCutscene1();
     void startLevel1(int x, int y);
