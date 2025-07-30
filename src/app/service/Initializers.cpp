@@ -23,6 +23,11 @@ namespace app::init {
             SDL_Log("SDL_mixer could not initialize! SDL_mixer Error: %s", Mix_GetError());
             return false;
         }
+
+        if (TTF_Init() == -1) {
+            SDL_Log("Failed to init SDL_ttf: %s", TTF_GetError());
+            return false;
+        }
         return true;
     }
 
@@ -63,5 +68,6 @@ namespace app::init {
         core::textures->loadTexture(texture::cutscene_1_3, texture::cutscene_1_3);
         core::textures->loadTexture(texture::load_button, texture::load_button);
         core::textures->loadTexture(texture::save_button, texture::save_button);
+        core::textures->loadTexture(texture::death_screen, texture::death_screen);
     }
 }

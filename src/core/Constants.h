@@ -46,6 +46,7 @@ namespace texture {
     constexpr const char* cutscene_1_2 = "assets/cutscene/cutscene_1_2.png";
     constexpr const char* cutscene_1_3 = "assets/cutscene/cutscene_1_3.png";
     constexpr const char* level1_exit_zone = "assets/ui/level1_exit_zone.png";
+    constexpr const char* death_screen = "assets/ui/death-screen.png";
 
     // UI
     constexpr const char* start_button = "assets/ui/startButton.png";

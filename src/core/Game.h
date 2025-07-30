@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <utility>
 #include "GameStateType.h"
 #include "GameStateMachine.h"
 #include "Player.h"
@@ -13,11 +14,13 @@
 #include "Inventory.h"
 #include "Camera.h"
 #include "UIButton.h"
+#include "UILabel.h "
 
 class Player;
 class Inventory;
 class MapRender;
 class UIButton;
+class UILabel;
 
 class Game {
 public:
@@ -29,6 +32,7 @@ public:
     void handleEvents();
     void handleTitleEvents(const SDL_Event& event);
     void handleCutsceneEvents(const SDL_Event& event);
+    void handleDeathEvents(const SDL_Event& event);
     void run();
     void startCutscene1();
     void startLevel1(int x, int y);
@@ -55,12 +59,16 @@ private:
     Camera* camera = nullptr;
     std::vector<std::shared_ptr<ZombieCat>> zombies;
 
+    std::shared_ptr<UILabel> cutsceneSubtitleLabel = nullptr;
     std::vector<SDL_Texture*> cutscene1Images;
     std::vector<std::string> cutscene1Audios;
+    std::vector<std::vector<std::pair<std::string, float>>> cutscene1Subtitles;
     int currentCutscene1Index = 0;
     const int maxCutscene1 = 3;
     float cutscene1Zoom = 1.0f;
-
+    int currentSubtitleIndex = 0;
+    float subtitleTimer = 0.0f;
+    
     void saveGame(const std::string& filename);
     void loadGame(const std::string& filename);
 
