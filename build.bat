@@ -1,12 +1,11 @@
 @echo off
 setlocal
 
-:: Clean build
-if exist build (
-    echo Cleaning previous build...
-    rd /s /q build
+:: Create build directory if it doesn't exist
+if not exist build (
+    mkdir build
 )
-mkdir build
+
 cd build
 
 echo Configuring with CMake...
@@ -27,4 +26,3 @@ goto :eof
 echo [ERROR] Build failed!
 pause
 exit /b 1
-
