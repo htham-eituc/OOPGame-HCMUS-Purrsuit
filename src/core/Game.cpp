@@ -17,6 +17,8 @@ Game::~Game() {
     safeDelete(camera);
     safeDelete(inventory);
 
+    SDL_DestroyTexture(wasdHintTexture);
+    SDL_DestroyTexture(escHintTexture);
     safeDelete(core::audio);
     safeDelete(core::textures);
     safeDelete(core::soundEvent);
@@ -49,6 +51,8 @@ bool Game::init(const char* title) {
 
     app::init::registerCoreServices(renderer);
     app::init::loadAssets();
+    wasdHintTexture = core::textures->getTexture(texture::wasd_onscreen);
+    escHintTexture = core::textures->getTexture(texture::esc_onscreen);
 
     updateUILayout();
     startButton = std::make_shared<UIButton>(
@@ -350,6 +354,46 @@ void Game::render() {
         // Render pause UI buttons
         if (pauseResumeButton) pauseResumeButton->render(core::uiRenderer);
         if (pauseQuitButton) pauseQuitButton->render(core::uiRenderer);
+    }
+    if (stateMachine.getCurrentState() == GameState::LEVEL1 || stateMachine.getCurrentState() == GameState::LEVEL2) {
+        int y = SCREEN_HEIGHT - 50;
+        int x = 20;
+
+        TTF_Font* subtitleFont = TTF_OpenFont("assets/fonts/Pixel12x10Mono-v1.1.0.ttf", 24);
+        if (!subtitleFont) {
+            SDL_Log("Failed to load subtitle font: %s", TTF_GetError());
+            return;
+        }
+
+        if (wasdHintTexture) {
+            SDL_Rect wasdRect = { x, y - 10, 60, 40 };  // adjust size as needed
+            SDL_RenderCopy(renderer, wasdHintTexture, nullptr, &wasdRect);
+
+            x += wasdRect.w + 10;
+            UILabel moveLabel(
+                Vector2(x, y + 6), Vector2(80, 24), "move",
+                Color(255, 255, 255, 255), Color(0, 0, 0, 255),
+                subtitleFont
+            );
+            moveLabel.enableOutline(Color(0, 0, 0, 255));
+            moveLabel.render(core::uiRenderer);
+
+            x += 80 + 40;  // space between hints
+        }
+
+        if (escHintTexture) {
+            SDL_Rect escRect = { x, y, 50, 25 };
+            SDL_RenderCopy(renderer, escHintTexture, nullptr, &escRect);
+
+            x += escRect.w + 10;
+            UILabel pauseLabel(
+                Vector2(x, y + 6), Vector2(80, 24), "pause",
+                Color(255, 255, 255, 255), Color(0, 0, 0, 255),
+                subtitleFont
+            );
+            pauseLabel.enableOutline(Color(0, 0, 0, 255));
+            pauseLabel.render(core::uiRenderer);
+        }
     }
     SDL_RenderPresent(renderer);
 }

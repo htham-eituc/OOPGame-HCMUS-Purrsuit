@@ -71,5 +71,7 @@ namespace app::init {
         core::textures->loadTexture(texture::death_screen, texture::death_screen);
         core::textures->loadTexture(texture::resume_button, texture::resume_button);
         core::textures->loadTexture(texture::quit_button, texture::quit_button);
+        core::textures->loadTexture(texture::wasd_onscreen, texture::wasd_onscreen);
+        core::textures->loadTexture(texture::esc_onscreen, texture::esc_onscreen);
     }
 }

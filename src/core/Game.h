@@ -75,6 +75,9 @@ private:
     int currentSubtitleIndex = 0;
     float subtitleTimer = 0.0f;
     
+    SDL_Texture* wasdHintTexture = nullptr;
+    SDL_Texture* escHintTexture = nullptr;
+
     void saveGame(const std::string& filename);
     void loadGame(const std::string& filename);
 

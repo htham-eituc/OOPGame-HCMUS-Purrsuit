@@ -56,5 +56,7 @@ namespace texture {
     constexpr const char* resume_button = "assets/ui/resume_button.png";
     constexpr const char* quit_button = "assets/ui/quit_button.png";
 
-        //Label
+        //Tutorial
+    constexpr const char* wasd_onscreen = "assets/ui/wasd_onscreen.png";
+    constexpr const char* esc_onscreen = "assets/ui/esc_onscreen.png";
 }
