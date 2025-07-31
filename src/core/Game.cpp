@@ -58,11 +58,24 @@ bool Game::init(const char* title) {
     );
     core::uiInput->registerElement(startButton);
     loadButton = std::make_shared<UIButton>(
-    loadButtonRect,
-    core::textures->getTexture(texture::load_button),
-    [this]() { this->loadGame("save.json"); }  // onClick action
+        loadButtonRect,
+        core::textures->getTexture(texture::load_button),
+        [this]() { this->loadGame("save.json"); }  // onClick action
     );
     core::uiInput->registerElement(loadButton);
+    pauseResumeButton = std::make_shared<UIButton>(
+        resumeButtonRect,
+        core::textures->getTexture(texture::resume_button),
+        [this]() { isPaused = false; }
+    );
+    core::uiInput->registerElement(pauseResumeButton);
+
+    pauseQuitButton = std::make_shared<UIButton>(
+        quitButtonRect,
+        core::textures->getTexture(texture::quit_button),
+        [this]() { running = false; }
+    );
+    core::uiInput->registerElement(pauseQuitButton);
     running = true;
     stateMachine.changeState(GameState::TITLE);
 
@@ -124,6 +137,13 @@ void Game::handleEvents() {
             return;
         }
 
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
+            if (stateMachine.getCurrentState() == GameState::LEVEL1 || 
+                stateMachine.getCurrentState() == GameState::LEVEL2) {
+                isPaused = !isPaused;
+            }
+        }
+
         switch (stateMachine.getCurrentState()) {
             case GameState::TITLE:
                 handleTitleEvents(event);
@@ -151,12 +171,12 @@ void Game::run() {
         float deltaTime = calculateDeltaTime(lastTime);
         handleEvents();
 
-        if (stateMachine.getCurrentState() == GameState::LEVEL1 || 
-            stateMachine.getCurrentState() == GameState::LEVEL2) {
+        if (!isPaused && (stateMachine.getCurrentState() == GameState::LEVEL1 || 
+            stateMachine.getCurrentState() == GameState::LEVEL2)){
             const Uint8* keystate = SDL_GetKeyboardState(NULL);
+            update(deltaTime);
             player->move(keystate);
         }
-        update(deltaTime);
         if (stateMachine.getCurrentState() == GameState::TITLE && !core::audio->isPlayingMusic()) {
             core::audio->playMusic(audio::title);
         }
@@ -172,6 +192,8 @@ void Game::updateUILayout() {
 
     startButtonRect = { centerX, SCREEN_HEIGHT / 2, buttonWidth, buttonHeight };
     loadButtonRect = { centerX, SCREEN_HEIGHT / 2 + buttonHeight + 20, buttonWidth, buttonHeight };
+    resumeButtonRect = { centerX, SCREEN_HEIGHT / 2, buttonWidth, buttonHeight };
+    quitButtonRect = { centerX, SCREEN_HEIGHT / 2 + buttonHeight + 20, buttonWidth, buttonHeight };
 }
 
 void Game::update(float deltaTime) {
@@ -317,6 +339,17 @@ void Game::render() {
 
         SDL_RenderPresent(renderer);
         return;
+    }
+    if (isPaused) {
+        // Dim the screen with a translucent black overlay
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 128);
+        SDL_Rect overlay = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+        SDL_RenderFillRect(renderer, &overlay);
+
+        // Render pause UI buttons
+        if (pauseResumeButton) pauseResumeButton->render(core::uiRenderer);
+        if (pauseQuitButton) pauseQuitButton->render(core::uiRenderer);
     }
     SDL_RenderPresent(renderer);
 }

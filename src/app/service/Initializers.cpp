@@ -69,5 +69,7 @@ namespace app::init {
         core::textures->loadTexture(texture::load_button, texture::load_button);
         core::textures->loadTexture(texture::save_button, texture::save_button);
         core::textures->loadTexture(texture::death_screen, texture::death_screen);
+        core::textures->loadTexture(texture::resume_button, texture::resume_button);
+        core::textures->loadTexture(texture::quit_button, texture::quit_button);
     }
 }

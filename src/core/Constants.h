@@ -49,7 +49,12 @@ namespace texture {
     constexpr const char* death_screen = "assets/ui/death-screen.png";
 
     // UI
+        //Button
     constexpr const char* start_button = "assets/ui/startButton.png";
     constexpr const char* load_button = "assets/ui/load_button.png";
     constexpr const char* save_button = "assets/ui/save_button.png";
+    constexpr const char* resume_button = "assets/ui/resume_button.png";
+    constexpr const char* quit_button = "assets/ui/quit_button.png";
+
+        //Label
 }

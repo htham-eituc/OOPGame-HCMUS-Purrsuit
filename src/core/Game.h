@@ -42,16 +42,22 @@ private:
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;
     bool running = false;
+    bool isPaused = false;
 
     GameStateMachine stateMachine;
 
     std::shared_ptr<UIButton> startButton;
     std::shared_ptr<UIButton> loadButton;
     std::shared_ptr<UIButton> saveButton;
+    std::shared_ptr<UIButton> pauseResumeButton;
+    std::shared_ptr<UIButton> pauseQuitButton;
     SDL_Rect startButtonRect;
     SDL_Rect level1ExitZoneRect;
     SDL_Rect loadButtonRect; //For title screen
     SDL_Rect saveButtonRect; // For Levels (LEVEL1 and LEVEL2)
+    SDL_Rect resumeButtonRect;
+    SDL_Rect quitButtonRect;
+
 
     Player* player = nullptr;
     MapRender* gameMap = nullptr;
