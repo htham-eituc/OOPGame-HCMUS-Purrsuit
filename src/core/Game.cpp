@@ -17,6 +17,8 @@ Game::~Game() {
     safeDelete(camera);
     safeDelete(inventory);
 
+    SDL_DestroyTexture(wasdHintTexture);
+    SDL_DestroyTexture(escHintTexture);
     safeDelete(core::audio);
     safeDelete(core::textures);
     safeDelete(core::soundEvent);
@@ -49,6 +51,8 @@ bool Game::init(const char* title) {
 
     app::init::registerCoreServices(renderer);
     app::init::loadAssets();
+    wasdHintTexture = core::textures->getTexture(texture::wasd_onscreen);
+    escHintTexture = core::textures->getTexture(texture::esc_onscreen);
 
     updateUILayout();
     startButton = std::make_shared<UIButton>(
@@ -58,11 +62,24 @@ bool Game::init(const char* title) {
     );
     core::uiInput->registerElement(startButton);
     loadButton = std::make_shared<UIButton>(
-    loadButtonRect,
-    core::textures->getTexture(texture::load_button),
-    [this]() { this->loadGame("save.json"); }  // onClick action
+        loadButtonRect,
+        core::textures->getTexture(texture::load_button),
+        [this]() { this->loadGame("save.json"); }  // onClick action
     );
     core::uiInput->registerElement(loadButton);
+    pauseResumeButton = std::make_shared<UIButton>(
+        resumeButtonRect,
+        core::textures->getTexture(texture::resume_button),
+        [this]() { isPaused = false; }
+    );
+    core::uiInput->registerElement(pauseResumeButton);
+
+    pauseQuitButton = std::make_shared<UIButton>(
+        quitButtonRect,
+        core::textures->getTexture(texture::quit_button),
+        [this]() { running = false; }
+    );
+    core::uiInput->registerElement(pauseQuitButton);
     running = true;
     stateMachine.changeState(GameState::TITLE);
 
@@ -124,6 +141,13 @@ void Game::handleEvents() {
             return;
         }
 
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
+            if (stateMachine.getCurrentState() == GameState::LEVEL1 || 
+                stateMachine.getCurrentState() == GameState::LEVEL2) {
+                isPaused = !isPaused;
+            }
+        }
+
         switch (stateMachine.getCurrentState()) {
             case GameState::TITLE:
                 handleTitleEvents(event);
@@ -151,12 +175,12 @@ void Game::run() {
         float deltaTime = calculateDeltaTime(lastTime);
         handleEvents();
 
-        if (stateMachine.getCurrentState() == GameState::LEVEL1 || 
-            stateMachine.getCurrentState() == GameState::LEVEL2) {
+        if (!isPaused && (stateMachine.getCurrentState() == GameState::LEVEL1 || 
+            stateMachine.getCurrentState() == GameState::LEVEL2)){
             const Uint8* keystate = SDL_GetKeyboardState(NULL);
+            update(deltaTime);
             player->move(keystate);
         }
-        update(deltaTime);
         if (stateMachine.getCurrentState() == GameState::TITLE && !core::audio->isPlayingMusic()) {
             core::audio->playMusic(audio::title);
         }
@@ -172,6 +196,8 @@ void Game::updateUILayout() {
 
     startButtonRect = { centerX, SCREEN_HEIGHT / 2, buttonWidth, buttonHeight };
     loadButtonRect = { centerX, SCREEN_HEIGHT / 2 + buttonHeight + 20, buttonWidth, buttonHeight };
+    resumeButtonRect = { centerX, SCREEN_HEIGHT / 2, buttonWidth, buttonHeight };
+    quitButtonRect = { centerX, SCREEN_HEIGHT / 2 + buttonHeight + 20, buttonWidth, buttonHeight };
 }
 
 void Game::update(float deltaTime) {
@@ -317,6 +343,57 @@ void Game::render() {
 
         SDL_RenderPresent(renderer);
         return;
+    }
+    if (isPaused) {
+        // Dim the screen with a translucent black overlay
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 128);
+        SDL_Rect overlay = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+        SDL_RenderFillRect(renderer, &overlay);
+
+        // Render pause UI buttons
+        if (pauseResumeButton) pauseResumeButton->render(core::uiRenderer);
+        if (pauseQuitButton) pauseQuitButton->render(core::uiRenderer);
+    }
+    if (stateMachine.getCurrentState() == GameState::LEVEL1 || stateMachine.getCurrentState() == GameState::LEVEL2) {
+        int y = SCREEN_HEIGHT - 50;
+        int x = 20;
+
+        TTF_Font* subtitleFont = TTF_OpenFont("assets/fonts/Pixel12x10Mono-v1.1.0.ttf", 24);
+        if (!subtitleFont) {
+            SDL_Log("Failed to load subtitle font: %s", TTF_GetError());
+            return;
+        }
+
+        if (wasdHintTexture) {
+            SDL_Rect wasdRect = { x, y - 10, 60, 40 };  // adjust size as needed
+            SDL_RenderCopy(renderer, wasdHintTexture, nullptr, &wasdRect);
+
+            x += wasdRect.w + 10;
+            UILabel moveLabel(
+                Vector2(x, y + 6), Vector2(80, 24), "move",
+                Color(255, 255, 255, 255), Color(0, 0, 0, 255),
+                subtitleFont
+            );
+            moveLabel.enableOutline(Color(0, 0, 0, 255));
+            moveLabel.render(core::uiRenderer);
+
+            x += 80 + 40;  // space between hints
+        }
+
+        if (escHintTexture) {
+            SDL_Rect escRect = { x, y, 50, 25 };
+            SDL_RenderCopy(renderer, escHintTexture, nullptr, &escRect);
+
+            x += escRect.w + 10;
+            UILabel pauseLabel(
+                Vector2(x, y + 6), Vector2(80, 24), "pause",
+                Color(255, 255, 255, 255), Color(0, 0, 0, 255),
+                subtitleFont
+            );
+            pauseLabel.enableOutline(Color(0, 0, 0, 255));
+            pauseLabel.render(core::uiRenderer);
+        }
     }
     SDL_RenderPresent(renderer);
 }

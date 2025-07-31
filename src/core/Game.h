@@ -42,16 +42,22 @@ private:
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;
     bool running = false;
+    bool isPaused = false;
 
     GameStateMachine stateMachine;
 
     std::shared_ptr<UIButton> startButton;
     std::shared_ptr<UIButton> loadButton;
     std::shared_ptr<UIButton> saveButton;
+    std::shared_ptr<UIButton> pauseResumeButton;
+    std::shared_ptr<UIButton> pauseQuitButton;
     SDL_Rect startButtonRect;
     SDL_Rect level1ExitZoneRect;
     SDL_Rect loadButtonRect; //For title screen
     SDL_Rect saveButtonRect; // For Levels (LEVEL1 and LEVEL2)
+    SDL_Rect resumeButtonRect;
+    SDL_Rect quitButtonRect;
+
 
     Player* player = nullptr;
     MapRender* gameMap = nullptr;
@@ -69,6 +75,9 @@ private:
     int currentSubtitleIndex = 0;
     float subtitleTimer = 0.0f;
     
+    SDL_Texture* wasdHintTexture = nullptr;
+    SDL_Texture* escHintTexture = nullptr;
+
     void saveGame(const std::string& filename);
     void loadGame(const std::string& filename);
 
