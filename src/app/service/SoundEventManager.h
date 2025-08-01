@@ -19,5 +19,5 @@ public:
 
 private:
     std::vector<SoundEvent> activeEvents;
-    float eventLifetime = 3.0f; // seconds
+    float eventLifetime = 4.0f; // seconds
 };

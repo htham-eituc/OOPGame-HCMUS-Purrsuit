@@ -60,7 +60,7 @@ void ZombieCat::zombieAI(float deltaTime) {
             // Check for sound
             for (auto& evt : core::soundEvent->getActiveEvents()) {
                 float dist = (evt.position - zombieCenter).magnitude();
-                if (dist <= soundAttractRadius) {
+                if (dist - evt.radius <= soundAttractRadius) {
                     targetPos = evt.position;
                     transitionTo(ZombieState::InvestigatingSound);
                     return;
@@ -88,7 +88,7 @@ void ZombieCat::zombieAI(float deltaTime) {
             // Check for sound
             for (auto& evt : core::soundEvent->getActiveEvents()) {
                 float dist = (evt.position - zombieCenter).magnitude();
-                if (dist <= soundAttractRadius) {
+                if (dist - evt.radius <= soundAttractRadius) {
                     targetPos = evt.position;
                     transitionTo(ZombieState::InvestigatingSound);
                     return;
@@ -326,12 +326,12 @@ void ZombieCat::setAnimation(ZombieState newState) {
             frameCount = 3;
             break;
         case ZombieState::Wandering:
-            currentTexture = core::textures->getTexture(texture::zombie_stand_walk);
+            currentTexture = core::textures->getTexture(texture::zombie_walk);
             frameCount = 6;
             break;
         case ZombieState::InvestigatingSound:
         case ZombieState::ChasingPlayer:
-            currentTexture = core::textures->getTexture(texture::zombie_walk);
+            currentTexture = core::textures->getTexture(texture::zombie_stand_walk);
             frameCount = 6;
             break;
         default:            

@@ -45,4 +45,8 @@ public:
     std::vector< std::vector<bool> > getCollisionMap() const {
         return mapData.collisionMap;
     }
+
+    const SpawnPoints& getSpawnPoints() const { 
+        return mapData.spawnPoints; 
+    }
 };

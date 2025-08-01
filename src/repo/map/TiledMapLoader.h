@@ -11,5 +11,6 @@ private:
 
 public:
     static MapData loadMap(const std::string& path, SDL_Renderer* renderer);
-    static std::vector<Item> LoadItemsFromMap(const std::string& path, MapData& mapData);
+    static std::vector<Item> LoadItemsFromMap(const std::string& path);
+    static SpawnPoints LoadSpawnPointsFromMap(const std::string& path);
 };
