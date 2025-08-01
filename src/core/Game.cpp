@@ -99,8 +99,8 @@ void Game::handleTitleEvents(const SDL_Event& event) {
 void Game::handleCutsceneEvents(const SDL_Event& event) {
     if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_SPACE) {
         currentCutscene1Index++;
-        currentSubtitleIndex = 0;          // 🔁 Reset to first subtitle of next scene
-        subtitleTimer = 0.0f;              // 🔁 Reset timer
+        currentSubtitleIndex = 0;         
+        subtitleTimer = 0.0f;             
         cutscene1Zoom = 1.0f;
 
         if (currentCutscene1Index < cutscene1Images.size()) {
@@ -540,12 +540,21 @@ void Game::startLevel2(int x = 100, int y = 100){
     safeDelete(inventory);
     
     gameMap = MapFactory::create(renderer, MAP_PATH_2);
-    player = new Player(renderer, x, y, gameMap);
+    const auto& spawns = gameMap->getSpawnPoints();
+
+    player = new Player(renderer, static_cast<int>(spawns.playerSpawn.x), static_cast<int>(spawns.playerSpawn.y), gameMap);
     inventory = new Inventory(); 
     level1ExitZoneRect = { 0, 0, 0, 0 }; // Trickery
     if (gameMap && renderer && player) {
-        auto zombie = std::make_shared<ZombieCat>(renderer, 100, 600, gameMap, player);
-        zombies.push_back(zombie);
+        for (const auto& pos : spawns.zombieSpawns) {
+            zombies.emplace_back(std::make_shared<ZombieCat>(renderer,
+                static_cast<int>(pos.x),
+                static_cast<int>(pos.y),
+                gameMap, player)
+            );
+        }
+        // auto zombie = std::make_shared<ZombieCat>(renderer, 100, 600, gameMap, player);
+        // zombies.push_back(zombie);
     }
 
     if (camera)
@@ -598,5 +607,6 @@ void Game::loadGame(const std::string& filename)
         inventory->addItem(item);
     }
 
+    // Don't know how to load zombie yet 
     std::cout << "Game loaded from: " << filename << "\n";
 }

@@ -5,15 +5,15 @@ inline constexpr int SCREEN_HEIGHT = 600;
 inline constexpr int TILE_SIZE = 32;
 
 inline constexpr SDL_Rect CAMERA_DEADZONE = {
-    SCREEN_WIDTH  / 5,   // x offset from left (20%)
-    SCREEN_HEIGHT / 5,   // y offset from top (20%)
-    SCREEN_WIDTH  * 3 / 5,  // width = 60% of screen
-    SCREEN_HEIGHT * 3 / 5   // height = 60% of screen
+    SCREEN_WIDTH  * 4 / 10,
+    SCREEN_HEIGHT * 4 / 10,
+    SCREEN_WIDTH  * 2 / 10,
+    SCREEN_HEIGHT * 2 / 10
 };
 
 
-inline const char* MAP_PATH_1 = "assets/maps/Stage1.json";
-inline const char* MAP_PATH_2 = "assets/maps/Stage1.json";
+inline const char* MAP_PATH_1 = "assets/maps/TransitionMap.json";
+inline const char* MAP_PATH_2 = "assets/maps/Stage1_New.json";
 
 namespace audio {
     // music
@@ -35,8 +35,8 @@ namespace texture {
     constexpr const char* player_idle = "assets/character/main_cat_idle.png";
     constexpr const char* player_walk = "assets/character/main_cat_walk.png";
     constexpr const char* zombie_idle = "assets/character/zombie_cat_idle.png";
-    constexpr const char* zombie_walk = "assets/character/ZombieCatWalk.png";
-    constexpr const char* zombie_stand_walk = "assets/character/ZombieCatWalk.png";
+    constexpr const char* zombie_walk = "assets/character/zombie_cat_walk.png";
+    constexpr const char* zombie_stand_walk = "assets/character/zombie_cat_stand_walk.png";
     constexpr const char* player_dead = "assets/character/pirate_cat_idle.png";
 
 

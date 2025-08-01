@@ -76,11 +76,12 @@ MapData TiledMapLoader::loadMap(const std::string& path, SDL_Renderer* renderer)
             mapData.layers.push_back(tileLayer);
     }
 
-    mapData.items = LoadItemsFromMap(path, mapData);
+    mapData.items = LoadItemsFromMap(path);
+    mapData.spawnPoints = LoadSpawnPointsFromMap(path);
     return mapData;
 }
 
-std::vector<Item> TiledMapLoader::LoadItemsFromMap(const std::string& path, MapData& mapData) {
+std::vector<Item> TiledMapLoader::LoadItemsFromMap(const std::string& path) {
     tson::Tileson parser;
     std::unique_ptr<tson::Map> map = parser.parse(fs::path(path));
 
@@ -113,4 +114,37 @@ std::vector<Item> TiledMapLoader::LoadItemsFromMap(const std::string& path, MapD
     }
 
     return items;
+}
+
+SpawnPoints TiledMapLoader::LoadSpawnPointsFromMap(const std::string& path) {
+    SpawnPoints spawnPoints;
+
+    tson::Tileson parser;
+    std::unique_ptr<tson::Map> map = parser.parse(fs::path(path));
+    if (map->getStatus() != tson::ParseStatus::OK) {
+        std::cerr << "Failed to parse map for spawn points: " << path << std::endl;
+        return spawnPoints;
+    }
+
+    tson::Layer* objectLayer = map->getLayer("Spawning");
+    if (!objectLayer || objectLayer->getType() != tson::LayerType::ObjectGroup) {
+        std::cerr << "No valid 'Spawning' layer found in map: " << path << std::endl;
+        return spawnPoints;
+    }
+
+    for (const auto& obj : objectLayer->getObjects()) {
+        std::string name = obj.getName();  // Expected: "player", "princess", "zombie"
+        tson::Vector2i pos = obj.getPosition();
+        Vector2 position{ static_cast<float>(pos.x), static_cast<float>(pos.y) };
+
+        if (name == "player") {
+            spawnPoints.playerSpawn = position;
+        } else if (name == "princess") {
+            spawnPoints.princessSpawn = position;
+        } else if (name == "zombie") {
+            spawnPoints.zombieSpawns.push_back(position);
+        }
+    }
+
+    return spawnPoints;
 }
