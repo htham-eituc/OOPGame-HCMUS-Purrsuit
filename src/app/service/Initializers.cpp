@@ -73,5 +73,7 @@ namespace app::init {
         core::textures->loadTexture(texture::quit_button, texture::quit_button);
         core::textures->loadTexture(texture::wasd_onscreen, texture::wasd_onscreen);
         core::textures->loadTexture(texture::esc_onscreen, texture::esc_onscreen);
+        core::textures->loadTexture(texture::mouse_default, texture::mouse_default);
+        core::textures->loadTexture(texture::mouse_on_click, texture::mouse_on_click);
     }
 }
