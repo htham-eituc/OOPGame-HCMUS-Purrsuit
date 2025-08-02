@@ -63,6 +63,7 @@ private:
     MapRender* gameMap = nullptr;
     Inventory* inventory = nullptr;
     Camera* camera = nullptr;
+
     std::vector<std::shared_ptr<ZombieCat>> zombies;
 
     std::shared_ptr<UILabel> cutsceneSubtitleLabel = nullptr;
@@ -74,14 +75,20 @@ private:
     float cutscene1Zoom = 1.0f;
     int currentSubtitleIndex = 0;
     float subtitleTimer = 0.0f;
-    
-    SDL_Texture* wasdHintTexture = nullptr;
-    SDL_Texture* escHintTexture = nullptr;
+
+    bool mouseClicked = false;
+    float clickCursorTimer = 0.0f;
+    float clickCursorDuration = 0.25f; // total duration of click animation
+
+    int clickCursorFrame = 0;
+    float clickCursorAnimTimer = 0.0f;
+    const float frameDuration = 0.05f;
 
     void saveGame(const std::string& filename);
     void loadGame(const std::string& filename);
 
     void updateUILayout();
     void update(float deltaTime);
+    void updateCursorAnimation(float deltaTime);
     void render();
 };

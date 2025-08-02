@@ -1,7 +1,7 @@
 #pragma once 
 
-inline constexpr int SCREEN_WIDTH = 1200;
-inline constexpr int SCREEN_HEIGHT = 750;
+inline constexpr int SCREEN_WIDTH = 900;
+inline constexpr int SCREEN_HEIGHT = 600;
 inline constexpr int TILE_SIZE = 32;
 
 inline constexpr SDL_Rect CAMERA_DEADZONE = {
@@ -59,4 +59,8 @@ namespace texture {
         //Tutorial
     constexpr const char* wasd_onscreen = "assets/ui/wasd_onscreen.png";
     constexpr const char* esc_onscreen = "assets/ui/esc_onscreen.png";
+
+        //Mouse
+    constexpr const char* mouse_default = "assets/ui/mouse_default.png";
+    constexpr const char* mouse_on_click = "assets/ui/mouse_on_click.png";   
 }
