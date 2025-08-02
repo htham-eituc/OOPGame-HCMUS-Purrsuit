@@ -72,6 +72,8 @@ MapData TiledMapLoader::loadMap(const std::string& path, SDL_Renderer* renderer)
         }
         if (tileLayer.name == "Above")
             mapData.aboveLayer = tileLayer;
+        else if (tileLayer.name == "Above Object")
+            mapData.aboveObject = tileLayer;
         else 
             mapData.layers.push_back(tileLayer);
     }
@@ -151,11 +153,11 @@ SpawnPoints TiledMapLoader::LoadSpawnPointsFromMap(const std::string& path) {
 }
 
 std::vector<TransitionZone> TiledMapLoader::LoadTransitionZonesFromMap(const std::string& path) {
-
     std::vector<TransitionZone> zones;
 
     tson::Tileson parser;
     std::unique_ptr<tson::Map> map = parser.parse(fs::path(path));
+
     if (auto* layer = map->getLayer("Transitions"); layer && layer->getType() == tson::LayerType::ObjectGroup) {
         for (auto& obj : layer->getObjects()) {
             if (obj.getObjectType() == tson::ObjectType::Rectangle) {
@@ -165,11 +167,32 @@ std::vector<TransitionZone> TiledMapLoader::LoadTransitionZonesFromMap(const std
                     static_cast<int>(obj.getSize().x),
                     static_cast<int>(obj.getSize().y)
                 };
-                zones.push_back({rect, obj.getName()});
+
+                std::string zoneName = obj.getName();
+
+                std::string requiredItem;
+                std::string instruction;
+                std::string entering;
+
+                auto* itemProp = obj.getProp("Item");
+                if (itemProp) {
+                    requiredItem = itemProp->getValue<std::string>();
+                }
+                auto* textProp = obj.getProp("Instruction");
+                if (textProp) {
+                    instruction = textProp->getValue<std::string>();
+                }
+                auto* enterProp = obj.getProp("Entering");
+                if (enterProp) {
+                    entering = enterProp->getValue<std::string>();
+                }
+
+                zones.push_back({rect, zoneName, instruction, entering, requiredItem});
             }
         }
     }
 
     return zones;
 }
+
 

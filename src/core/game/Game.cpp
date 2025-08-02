@@ -82,6 +82,7 @@ bool Game::init(const char* title) {
 
     camera = new Camera(SCREEN_WIDTH, SCREEN_HEIGHT);
     transitionManager = new TransitionManager();
+    inventory = new Inventory(); 
     return true;
 }
 

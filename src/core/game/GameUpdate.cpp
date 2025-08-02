@@ -26,27 +26,7 @@ void Game::update(float deltaTime) {
         zombie->update(deltaTime);
     }
 
-    for (auto& zone : transitionZones) {
-        bool completed = false;
-        std::function<void()> callback;
-
-        if (zone.toZone == "ToNextMap") {
-            completed = inventory && inventory->hasItem("Catnip");
-            callback = [this]() { this->startLevel2(100, 100); };
-        } else if (zone.toZone == "StartCutScene") {
-            completed = inventory && inventory->hasItem("Key");
-            callback = [this]() { this->startLevel1(100, 260); };
-        }
-
-        // Only set callback if this zone is actually being triggered
-        if (callback && completed && 
-            CollisionHandler::checkCollision(player->getBounds(), zone.bounds) &&
-            transitionManager->getState() == TransitionState::None) {
-            transitionManager->onTransitionTriggered(callback);
-        }
-
-        transitionManager->update(deltaTime, player->getBounds(), zone.bounds, completed);
-    }
+    updateTransitionZones(deltaTime);
 
     if (player && gameMap) {
         for (auto& item : gameMap->getItems()) {
@@ -122,5 +102,48 @@ void Game::updateCursorAnimation(float deltaTime) {
             clickCursorFrame = 0;
             clickCursorAnimTimer = 0.0f;
         }
+    }
+}
+
+void Game::updateTransitionZones(float deltaTime) {
+    if (stateMachine.getCurrentState() == GameState::CUTSCENE1) return;
+    
+    if (!player || !inventory) return;
+    for (auto& zone : transitionZones) {
+        SDL_Rect playerBounds = player->getBounds();
+        
+        // Update visual effects first
+        SDL_Rect expandedZone = {
+            zone.bounds.x - 50,  // 50 pixel buffer around zone
+            zone.bounds.y - 50,
+            zone.bounds.w + 100,
+            zone.bounds.h + 100
+        };
+        
+        zone.playerNear = SDL_HasIntersection(&playerBounds, &expandedZone);
+        zone.pulseTimer += deltaTime * 3.0f; // Pulse speed
+        
+        if (zone.playerNear) {
+            zone.glowIntensity = std::min(zone.glowIntensity + deltaTime * 2.0f, 1.0f);
+        } else {
+            zone.glowIntensity = std::max(zone.glowIntensity - deltaTime * 2.0f, 0.3f);
+        }
+        
+        bool completed = inventory && inventory->hasItem(zone.requiredItem);
+        std::function<void()> callback;
+
+        if (zone.toZone == "ToNextMap") {
+            callback = [this]() { this->startCutscene1(); };
+        } else if (zone.toZone == "StartCutScene") {
+            callback = [this]() { this->startLevel1(100, 260); };
+        }
+
+        if (callback && completed && 
+            CollisionHandler::checkCollision(playerBounds, zone.bounds) &&
+            transitionManager->getState() == TransitionState::None) {
+            transitionManager->onTransitionTriggered(callback);
+        }
+
+        transitionManager->update(deltaTime, playerBounds, zone.bounds, completed);
     }
 }

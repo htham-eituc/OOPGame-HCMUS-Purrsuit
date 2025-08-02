@@ -28,6 +28,14 @@ struct SpawnPoints {
 struct TransitionZone {
     SDL_Rect bounds;
     std::string toZone;
+    std::string instruction; 
+    std::string entering; 
+    std::string requiredItem; 
+    
+    // Visual effect properties
+    float pulseTimer = 0.0f;
+    float glowIntensity = 0.0f;
+    bool playerNear = false;
 };
 
 struct MapData {
@@ -38,6 +46,7 @@ struct MapData {
     
     std::vector<Tileset> tilesets;
     std::vector<TileLayer> layers;
+    TileLayer aboveObject;
     TileLayer aboveLayer;
     std::vector<std::vector<bool>> collisionMap;
 

@@ -6,7 +6,7 @@
 class Player : public Character {
 private:
     std::unordered_set<std::string> activeFlags;
-    float moveSpeed = 150.0f;
+    float moveSpeed = 900.0f;
 
 public:
     Player(SDL_Renderer* renderer, int x, int y, Map *map);
