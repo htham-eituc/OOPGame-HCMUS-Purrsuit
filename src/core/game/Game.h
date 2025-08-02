@@ -15,12 +15,14 @@
 #include "Camera.h"
 #include "UIButton.h"
 #include "UILabel.h "
+#include "TransitionManager.h"
 
 class Player;
 class Inventory;
 class MapRender;
 class UIButton;
 class UILabel;
+struct TransitionZone;
 
 class Game {
 public:
@@ -58,13 +60,14 @@ private:
     SDL_Rect resumeButtonRect;
     SDL_Rect quitButtonRect;
 
-
     Player* player = nullptr;
     MapRender* gameMap = nullptr;
     Inventory* inventory = nullptr;
     Camera* camera = nullptr;
-
     std::vector<std::shared_ptr<ZombieCat>> zombies;
+
+    TransitionManager* transitionManager;
+    std::vector<TransitionZone> transitionZones;
 
     std::shared_ptr<UILabel> cutsceneSubtitleLabel = nullptr;
     std::vector<SDL_Texture*> cutscene1Images;

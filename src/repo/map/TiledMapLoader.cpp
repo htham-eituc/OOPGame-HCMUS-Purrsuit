@@ -78,6 +78,7 @@ MapData TiledMapLoader::loadMap(const std::string& path, SDL_Renderer* renderer)
 
     mapData.items = LoadItemsFromMap(path);
     mapData.spawnPoints = LoadSpawnPointsFromMap(path);
+    mapData.transitionZones = LoadTransitionZonesFromMap(path);
     return mapData;
 }
 
@@ -148,3 +149,27 @@ SpawnPoints TiledMapLoader::LoadSpawnPointsFromMap(const std::string& path) {
 
     return spawnPoints;
 }
+
+std::vector<TransitionZone> TiledMapLoader::LoadTransitionZonesFromMap(const std::string& path) {
+
+    std::vector<TransitionZone> zones;
+
+    tson::Tileson parser;
+    std::unique_ptr<tson::Map> map = parser.parse(fs::path(path));
+    if (auto* layer = map->getLayer("Transitions"); layer && layer->getType() == tson::LayerType::ObjectGroup) {
+        for (auto& obj : layer->getObjects()) {
+            if (obj.getObjectType() == tson::ObjectType::Rectangle) {
+                SDL_Rect rect = {
+                    static_cast<int>(obj.getPosition().x),
+                    static_cast<int>(obj.getPosition().y),
+                    static_cast<int>(obj.getSize().x),
+                    static_cast<int>(obj.getSize().y)
+                };
+                zones.push_back({rect, obj.getName()});
+            }
+        }
+    }
+
+    return zones;
+}
+

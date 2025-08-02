@@ -16,6 +16,7 @@ Game::~Game() {
     safeDelete(player);
     safeDelete(camera);
     safeDelete(inventory);
+    safeDelete(transitionManager);
 
     safeDelete(core::audio);
     safeDelete(core::textures);
@@ -80,6 +81,7 @@ bool Game::init(const char* title) {
     stateMachine.changeState(GameState::TITLE);
 
     camera = new Camera(SCREEN_WIDTH, SCREEN_HEIGHT);
+    transitionManager = new TransitionManager();
     return true;
 }
 

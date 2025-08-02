@@ -10,7 +10,7 @@
 #include "MemoryUtils.h"
 #include "GameSave.h"
 
-// Contains render, updateCursorAnimation
+// Contains render
 
 void Game::render() {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
@@ -164,21 +164,3 @@ void Game::render() {
     SDL_RenderPresent(renderer);
 }
 
-void Game::updateCursorAnimation(float deltaTime) {
-    if (mouseClicked) {
-        clickCursorTimer += deltaTime;
-        clickCursorAnimTimer += deltaTime;
-
-        if (clickCursorAnimTimer >= frameDuration) {
-            clickCursorAnimTimer = 0.0f;
-            clickCursorFrame++;
-            if (clickCursorFrame > 3) clickCursorFrame = 3;
-        }
-
-        if (clickCursorTimer >= clickCursorDuration) {
-            mouseClicked = false;
-            clickCursorFrame = 0;
-            clickCursorAnimTimer = 0.0f;
-        }
-    }
-}

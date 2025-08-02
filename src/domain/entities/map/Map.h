@@ -49,4 +49,8 @@ public:
     const SpawnPoints& getSpawnPoints() const { 
         return mapData.spawnPoints; 
     }
+
+    const std::vector<TransitionZone>& getTransitionZones() const {
+        return mapData.transitionZones;
+    }
 };

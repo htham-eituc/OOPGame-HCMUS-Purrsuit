@@ -12,7 +12,7 @@
 
 // Contain startLevel1, startLevel2, startCutscene1
 
-void Game::startLevel1(int x = 100, int y = 100){
+void Game::startLevel1(int x = 100, int y = 300){
     zombies.clear();
     if (startButton) core::uiInput->unregisterElement(startButton);
     if (loadButton) core::uiInput->unregisterElement(loadButton);
@@ -55,14 +55,23 @@ void Game::startLevel2(int x = 100, int y = 100){
     safeDelete(inventory);
     
     gameMap = MapFactory::create(renderer, MAP_PATH_2);
-    player = new Player(renderer, x, y, gameMap);
+    const auto& spawns = gameMap->getSpawnPoints();
+    transitionZones = gameMap->getTransitionZones();
+    std::cerr << "good1" << '\n';
+    player = new Player(renderer, static_cast<int>(spawns.playerSpawn.x), static_cast<int>(spawns.playerSpawn.y), gameMap);
     inventory = new Inventory(); 
     level1ExitZoneRect = { 0, 0, 0, 0 }; // Trickery
     if (gameMap && renderer && player) {
-        auto zombie = std::make_shared<ZombieCat>(renderer, 100, 600, gameMap, player);
-        zombies.push_back(zombie);
+        for (const auto& pos : spawns.zombieSpawns) {
+            zombies.emplace_back(std::make_shared<ZombieCat>(renderer,
+                static_cast<int>(pos.x),
+                static_cast<int>(pos.y),
+                gameMap, player)
+            );
+        }
     }
-
+        // auto zombie = std::make_shared<ZombieCat>(renderer, 100, 600, gameMap, player);
+        // zombies.push_back(zombie);
     if (camera)
         camera->setNewWorld(gameMap->getMapPixelWidth(), gameMap->getMapPixelHeight());
     else

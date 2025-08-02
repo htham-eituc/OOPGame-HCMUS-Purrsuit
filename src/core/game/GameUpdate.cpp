@@ -26,6 +26,28 @@ void Game::update(float deltaTime) {
         zombie->update(deltaTime);
     }
 
+    for (auto& zone : transitionZones) {
+        bool completed = false;
+        std::function<void()> callback;
+
+        if (zone.toZone == "ToNextMap") {
+            completed = inventory && inventory->hasItem("Catnip");
+            callback = [this]() { this->startLevel2(100, 100); };
+        } else if (zone.toZone == "StartCutScene") {
+            completed = inventory && inventory->hasItem("Key");
+            callback = [this]() { this->startLevel1(100, 260); };
+        }
+
+        // Only set callback if this zone is actually being triggered
+        if (callback && completed && 
+            CollisionHandler::checkCollision(player->getBounds(), zone.bounds) &&
+            transitionManager->getState() == TransitionState::None) {
+            transitionManager->onTransitionTriggered(callback);
+        }
+
+        transitionManager->update(deltaTime, player->getBounds(), zone.bounds, completed);
+    }
+
     if (player && gameMap) {
         for (auto& item : gameMap->getItems()) {
             SDL_Rect playerRect = player->getBounds();
@@ -82,4 +104,23 @@ void Game::updateUILayout() {
     loadButtonRect = { centerX, SCREEN_HEIGHT / 2 + buttonHeight + 20, buttonWidth, buttonHeight };
     resumeButtonRect = { centerX, SCREEN_HEIGHT / 2, buttonWidth, buttonHeight };
     quitButtonRect = { centerX, SCREEN_HEIGHT / 2 + buttonHeight + 20, buttonWidth, buttonHeight };
+}
+
+void Game::updateCursorAnimation(float deltaTime) {
+    if (mouseClicked) {
+        clickCursorTimer += deltaTime;
+        clickCursorAnimTimer += deltaTime;
+
+        if (clickCursorAnimTimer >= frameDuration) {
+            clickCursorAnimTimer = 0.0f;
+            clickCursorFrame++;
+            if (clickCursorFrame > 3) clickCursorFrame = 3;
+        }
+
+        if (clickCursorTimer >= clickCursorDuration) {
+            mouseClicked = false;
+            clickCursorFrame = 0;
+            clickCursorAnimTimer = 0.0f;
+        }
+    }
 }
