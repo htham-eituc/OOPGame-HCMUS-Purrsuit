@@ -39,6 +39,7 @@ MapData TiledMapLoader::loadMap(const std::string& path, SDL_Renderer* renderer)
         tileset.tilecount = ts.getTileCount();
 
         std::string imgPath = "assets/tiles/" + ts.getImagePath().u8string();
+        tileset.imagePath = imgPath; 
         std::string imageId = ts.getImagePath().filename().string();
         core::textures->loadTexture(imageId, imgPath);
         tileset.texture = core::textures->getTexture(imageId);

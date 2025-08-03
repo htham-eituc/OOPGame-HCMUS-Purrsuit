@@ -16,6 +16,7 @@
 #include "UIButton.h"
 #include "UILabel.h "
 #include "TransitionManager.h"
+#include "InventoryTextureManager.h"
 
 class Player;
 class Inventory;
@@ -23,6 +24,7 @@ class MapRender;
 class UIButton;
 class UILabel;
 struct TransitionZone;
+class Item;
 
 class Game {
 public:
@@ -63,6 +65,7 @@ private:
     Player* player = nullptr;
     MapRender* gameMap = nullptr;
     Inventory* inventory = nullptr;
+    InventoryTextureManager* inventoryTextureManager;
     Camera* camera = nullptr;
     std::vector<std::shared_ptr<ZombieCat>> zombies;
 
@@ -93,6 +96,8 @@ private:
     void update(float deltaTime);
     void updateCursorAnimation(float deltaTime);
     void updateTransitionZones(float deltaTime);
+    void updateCollectItem(Item& item, const std::vector<Tileset>& tilesets);
+
 
     void render();
     void renderTitleScreen();

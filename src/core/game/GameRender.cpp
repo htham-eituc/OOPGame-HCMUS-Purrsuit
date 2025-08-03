@@ -103,7 +103,7 @@ void Game::renderLevel1() {
     if (gameMap) gameMap->render();
     if (player) player->render(renderer);
     if (gameMap) gameMap->renderAboveLayer();
-    if (inventory && gameMap) inventory->render(renderer, gameMap->getTileSets());
+    if (inventory && gameMap) inventory->render(renderer);
     SDL_Texture* level1ExitZoneTexture = core::textures->getTexture(texture::level1_exit_zone);
     SDL_Rect cam = camera->getView();
     SDL_Rect renderExitZone = {
@@ -125,7 +125,7 @@ void Game::renderLevel2() {
         zombie->render(renderer);
     }
     if (gameMap) gameMap->renderAboveLayer();
-    if (inventory && gameMap) inventory->render(renderer, gameMap->getTileSets());
+    if (inventory && gameMap) inventory->render(renderer);
 
     
     renderTransitionZones(); 
@@ -134,7 +134,6 @@ void Game::renderLevel2() {
 
 void Game::renderDeathScreen() {
     core::audio->stopAllSounds();
-    core::audio->playSound(audio::zombie_eating, 1);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
@@ -142,6 +141,7 @@ void Game::renderDeathScreen() {
     SDL_RenderCopy(renderer, deathTex, nullptr, nullptr);
 
     SDL_RenderPresent(renderer);
+    core::audio->playSound(audio::zombie_eating, 1);
 }
 
 void Game::renderPauseOverlay() {
@@ -251,7 +251,7 @@ void Game::renderZoneGlow(const SDL_Rect& renderZone, const TransitionZone& zone
     
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     
-    bool canEnter = inventory && inventory->hasItem(zone.requiredItem);
+    bool canEnter = (inventory && inventory->hasItem(zone.requiredItem)) || zone.requiredItem == "";
     
     if (canEnter) {
         SDL_SetRenderDrawColor(renderer, 240, 240, 240, (Uint8)alpha); // Green = can enter
@@ -280,7 +280,7 @@ void Game::renderZonePopup(const SDL_Rect& renderZone, const TransitionZone& zon
     TTF_Font* popupFont = TTF_OpenFont("assets/fonts/Pixel12x10Mono-v1.1.0.ttf", 13); // Even smaller font
     if (!popupFont) return;
     
-    bool canEnter = inventory && inventory->hasItem(zone.requiredItem);
+    bool canEnter = (inventory && inventory->hasItem(zone.requiredItem)) || zone.requiredItem == "";
     
     std::string popupText;
     Color textColor;

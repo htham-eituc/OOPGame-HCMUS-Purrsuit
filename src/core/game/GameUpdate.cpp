@@ -33,10 +33,7 @@ void Game::update(float deltaTime) {
             SDL_Rect playerRect = player->getBounds();
             SDL_Rect itemRect = item.getBounds();
             if (!item.isCollected() && CollisionHandler::checkCollision(playerRect, itemRect)) {
-                item.setCollected(true);
-                inventory->addItem(item.getName(), item.getGid());
-                core::audio->playSound(audio::ping, 0);
-                core::itemHandler->addItem(item, *player);
+                updateCollectItem(item, gameMap->getTileSets());
             }
         }
     }
@@ -72,6 +69,20 @@ void Game::update(float deltaTime) {
         stateMachine.changeState(GameState::DEATH);
         core::audio->stopMusic();
         return;
+    }
+}
+
+void Game::updateCollectItem(Item& item, const std::vector<Tileset>& tilesets) {
+    if (inventoryTextureManager->registerItemTexture(item.getName(), tilesets, item.getGid())) {
+        item.setCollected(true);
+        if (core::itemHandler->addItem(item, *player)) 
+            core::audio->playSound(audio::ping, 0);
+        else {
+            inventory->addItem(item.getName());
+            core::audio->playSound(audio::inventory, 0);
+        }
+    } else {
+        std::cout << "Failed to register texture for item: " << item.getName() << "\n";
     }
 }
 
@@ -129,7 +140,7 @@ void Game::updateTransitionZones(float deltaTime) {
             zone.glowIntensity = std::max(zone.glowIntensity - deltaTime * 2.0f, 0.3f);
         }
         
-        bool completed = inventory && inventory->hasItem(zone.requiredItem);
+        bool completed = (inventory && inventory->hasItem(zone.requiredItem)) || zone.requiredItem == "";
         std::function<void()> callback;
 
         if (zone.toZone == "ToNextMap") {

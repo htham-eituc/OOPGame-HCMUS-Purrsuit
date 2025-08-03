@@ -27,7 +27,9 @@ namespace audio {
     constexpr const char* ping = "assets/music/itemPickupSound.wav";
     constexpr const char* move = "assets/music/character_sound/walk_on_grass.wav";
     constexpr const char* growl = "assets/music/character_sound/zombie_growl.mp3";
-    constexpr const char* zombie_eating = "assets/music/character_sound/zombie_eating_win.mp3";
+    constexpr const char* zombie_eating = "assets/music/character_sound/zombie_eating.mp3";
+    constexpr const char* meow = "assets/music/character_sound/meow.mp3";
+    constexpr const char* inventory = "assets/music/inventory.wav";
 }
 
 namespace texture {

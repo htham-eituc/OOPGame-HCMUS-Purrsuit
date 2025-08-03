@@ -19,6 +19,7 @@ public:
     bool isCollected() const;
     SDL_Rect getBounds() const;
     int getGid() const;
+    bool getTextureInfo(const std::vector<Tileset>& tilesets, SDL_Texture*& outTexture, SDL_Rect& outSrcRect) const;
 
     void setCollected(bool state); 
 };

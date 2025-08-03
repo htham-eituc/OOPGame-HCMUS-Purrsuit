@@ -16,6 +16,7 @@ Game::~Game() {
     safeDelete(player);
     safeDelete(camera);
     safeDelete(inventory);
+    safeDelete(inventoryTextureManager);
     safeDelete(transitionManager);
 
     safeDelete(core::audio);
@@ -82,8 +83,8 @@ bool Game::init(const char* title) {
 
     camera = new Camera(SCREEN_WIDTH, SCREEN_HEIGHT);
     transitionManager = new TransitionManager();
-    inventory = new Inventory(); 
-    inventory->addItem("", 0);
+    inventoryTextureManager = new InventoryTextureManager(renderer);
+    inventory = new Inventory(inventoryTextureManager);
     return true;
 }
 

@@ -4,6 +4,7 @@
 #include <vector>
 #include "DataStruct.h"
 #include "Item.h"
+#include "TransitionZone.h"
 
 struct TileLayer {
     std::string name;
@@ -17,6 +18,7 @@ struct Tileset {
     int tileWidth, tileHeight;
     int columns;
     SDL_Texture* texture = nullptr;
+    std::string imagePath;
 };
 
 struct SpawnPoints {
@@ -25,18 +27,7 @@ struct SpawnPoints {
     std::vector<Vector2> zombieSpawns;
 };
 
-struct TransitionZone {
-    SDL_Rect bounds;
-    std::string toZone;
-    std::string instruction; 
-    std::string entering; 
-    std::string requiredItem; 
-    
-    // Visual effect properties
-    float pulseTimer = 0.0f;
-    float glowIntensity = 0.0f;
-    bool playerNear = false;
-};
+
 
 struct MapData {
     int mapWidth = 0;
