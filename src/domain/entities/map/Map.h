@@ -53,4 +53,8 @@ public:
     const std::vector<TransitionZone>& getTransitionZones() const {
         return mapData.transitionZones;
     }
+
+    const std::vector<Tileset>& getTileSets() const {
+        return mapData.tilesets;
+    }
 };

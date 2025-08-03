@@ -589,6 +589,7 @@
                  "name":"ToNextMap",
                  "properties":[
                         {
+
                          "name":"Entering",
                          "type":"string",
                          "value":"Save the princess!"

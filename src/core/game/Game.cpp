@@ -83,6 +83,7 @@ bool Game::init(const char* title) {
     camera = new Camera(SCREEN_WIDTH, SCREEN_HEIGHT);
     transitionManager = new TransitionManager();
     inventory = new Inventory(); 
+    inventory->addItem("", 0);
     return true;
 }
 
@@ -121,10 +122,10 @@ void Game::saveGame(const std::string& filename)
     GameSave save;
     save.CurrentLevel = stateMachine.getCurrentState();
 
-    for (const std::string& item : inventory->getItemNames())
-    {   
-        save.items.insert(item);
-    }
+    // for (const std::string& item : inventory->getItemNames())
+    // {   
+    //     save.items.insert(item);
+    // }
 
     save.playerX = player->getX();
     save.playerY = player->getY();
@@ -141,10 +142,10 @@ void Game::loadGame(const std::string& filename)
     else if (save.CurrentLevel == GameState::LEVEL2) startLevel2(save.playerX, save.playerY);
     else stateMachine.changeState(GameState::TITLE);
 
-    for (const std::string& item : save.items)
-    {
-        inventory->addItem(item);
-    }
+    // for (const std::string& item : save.items)
+    // {
+    //     inventory->addItem(item, item.getGid());
+    // }
 
     // Don't know how to load zombie yet 
     std::cout << "Game loaded from: " << filename << "\n";

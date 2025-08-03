@@ -71,6 +71,7 @@ void Game::startLevel2(int x = 100, int y = 100){
     else
         camera = new Camera(SCREEN_WIDTH, SCREEN_HEIGHT);
 
+
     core::audio->stopMusic();
     core::audio->playMusic(audio::title);
 
@@ -88,7 +89,7 @@ void Game::startCutscene1() {
     if (transitionManager) transitionManager->reset(); 
     if (startButton) core::uiInput->unregisterElement(startButton);
     if (loadButton) core::uiInput->unregisterElement(loadButton);
-    
+    core::audio->stopAllSounds();
     cutscene1Subtitles = {
         {
             {"He came from the shadows.", 3.0f},
@@ -102,14 +103,10 @@ void Game::startCutscene1() {
         }
     };
     
-    // Change state FIRST, before any cleanup
     stateMachine.changeState(GameState::CUTSCENE1);
 
     // Clean up game objects AFTER state change
     safeDelete(gameMap);
-    // Keep player and inventory until we're sure we don't need them
-    // safeDelete(player);    // Comment out for now
-    // safeDelete(inventory); // Comment out for now
 
     TTF_Font* subtitleFont = TTF_OpenFont("assets/fonts/Pixel12x10Mono-v1.1.0.ttf", 20);
     if (!subtitleFont) {

@@ -45,7 +45,11 @@ SDL_Rect Item::getBounds() const {
     return rect;
 }
 
-void Item::setCollected() {
-    collected = true;
+void Item::setCollected(bool state) {
+    collected = state;
+}
+
+int Item::getGid() const {
+    return gid;
 }
 

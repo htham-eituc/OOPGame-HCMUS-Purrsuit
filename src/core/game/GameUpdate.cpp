@@ -33,8 +33,8 @@ void Game::update(float deltaTime) {
             SDL_Rect playerRect = player->getBounds();
             SDL_Rect itemRect = item.getBounds();
             if (!item.isCollected() && CollisionHandler::checkCollision(playerRect, itemRect)) {
-                item.setCollected();
-                inventory->addItem(item.getName());
+                item.setCollected(true);
+                inventory->addItem(item.getName(), item.getGid());
                 core::audio->playSound(audio::ping, 0);
                 core::itemHandler->addItem(item, *player);
             }
