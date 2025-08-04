@@ -105,7 +105,8 @@ void Game::run() {
         updateCursorAnimation(deltaTime);
 
         if (!isPaused && (stateMachine.getCurrentState() == GameState::LEVEL1 || 
-            stateMachine.getCurrentState() == GameState::LEVEL2)){
+            stateMachine.getCurrentState() == GameState::LEVEL2 || 
+            stateMachine.getCurrentState() == GameState::LEVEL3)) {
             const Uint8* keystate = SDL_GetKeyboardState(NULL);
             update(deltaTime);
             player->move(keystate);
@@ -139,8 +140,8 @@ void Game::loadGame(const std::string& filename)
 {
     GameSave save(filename);
     
-    if (save.CurrentLevel == GameState::LEVEL1) startLevel1(save.playerX, save.playerY);
-    else if (save.CurrentLevel == GameState::LEVEL2) startLevel2(save.playerX, save.playerY);
+    if (save.CurrentLevel == GameState::LEVEL1) startLevel1();
+    else if (save.CurrentLevel == GameState::LEVEL2) startLevel2();
     else stateMachine.changeState(GameState::TITLE);
 
     // for (const std::string& item : save.items)

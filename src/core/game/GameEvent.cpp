@@ -48,6 +48,7 @@ void Game::handleEvents() {
                 break;
             case GameState::LEVEL1:
             case GameState::LEVEL2:
+            case GameState::LEVEL3:
                 player->handleEvent(event);
                 inventory->handleEvent(event);
                 break;
@@ -79,7 +80,7 @@ void Game::handleCutsceneEvents(const SDL_Event& event) {
             }
 
         } else {
-            startLevel1(100, 240); // Done with cutscene
+            startLevel1(); // Done with cutscene
         }
     }
 }
@@ -93,6 +94,6 @@ void Game::handleTitleEvents(const SDL_Event& event) {
 void Game::handleDeathEvents(const SDL_Event& event)
 {
     if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_SPACE) {
-        startLevel1(100, 240); // Restart level 1
+        startLevel1(); // Restart level 1
     }
 }
