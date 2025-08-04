@@ -3,6 +3,8 @@
 #include "Services.h"
 #include "Item.h"
 #include "DataStruct.h"
+#include "AudioManager.h"
+#include "Constants.h"
 #include <iostream>
 
 void ItemEffectHandler::addEffect(uint32_t endTime, IItemEffect* effect) {
@@ -21,7 +23,7 @@ void ItemEffectHandler::update(uint32_t currentTime, Player &character) {
     }
 }
 
-void ItemEffectHandler::addItem(Item item, Player& player) {
+bool ItemEffectHandler::addItem(Item item, Player& player) {
     std::string itemName = item.getName();
     IItemEffect* effect = nullptr;
 
@@ -34,6 +36,7 @@ void ItemEffectHandler::addItem(Item item, Player& player) {
     else if (itemName == "Mushroom")
         effect = new SpeedModifierEffect(0.75f);
     else if (itemName == "Key") {
+        core::audio->playSound(audio::meow, 0);
         core::soundEvent->emitSound({
             Vector2::fromRectCenter(item.getBounds()), 
             1000.0f,
@@ -45,5 +48,7 @@ void ItemEffectHandler::addItem(Item item, Player& player) {
         effect->apply(player);
         uint32_t endTime = SDL_GetTicks() + 5000; // 5 seconds
         addEffect(endTime, effect);
+        return true;
     }
+    return false;
 }

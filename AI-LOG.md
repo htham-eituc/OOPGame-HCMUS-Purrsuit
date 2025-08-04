@@ -221,6 +221,45 @@ Then we'll parse that Spawning object layer into this structure.
 Used this almost exactly as suggested, with minor adjustments for the Vector2 type. The AI incorrectly tried to assign tson::Vector2i to Vector2f, but I corrected it. The function now dynamically loads spawn points for all entities using just map data—zero hardcoding.
 
 ---
+### Item and Inventory 
+**Prompt Used:**  
+**(For Debug)** The logic and mechanism run well on seperate stage. But the problem is, the item is not in the same tileset on map, so the gid might be different right. I'm using Tiled for parsing. So if i manage an inventory through out the game, i couldn't, how do i fix this?
+
+**AI Response Summary:**  
+Solution Options:
+Option 1: Store SDL_Texture* (Simplest)
+
+```cpp
+struct InventoryItem {
+    std::string name;
+    SDL_Texture* texture;  // Store the actual texture
+    SDL_Rect srcRect;      // Store the source rectangle
+};
+```
+Option 2: Item ID System (Most flexible)
+```cpp
+enum class ItemType {
+    SWORD = 1,
+    POTION = 2,
+    KEY = 3,
+    // etc.
+};
+
+struct InventoryItem {
+    std::string name;
+    ItemType itemType;     // Universal item identifier
+};
+```
+Option 3: Dedicated Items Tileset
+Create one tileset just for inventory items that's consistent across all maps.
+
+**Decision & Application:**  
+Choose option 1, due to:  
+- Solves GID problem: Items look the same in inventory regardless of which map you're on
+- Faster rendering: No tileset lookup needed during inventory render
+- Memory efficient: Only stores texture pointers (textures are managed elsewhere)
+- Simple integration: Just call getTextureInfo() when collecting items
+---
 
 ### 🧹 Refactoring & Optimization
 

@@ -111,150 +111,6 @@
          "y":0
         }, 
         {
-         "draworder":"topdown",
-         "id":39,
-         "name":"Object",
-         "objects":[
-                {
-                 "gid":939,
-                 "height":32,
-                 "id":94,
-                 "name":"Key",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":545.333333333333,
-                 "y":401.166666666667
-                }, 
-                {
-                 "gid":963,
-                 "height":32,
-                 "id":100,
-                 "name":"Catnip",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":457,
-                 "y":139.166666666667
-                }, 
-                {
-                 "gid":963,
-                 "height":32,
-                 "id":104,
-                 "name":"Catnip",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":413.5,
-                 "y":564.5
-                }, 
-                {
-                 "gid":986,
-                 "height":32,
-                 "id":137,
-                 "name":"Apple",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":864,
-                 "y":453
-                }, 
-                {
-                 "gid":971,
-                 "height":32,
-                 "id":138,
-                 "name":"Mushroom",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":946.666666666667,
-                 "y":761
-                }],
-         "offsetx":-12,
-         "offsety":3,
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":44,
-         "name":"Spawning",
-         "objects":[
-                {
-                 "height":0,
-                 "id":149,
-                 "name":"player",
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":200,
-                 "y":160.666666666667
-                }, 
-                {
-                 "height":0,
-                 "id":150,
-                 "name":"zombie",
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":90.6666666666667,
-                 "y":642.666666666667
-                }, 
-                {
-                 "height":0,
-                 "id":151,
-                 "name":"zombie",
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":156,
-                 "y":662.666666666667
-                }, 
-                {
-                 "height":0,
-                 "id":152,
-                 "name":"zombie",
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":170,
-                 "y":561.333333333333
-                }, 
-                {
-                 "height":0,
-                 "id":153,
-                 "name":"zombie",
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":1146.66666666667,
-                 "y":393.333333333333
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
          "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 947, 733, 733, 733, 947, 0, 0, 0, 0, 0, 0, 0, 322, 323, 324, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 438, 439, 0, 0, 0, 0, 0, 0, 0, 0, 951, 733, 733, 733, 951, 0, 0, 0, 0, 0, 0, 0, 348, 349, 350, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 412, 0, 0, 0, 413, 0, 0, 955, 733, 733, 733, 955, 0, 0, 0, 0, 0, 0, 0, 374, 375, 0, 0, 0, 0, 0, 0, 0,
@@ -543,6 +399,103 @@
          "y":0
         }, 
         {
+         "draworder":"topdown",
+         "id":39,
+         "name":"Object",
+         "objects":[
+                {
+                 "gid":939,
+                 "height":32,
+                 "id":94,
+                 "name":"Key",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":535,
+                 "y":405.17
+                }, 
+                {
+                 "gid":963,
+                 "height":32,
+                 "id":100,
+                 "name":"Catnip",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":457,
+                 "y":139.166666666667
+                }, 
+                {
+                 "gid":963,
+                 "height":32,
+                 "id":104,
+                 "name":"Catnip",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":413.5,
+                 "y":564.5
+                }, 
+                {
+                 "gid":986,
+                 "height":32,
+                 "id":137,
+                 "name":"Apple",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":864,
+                 "y":453
+                }, 
+                {
+                 "gid":971,
+                 "height":32,
+                 "id":138,
+                 "name":"Mushroom",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":946.666666666667,
+                 "y":761
+                }, 
+                {
+                 "gid":997,
+                 "height":32,
+                 "id":167,
+                 "name":"Strawberries",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":97,
+                 "y":769
+                }, 
+                {
+                 "gid":962,
+                 "height":32,
+                 "id":168,
+                 "name":"Milk",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":686,
+                 "y":405
+                }],
+         "offsetx":0,
+         "offsety":1,
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
          "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -555,8 +508,8 @@
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 428, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 452, 453, 454, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 478, 479, 480, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 449, 450, 451, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 475, 476, 477, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 372, 372, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -570,11 +523,58 @@
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
          "height":25,
          "id":14,
-         "name":"bush 2",
+         "name":"Above Object",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
          "width":38,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":44,
+         "name":"Spawning",
+         "objects":[
+                {
+                 "height":0,
+                 "id":149,
+                 "name":"player",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":200,
+                 "y":160.666666666667
+                }, 
+                {
+                 "height":0,
+                 "id":152,
+                 "name":"zombie",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":170,
+                 "y":561.333333333333
+                }, 
+                {
+                 "height":0,
+                 "id":153,
+                 "name":"zombie",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1146.66666666667,
+                 "y":393.333333333333
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -587,6 +587,18 @@
                  "height":160,
                  "id":159,
                  "name":"ToNextMap",
+                 "properties":[
+                        {
+
+                         "name":"Entering",
+                         "type":"string",
+                         "value":"Save the princess!"
+                        }, 
+                        {
+                         "name":"Item",
+                         "type":"string",
+                         "value":"Strawberries"
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -598,10 +610,26 @@
                  "height":30,
                  "id":166,
                  "name":"StartCutScene",
+                 "properties":[
+                        {
+                         "name":"Entering",
+                         "type":"string",
+                         "value":"Enter house"
+                        }, 
+                        {
+                         "name":"Instruction",
+                         "type":"string",
+                         "value":"Find key in bushes"
+                        }, 
+                        {
+                         "name":"Item",
+                         "type":"string",
+                         "value":"Key"
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":94,
+                 "width":50,
                  "x":269,
                  "y":689
                 }],
@@ -612,7 +640,7 @@
          "y":0
         }],
  "nextlayerid":46,
- "nextobjectid":167,
+ "nextobjectid":169,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

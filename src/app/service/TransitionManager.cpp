@@ -2,7 +2,6 @@
 
 void TransitionManager::update(float deltaTime, const SDL_Rect& player, const SDL_Rect& zone, bool taskCompleted) {
     if (State == TransitionState::None && taskCompleted && SDL_HasIntersection(&player, &zone)) {
-        // Trigger transition only if we're not already transitioning
         State = TransitionState::FadeOut;
     }
 
@@ -11,11 +10,10 @@ void TransitionManager::update(float deltaTime, const SDL_Rect& player, const SD
         if (Alpha >= 1.0f) {
             Alpha = 1.0f;
 
-            // Execute callback **only once**
             if (TransitionCallback) {
                 auto cb = TransitionCallback;
-                TransitionCallback = nullptr; // prevent repeated calls
-                cb(); // safe call
+                TransitionCallback = nullptr; 
+                cb(); 
             }
 
             State = TransitionState::FadeIn;
@@ -39,10 +37,15 @@ void TransitionManager::render(SDL_Renderer* renderer) {
 }
 
 void TransitionManager::onTransitionTriggered(std::function<void()> callback) {
-    // Only allow registering a new callback if we're not in the middle of a transition
     if (State == TransitionState::None && !TransitionCallback) {
         TransitionCallback = callback;
     }
 }
 
 TransitionState TransitionManager::getState() const { return State; }
+
+void TransitionManager::reset() {
+    State = TransitionState::None;
+    Alpha = 0.0f;
+    TransitionCallback = nullptr;
+}

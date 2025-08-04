@@ -39,17 +39,17 @@ void ZombieCat::render(SDL_Renderer *renderer) {
     Character::render(renderer);
 
     // Debug draw path
-    SDL_SetRenderDrawColor(renderer, 0, 255, 255, 255); // Cyan
+    // SDL_SetRenderDrawColor(renderer, 0, 255, 255, 255); // Cyan
 
-    for (const Vector2& p : path) {
-        SDL_Rect dot = {
-            static_cast<int>(p.x - 2),
-            static_cast<int>(p.y - 2),
-            4, 4
-        };
-        SDL_Rect camdes = Camera::ToCamView(dot);
-        SDL_RenderFillRect(renderer, &camdes);
-    }
+    // for (const Vector2& p : path) {
+    //     SDL_Rect dot = {
+    //         static_cast<int>(p.x - 2),
+    //         static_cast<int>(p.y - 2),
+    //         4, 4
+    //     };
+    //     SDL_Rect camdes = Camera::ToCamView(dot);
+    //     SDL_RenderFillRect(renderer, &camdes);
+    // }
 }
 
 void ZombieCat::zombieAI(float deltaTime) {

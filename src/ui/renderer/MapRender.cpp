@@ -18,6 +18,9 @@ void MapRender::render() {
 
     for (auto& item : mapData.items)
         item.render(renderer, mapData.tilesets);
+        
+    if (!mapData.aboveObject.data.empty())
+        drawLayer(mapData.aboveObject);
 }
 
 void MapRender::renderAboveLayer() {

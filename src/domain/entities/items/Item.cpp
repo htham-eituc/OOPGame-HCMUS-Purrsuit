@@ -45,7 +45,40 @@ SDL_Rect Item::getBounds() const {
     return rect;
 }
 
-void Item::setCollected() {
-    collected = true;
+void Item::setCollected(bool state) {
+    collected = state;
+}
+
+int Item::getGid() const {
+    return gid;
+}
+
+bool Item::getTextureInfo(const std::vector<Tileset>& tilesets, SDL_Texture*& outTexture, SDL_Rect& outSrcRect) const {
+    if (gid == 0) return false;
+    
+    // Find the correct tileset
+    const Tileset* ts = nullptr;
+    int localID = 0;
+    
+    for (int i = static_cast<int>(tilesets.size()) - 1; i >= 0; --i) {
+        if (gid >= tilesets[i].firstgid) {
+            ts = &tilesets[i];
+            localID = gid - tilesets[i].firstgid;
+            break;
+        }
+    }
+    
+    if (!ts || !ts->texture) return false;
+    
+    // Set output values
+    outTexture = ts->texture;
+    outSrcRect = {
+        (localID % ts->columns) * ts->tileWidth,
+        (localID / ts->columns) * ts->tileHeight,
+        ts->tileWidth,
+        ts->tileHeight
+    };
+    
+    return true;
 }
 

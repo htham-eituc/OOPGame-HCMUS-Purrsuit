@@ -2,13 +2,17 @@
 #include "MemoryUtils.h"
 #include "Services.h"
 #include "Constants.h"
+#include "Camera.h"
 #include <iostream>
 #include <SDL_image.h>
+#include <cmath>
+
 
 Player::Player(SDL_Renderer* renderer, int x, int y, Map *map)
-    : Character(renderer, x, y, map) {
+    : Character(renderer, x, y, map), glowPulse(0.0f) {
     currentTexture = core::textures->getTexture(texture::player_idle);
     setAnimation(CharacterState::Idle);
+    moveSpeed = 150.0f;
 }
 
 Player::~Player() {
@@ -62,7 +66,76 @@ void Player::update(float deltaTime) {
         setAnimation(CharacterState::Idle);
         core::audio->stopSound(audio::move);
     }
+    
+    if (hasFlag("Invincible")) {
+        glowPulse += deltaTime * 4.0f; 
+        if (glowPulse > 2.0f * M_PI) {
+            glowPulse -= 2.0f * M_PI;
+        }
+    }
+    
     Character::update(deltaTime); // reuse base logic
+}
+
+void Player::render(SDL_Renderer* renderer) {
+    if (hasFlag("Invincible")) 
+        renderInvincibilityGlow(renderer);
+
+    
+    Character::render(renderer);
+}
+
+void Player::renderInvincibilityGlow(SDL_Renderer* renderer) {
+    float pulseValue = (sin(glowPulse) + 1.0f) * 0.2f; // 0 to 1
+    Uint8 alpha = static_cast<Uint8>(60 + pulseValue * 80); // 60 to 140
+    
+    SDL_Rect collisionBox = getCollisionBox(position);
+    
+    int centerX = collisionBox.x + collisionBox.w / 2;
+    int centerY = collisionBox.y + collisionBox.h / 2;
+    
+    SDL_Rect centerRect = {centerX, centerY, 1, 1};
+    SDL_Rect camCenter = Camera::ToCamView(centerRect);
+    
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_ADD);
+    
+    // Golden glow color
+    Uint8 r = 255, g = 215, b = 100;
+    
+    for (int layer = 5; layer >= 1; layer--) {
+        int radius = layer * 12 + static_cast<int>(pulseValue * 6); // Pulsing radius
+        Uint8 layerAlpha = alpha / (layer + 1); // Decrease alpha for outer layers
+        
+        SDL_SetRenderDrawColor(renderer, r, g, b, layerAlpha);
+        
+        // Draw filled circle using multiple horizontal lines
+        for (int y = -radius; y <= radius; y++) {
+            int width = static_cast<int>(sqrt(radius * radius - y * y) * 2);
+            if (width > 0) {
+                SDL_Rect line = {
+                    camCenter.x - width / 2,
+                    camCenter.y + y,
+                    width,
+                    1
+                };
+                SDL_RenderFillRect(renderer, &line);
+            }
+        }
+    }
+    
+    // Add some sparkle effect
+    for (int i = 0; i < 8; i++) {
+        float angle = (glowPulse * 1.0f + i * M_PI / 4.0f);
+        int sparkleRadius = 40 + static_cast<int>(pulseValue * 10);
+        int sparkleX = camCenter.x + static_cast<int>(cos(angle) * sparkleRadius);
+        int sparkleY = camCenter.y + static_cast<int>(sin(angle) * sparkleRadius);
+        
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, static_cast<Uint8>(alpha * 0.8f));
+        SDL_Rect sparkle = {sparkleX - 2, sparkleY - 2, 4, 4};
+        SDL_RenderFillRect(renderer, &sparkle);
+    }
+    
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 }
 
 void Player::setAnimation(CharacterState newState) {
@@ -94,15 +167,10 @@ void Player::kill() {
     if(!isAlive()) return;
     addFlag("Killed");
 
-    // Optional: Stop movement and play death animation
     velocity = {0, 0};
     setAnimation(CharacterState::Idle);
-    currentTexture = core::textures->getTexture(texture::player_dead); // if you have one
+    currentTexture = core::textures->getTexture(texture::player_dead); 
 
-    // Play sound
-    core::audio->playSound(audio::zombie_eating, 1); 
-
-    // Optional: trigger game over / restart logic
     std::cout << "Player has died!\n";
 }
 
