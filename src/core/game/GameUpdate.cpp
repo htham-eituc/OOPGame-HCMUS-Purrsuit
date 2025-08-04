@@ -61,10 +61,6 @@ void Game::update(float deltaTime) {
         }
     }
 
-    if (player && CollisionHandler::checkCollision(player->getBounds(), level1ExitZoneRect)) {
-        startLevel2(100, 100);
-    }
-
     if (player && !player->isAlive() && stateMachine.getCurrentState() != GameState::DEATH) {
         stateMachine.changeState(GameState::DEATH);
         core::audio->stopMusic();
@@ -146,9 +142,9 @@ void Game::updateTransitionZones(float deltaTime) {
         std::function<void()> callback;
 
         if (zone.toZone == "ToNextMap") {
-            callback = [this]() { this->startCutscene1(); };
+            callback = [this]() { this->startNextLevel(); };
         } else if (zone.toZone == "StartCutScene") {
-            callback = [this]() { this->startLevel1(100, 260); };
+            callback = [this]() { this->startCutscene1(); };
         }
 
         if (callback && completed && 
@@ -160,3 +156,4 @@ void Game::updateTransitionZones(float deltaTime) {
         transitionManager->update(deltaTime, playerBounds, zone.bounds, completed);
     }
 }
+ 

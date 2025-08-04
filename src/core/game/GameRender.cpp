@@ -29,6 +29,9 @@ void Game::render() {
         case GameState::LEVEL2:
             renderLevel2();
             break;
+        case GameState::LEVEL3: 
+            renderLevel3();
+            break;
         case GameState::DEATH:
             renderDeathScreen();
             return; // Death screen handles its own SDL_RenderPresent
@@ -102,17 +105,10 @@ void Game::renderCutscene1() {
 void Game::renderLevel1() {
     if (gameMap) gameMap->render();
     if (player) player->render(renderer);
+    for (auto& zombie : zombies) 
+        zombie->render(renderer);
     if (gameMap) gameMap->renderAboveLayer();
     if (inventory && gameMap) inventory->render(renderer);
-    SDL_Texture* level1ExitZoneTexture = core::textures->getTexture(texture::level1_exit_zone);
-    SDL_Rect cam = camera->getView();
-    SDL_Rect renderExitZone = {
-        level1ExitZoneRect.x - cam.x,
-        level1ExitZoneRect.y - cam.y,
-        level1ExitZoneRect.w,
-        level1ExitZoneRect.h
-    };
-    SDL_RenderCopy(renderer, level1ExitZoneTexture, nullptr, &renderExitZone);
 
     renderTransitionZones(); 
     if (saveButton) saveButton->render(core::uiRenderer);
@@ -121,13 +117,25 @@ void Game::renderLevel1() {
 void Game::renderLevel2() {
     if (gameMap) gameMap->render();
     if (player) player->render(renderer);
-    for (auto& zombie : zombies) {
+    for (auto& zombie : zombies) 
         zombie->render(renderer);
-    }
+    
     if (gameMap) gameMap->renderAboveLayer();
     if (inventory && gameMap) inventory->render(renderer);
 
+    renderTransitionZones(); 
+    if (saveButton) saveButton->render(core::uiRenderer);
+}
+
+void Game::renderLevel3() {
+    if (gameMap) gameMap->render();
+    if (player) player->render(renderer);
+    for (auto& zombie : zombies) 
+        zombie->render(renderer);
     
+    if (gameMap) gameMap->renderAboveLayer();
+    if (inventory && gameMap) inventory->render(renderer);
+
     renderTransitionZones(); 
     if (saveButton) saveButton->render(core::uiRenderer);
 }
@@ -287,7 +295,7 @@ void Game::renderZonePopup(const SDL_Rect& renderZone, const TransitionZone& zon
     if (canEnter) {
         popupText = zone.entering; // Use the displayText from map data
         textColor = Color(255, 255, 255, 255); // White text
-        bgColor = Color(240, 240, 240, 150); // Green background
+        bgColor = Color(240, 240, 240, 150); // White background
     } else {
         popupText = zone.instruction; // Show what item is needed
         if(zone.instruction == "") popupText = "Need " + zone.requiredItem + " to enter"; 
@@ -308,12 +316,10 @@ void Game::renderZonePopup(const SDL_Rect& renderZone, const TransitionZone& zon
     int popupX = renderZone.x + renderZone.w / 2 - popupWidth / 2;
     int popupY = renderZone.y - popupHeight - 8; // Above the zone with small gap
     
-    // Keep popup on screen
     if (popupX < 0) popupX = 8;
     if (popupX + popupWidth > SCREEN_WIDTH) popupX = SCREEN_WIDTH - popupWidth - 8;
     if (popupY < 0) popupY = renderZone.y + renderZone.h + 8; // Show below if no room above
     
-    // Draw background rectangle
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     SDL_SetRenderDrawColor(renderer, bgColor.r, bgColor.g, bgColor.b, bgColor.a);
     
@@ -325,11 +331,9 @@ void Game::renderZonePopup(const SDL_Rect& renderZone, const TransitionZone& zon
     };
     SDL_RenderFillRect(renderer, &popupBg);
     
-    // Draw border
     SDL_SetRenderDrawColor(renderer, textColor.r, textColor.g, textColor.b, 255);
     SDL_RenderDrawRect(renderer, &popupBg);
     
-    // Create UILabel for the popup - properly centered
     UILabel popupLabel(
         Vector2(popupX + padding, popupY + padding), // Center the text with equal padding
         Vector2(textW, textH), // Use actual text dimensions

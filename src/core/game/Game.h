@@ -39,8 +39,12 @@ public:
     void handleDeathEvents(const SDL_Event& event);
     void run();
     void startCutscene1();
-    void startLevel1(int x, int y);
-    void startLevel2(int x, int y);
+    void startNextLevel();
+    void startLevel1();
+    void startLevel2();
+    void startLevel3();
+
+
 
 private:
     SDL_Window* window = nullptr;
@@ -56,7 +60,6 @@ private:
     std::shared_ptr<UIButton> pauseResumeButton;
     std::shared_ptr<UIButton> pauseQuitButton;
     SDL_Rect startButtonRect;
-    SDL_Rect level1ExitZoneRect;
     SDL_Rect loadButtonRect; //For title screen
     SDL_Rect saveButtonRect; // For Levels (LEVEL1 and LEVEL2)
     SDL_Rect resumeButtonRect;
@@ -104,6 +107,7 @@ private:
     void renderCutscene1();
     void renderLevel1();
     void renderLevel2();
+    void renderLevel3();
     void renderDeathScreen();
     void renderPauseOverlay();
     void renderControlHints();

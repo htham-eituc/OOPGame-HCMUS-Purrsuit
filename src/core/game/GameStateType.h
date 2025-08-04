@@ -6,6 +6,7 @@ enum class GameState
     CUTSCENE1,
     LEVEL1,
     LEVEL2,
+    LEVEL3,
     DEATH
 };
 
