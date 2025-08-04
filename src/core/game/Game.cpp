@@ -17,6 +17,8 @@ Game::~Game() {
     safeDelete(camera);
     safeDelete(inventory);
     safeDelete(inventoryTextureManager);
+    safeDelete(tutorial);
+    safeDelete(tutorialTextureManager);
     safeDelete(transitionManager);
 
     safeDelete(core::audio);
@@ -85,6 +87,8 @@ bool Game::init(const char* title) {
     transitionManager = new TransitionManager();
     inventoryTextureManager = new InventoryTextureManager(renderer);
     inventory = new Inventory(inventoryTextureManager);
+    tutorialTextureManager = new TutorialTextureManager(renderer);
+    tutorial = new Tutorial(tutorialTextureManager, core::uiRenderer);
     return true;
 }
 
@@ -103,14 +107,20 @@ void Game::run() {
         handleEvents();
 
         updateCursorAnimation(deltaTime);
+        bool gamePaused = isPaused || (tutorial && tutorial->getPaused());
 
-        if (!isPaused && (stateMachine.getCurrentState() == GameState::LEVEL1 || 
+        if (!gamePaused && (stateMachine.getCurrentState() == GameState::LEVEL1 || 
             stateMachine.getCurrentState() == GameState::LEVEL2 || 
             stateMachine.getCurrentState() == GameState::LEVEL3)) {
             const Uint8* keystate = SDL_GetKeyboardState(NULL);
             update(deltaTime);
             player->move(keystate);
         }
+
+        if (tutorial) {
+            tutorial->update(deltaTime);
+        }
+        
         if (stateMachine.getCurrentState() == GameState::TITLE && !core::audio->isPlayingMusic()) {
             core::audio->playMusic(audio::title);
         }
