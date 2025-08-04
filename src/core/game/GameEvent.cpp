@@ -49,6 +49,7 @@ void Game::handleEvents() {
             case GameState::LEVEL1:
             case GameState::LEVEL2:
                 player->handleEvent(event);
+                inventory->handleEvent(event);
                 break;
             case GameState::DEATH:
                 handleDeathEvents(event);

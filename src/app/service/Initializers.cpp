@@ -51,7 +51,10 @@ namespace app::init {
         core::audio->loadSound(audio::ping, audio::ping);
         core::audio->loadSound(audio::move, audio::move);
         core::audio->loadSound(audio::growl, audio::growl);
-
+        core::audio->loadSound(audio::zombie_eating, audio::zombie_eating);
+        core::audio->loadSound(audio::inventory, audio::inventory);
+        core::audio->loadSound(audio::meow, audio::meow);
+        
         // texture
         core::textures->loadTexture(texture::player_idle, texture::player_idle);
         core::textures->loadTexture(texture::player_walk, texture::player_walk);

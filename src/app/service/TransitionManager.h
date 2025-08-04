@@ -9,6 +9,7 @@ class TransitionManager {
 public:
     void update(float deltaTime, const SDL_Rect& playerBounds, const SDL_Rect& zones, bool taskCompleted);
     void render(SDL_Renderer* renderer);
+    void reset();
 
     void onTransitionTriggered(std::function<void()> callback);
 
@@ -18,7 +19,7 @@ public:
 private:
     TransitionState State = TransitionState::None;
     float Alpha = 0.0f;
-    float FadeSpeed = 0.5f;
+    float FadeSpeed = 1.0f;
 
     std::function<void()> TransitionCallback;
 };

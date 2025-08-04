@@ -16,6 +16,7 @@
 #include "UIButton.h"
 #include "UILabel.h "
 #include "TransitionManager.h"
+#include "InventoryTextureManager.h"
 
 class Player;
 class Inventory;
@@ -23,6 +24,7 @@ class MapRender;
 class UIButton;
 class UILabel;
 struct TransitionZone;
+class Item;
 
 class Game {
 public:
@@ -63,6 +65,7 @@ private:
     Player* player = nullptr;
     MapRender* gameMap = nullptr;
     Inventory* inventory = nullptr;
+    InventoryTextureManager* inventoryTextureManager;
     Camera* camera = nullptr;
     std::vector<std::shared_ptr<ZombieCat>> zombies;
 
@@ -81,8 +84,7 @@ private:
 
     bool mouseClicked = false;
     float clickCursorTimer = 0.0f;
-    float clickCursorDuration = 0.25f; // total duration of click animation
-
+    float clickCursorDuration = 0.25f; 
     int clickCursorFrame = 0;
     float clickCursorAnimTimer = 0.0f;
     const float frameDuration = 0.05f;
@@ -93,5 +95,20 @@ private:
     void updateUILayout();
     void update(float deltaTime);
     void updateCursorAnimation(float deltaTime);
+    void updateTransitionZones(float deltaTime);
+    void updateCollectItem(Item& item, const std::vector<Tileset>& tilesets);
+
+
     void render();
+    void renderTitleScreen();
+    void renderCutscene1();
+    void renderLevel1();
+    void renderLevel2();
+    void renderDeathScreen();
+    void renderPauseOverlay();
+    void renderControlHints();
+    void renderCursor();
+    void renderTransitionZones();
+    void renderZoneGlow(const SDL_Rect& renderZone, const TransitionZone& zone);
+    void renderZonePopup(const SDL_Rect& renderZone, const TransitionZone& zone);
 };

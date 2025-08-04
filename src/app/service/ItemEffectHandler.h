@@ -17,7 +17,7 @@ class ItemEffectHandler {
 public:
     void addEffect(uint32_t endTime, IItemEffect* effect);
     void update(uint32_t currentTime, Player &character);
-    void addItem(Item item, Player &character);
+    bool addItem(Item item, Player &character);
 private:
     std::vector<ActiveItem> activeEffects;
 };
