@@ -68,6 +68,8 @@ void Game::update(float deltaTime) {
     if (player && !player->isAlive() && stateMachine.getCurrentState() != GameState::DEATH) {
         stateMachine.changeState(GameState::DEATH);
         core::audio->stopMusic();
+        core::audio->stopAllSounds();
+        core::audio->playSound(audio::zombie_eating, 0);
         return;
     }
 }

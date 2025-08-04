@@ -12,7 +12,7 @@ Player::Player(SDL_Renderer* renderer, int x, int y, Map *map)
     : Character(renderer, x, y, map), glowPulse(0.0f) {
     currentTexture = core::textures->getTexture(texture::player_idle);
     setAnimation(CharacterState::Idle);
-    moveSpeed = 500.0f;
+    moveSpeed = 150.0f;
 }
 
 Player::~Player() {

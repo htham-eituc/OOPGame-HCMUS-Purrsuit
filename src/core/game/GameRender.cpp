@@ -133,7 +133,6 @@ void Game::renderLevel2() {
 }
 
 void Game::renderDeathScreen() {
-    core::audio->stopAllSounds();
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
@@ -141,7 +140,6 @@ void Game::renderDeathScreen() {
     SDL_RenderCopy(renderer, deathTex, nullptr, nullptr);
 
     SDL_RenderPresent(renderer);
-    core::audio->playSound(audio::zombie_eating, 1);
 }
 
 void Game::renderPauseOverlay() {

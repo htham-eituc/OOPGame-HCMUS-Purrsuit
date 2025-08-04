@@ -12,8 +12,8 @@ Character::Character(SDL_Renderer* renderer, int x, int y, Map* map)
 Character::~Character() {}
 
 SDL_Rect Character::getCollisionBox(const Vector2& pos) const {
-    int padLeft = 16;
-    int padRight = -16;
+    int padLeft = 20;
+    int padRight = -12;
     int padTop = 48;
     int padBottom = -32;
     // Adjust this to taste (smaller = tighter collision)
