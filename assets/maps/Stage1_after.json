@@ -404,42 +404,6 @@
          "name":"Object",
          "objects":[
                 {
-                 "gid":939,
-                 "height":32,
-                 "id":94,
-                 "name":"Key",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":535,
-                 "y":405.17
-                }, 
-                {
-                 "gid":963,
-                 "height":32,
-                 "id":100,
-                 "name":"Catnip",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":457,
-                 "y":139.166666666667
-                }, 
-                {
-                 "gid":963,
-                 "height":32,
-                 "id":104,
-                 "name":"Catnip",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":413.5,
-                 "y":564.5
-                }, 
-                {
                  "gid":986,
                  "height":32,
                  "id":137,
@@ -448,44 +412,8 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":864,
-                 "y":453
-                }, 
-                {
-                 "gid":971,
-                 "height":32,
-                 "id":138,
-                 "name":"Mushroom",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":946.666666666667,
-                 "y":761
-                }, 
-                {
-                 "gid":997,
-                 "height":32,
-                 "id":167,
-                 "name":"Strawberries",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":97,
-                 "y":769
-                }, 
-                {
-                 "gid":962,
-                 "height":32,
-                 "id":168,
-                 "name":"Milk",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":686,
-                 "y":405
+                 "x":472.621553884712,
+                 "y":706.4335839599
                 }],
          "offsetx":0,
          "offsety":1,
@@ -545,8 +473,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":200,
-                 "y":160.666666666667
+                 "x":290,
+                 "y":692.666666666667
                 }, 
                 {
                  "height":0,
@@ -569,8 +497,20 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":1146.66666666667,
-                 "y":393.333333333333
+                 "x":690.66666666667,
+                 "y":469.333333333333
+                }, 
+                {
+                 "height":0,
+                 "id":169,
+                 "name":"zombie",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":451.515151515152,
+                 "y":215.151515151515
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -589,7 +529,6 @@
                  "name":"ToNextMap",
                  "properties":[
                         {
-
                          "name":"Entering",
                          "type":"string",
                          "value":"Save the princess!"
@@ -605,33 +544,6 @@
                  "width":212,
                  "x":1002.66666666667,
                  "y":640
-                }, 
-                {
-                 "height":30,
-                 "id":166,
-                 "name":"ToNextMap",
-                 "properties":[
-                        {
-                         "name":"Entering",
-                         "type":"string",
-                         "value":"Enter house"
-                        }, 
-                        {
-                         "name":"Instruction",
-                         "type":"string",
-                         "value":"Find key in bushes"
-                        }, 
-                        {
-                         "name":"Item",
-                         "type":"string",
-                         "value":"Key"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":50,
-                 "x":269,
-                 "y":689
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -640,7 +552,7 @@
          "y":0
         }],
  "nextlayerid":46,
- "nextobjectid":169,
+ "nextobjectid":170,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

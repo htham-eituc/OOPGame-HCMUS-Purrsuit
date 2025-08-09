@@ -17,7 +17,7 @@ class LevelState : public GameStateBase {
 public:
     ~LevelState() override; 
     void enter(Game* game) override;
-    void exit(Game* game) override;
+    virtual void exit(Game* game) override;
     void handleEvent(Game* game, const SDL_Event& event) override;
     void update(Game* game, float deltaTime) override;
     void render(Game* game) override;
@@ -46,7 +46,7 @@ protected:
         bool isTransitioning = false;  // ADD THIS FLAG
     bool isExiting = false;  
     // Shared helper methods
-    void updateUILayout();
+    void updateUILayout(Game* game);
     void createLevelEntities(Game* game);
     void updateGameplay(Game* game, float deltaTime);
     void renderGameplay(Game* game);
@@ -72,6 +72,21 @@ protected:
 };
 
 class Level3State : public LevelState {
+protected:
+    void exit(Game* game) override;
+    const char* getMapPath() override;
+    const char* getBackgroundMusic() override;
+    int getLevelNumber() override;
+};
+
+class Level4State : public LevelState {
+protected:
+    const char* getMapPath() override;
+    const char* getBackgroundMusic() override;
+    int getLevelNumber() override;
+};
+
+class Level5State : public LevelState {
 protected:
     const char* getMapPath() override;
     const char* getBackgroundMusic() override;

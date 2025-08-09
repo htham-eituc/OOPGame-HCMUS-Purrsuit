@@ -58,7 +58,6 @@ private:
     bool running = false;
 
     GameStateMachine* stateMachine;
-    std::unique_ptr<GameStateBase> currentState;
 
     Inventory* inventory = nullptr;
     InventoryTextureManager* inventoryTextureManager;
@@ -80,4 +79,13 @@ private:
 
     void render();
     void renderCursor();
+    void renderLoadingScreen();
+
+    std::unique_ptr<GameStateBase> currentState;
+    std::unique_ptr<GameStateBase> pendingState;  
+    bool isChangingState = false;
+    bool blockAllInput = false;
+    Uint32 stateChangeTimer = 0;
+
+    void performStateChange();
 };

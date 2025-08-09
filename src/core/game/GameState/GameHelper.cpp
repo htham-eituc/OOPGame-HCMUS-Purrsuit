@@ -1,4 +1,5 @@
 #include "Game.h"
+#include <iostream>
 
 SDL_Renderer* Game::getRenderer() const {
     return renderer;
@@ -35,12 +36,56 @@ float Game::calculateDeltaTime(Uint32& lastTime) {
     return deltaTime;
 }
 
+
+
 void Game::changeState(std::unique_ptr<GameStateBase> newState) {
-    if (currentState) {
-        currentState->exit(this);  // Exit current state
+    pendingState = std::move(newState);
+    blockAllInput = true;
+    stateChangeTimer = SDL_GetTicks();
+}
+
+void Game::performStateChange() {
+    if (!pendingState) return;
+    isChangingState = true;
+    if (currentState) currentState->exit(this);
+    
+    SDL_Event clearEvent;
+    while (SDL_PollEvent(&clearEvent)) {
+        if (clearEvent.type == SDL_QUIT) {
+            running = false;
+        }
     }
-    currentState = std::move(newState);
-    currentState->enter(this);     // Enter new state - HERE's where enter() is used!
+    
+    currentState = std::move(pendingState);
+    pendingState.reset();
+    
+    if (currentState) {
+        currentState->enter(this);
+    }
+    
+    isChangingState = false;
+}
+
+void Game::renderLoadingScreen() {
+    SDL_SetRenderDrawColor(renderer, 20, 20, 30, 255);
+    SDL_RenderClear(renderer);
+    
+    // Optional: Simple loading text
+    TTF_Font* font = TTF_OpenFont("assets/fonts/Pixel12x10Mono-v1.1.0.ttf", 24);
+    if (font) {
+        UILabel loadingLabel(
+            Vector2(SCREEN_WIDTH/2 - 60, SCREEN_HEIGHT/2),
+            Vector2(120, 30),
+            "Loading...",
+            Color(255, 255, 255, 255),
+            Color(0, 0, 0, 255),
+            font
+        );
+        loadingLabel.render(core::uiRenderer);
+        TTF_CloseFont(font);
+    }
+    
+    SDL_RenderPresent(renderer);
 }
 
 void Game::startCutscenePlot() {

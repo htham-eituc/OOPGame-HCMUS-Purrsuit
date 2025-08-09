@@ -16,6 +16,9 @@ public:
     static std::unique_ptr<GameStateBase> createLevel1State();
     static std::unique_ptr<GameStateBase> createLevel2State();
     static std::unique_ptr<GameStateBase> createLevel3State();
+    static std::unique_ptr<GameStateBase> createLevel4State();
+    static std::unique_ptr<GameStateBase> createLevel5State();
+
     static std::unique_ptr<GameStateBase> createCutscene1State();
     static std::unique_ptr<GameStateBase> createDeathState();
 

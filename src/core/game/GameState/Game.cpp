@@ -16,7 +16,9 @@ Game::~Game() {
     safeDelete(inventory);
     safeDelete(inventoryTextureManager);
     safeDelete(transitionManager);
-
+    safeDelete(tutorial);
+    safeDelete(tutorialTextureManager);
+    
     safeDelete(core::audio);
     safeDelete(core::textures);
     safeDelete(core::soundEvent);
@@ -57,6 +59,8 @@ bool Game::init(const char* title) {
     transitionManager = new TransitionManager();
     inventoryTextureManager = new InventoryTextureManager(renderer);
     inventory = new Inventory(inventoryTextureManager);
+    tutorialTextureManager = new TutorialTextureManager(renderer);
+    tutorial = new Tutorial(tutorialTextureManager, core::uiRenderer);
 
     changeState(StateFactory::createTitleState());
 
@@ -90,10 +94,16 @@ void Game::handleEvents() {
                 clickCursorAnimTimer = 0.0f;
             }
         }
-        
+
+        if (blockAllInput || isChangingState || pendingState) {
+            if (event.type == SDL_QUIT) {
+                running = false; 
+            }
+            return;
+        }
+
         core::uiInput->handleEvent(event);
         
-        // Delegate to current state - no more giant switch!
         if (currentState) {
             currentState->handleEvent(this, event);
         }
@@ -102,23 +112,31 @@ void Game::handleEvents() {
 
 void Game::update(float deltaTime) {
     updateCursorAnimation(deltaTime);
-    
-    if (currentState) {
+    if (pendingState && !isChangingState) {
+        if (SDL_GetTicks() - stateChangeTimer > 50) { // 50ms delay
+            performStateChange();
+        }
+        return; 
+    }
+
+    if (blockAllInput && SDL_GetTicks() - stateChangeTimer > 200) {
+        blockAllInput = false;
+    }
+
+    if (!isChangingState && !blockAllInput && currentState) {
         currentState->update(this, deltaTime);
     }
 }
 
 void Game::render() {
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
     
     if (currentState) {
         currentState->render(this);
     }
-    
-    if (transitionManager) {
-        transitionManager->render(renderer);
-    }
+
+    if (transitionManager) transitionManager->render(renderer);
     renderCursor();
     
     SDL_RenderPresent(renderer);

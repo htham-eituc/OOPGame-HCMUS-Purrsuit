@@ -26,28 +26,8 @@ void LevelState::enter(Game *game)
     core::audio->stopMusic();
     core::audio->playMusic(getBackgroundMusic());
     
-    updateUILayout();
-    saveButtonRect = { 20, 20, 100, 40 };
-    saveButton = std::make_shared<UIButton>(
-        saveButtonRect,
-        core::textures->getTexture(texture::save_button),
-        [game]() { game->saveGame("save.json"); }
-    );
-
+    updateUILayout(game);
     core::uiInput->registerElement(saveButton);
-    pauseResumeButton = std::make_shared<UIButton>(
-        resumeButtonRect,
-        core::textures->getTexture(texture::resume_button),
-        [this]() { isPaused = false; }
-    );
-    core::uiInput->registerElement(pauseResumeButton);
-
-    pauseQuitButton = std::make_shared<UIButton>(
-        quitButtonRect,
-        core::textures->getTexture(texture::quit_button),
-        [this, game]() { game->setRunning(false); }
-    );
-    core::uiInput->registerElement(pauseQuitButton);
     
     isPaused = false;
 }
@@ -60,12 +40,10 @@ void LevelState::exit(Game* game) {
         core::uiInput->unregisterElement(saveButton);
         saveButton.reset();
     }
-    
     if (pauseResumeButton) {
         core::uiInput->unregisterElement(pauseResumeButton);
         pauseResumeButton.reset();
     }
-    
     if (pauseQuitButton) {  
         core::uiInput->unregisterElement(pauseQuitButton);
         pauseQuitButton.reset();
@@ -78,14 +56,28 @@ void LevelState::exit(Game* game) {
 
 void LevelState::handleEvent(Game* game, const SDL_Event& event) {
     if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
+        bool wasPaused = isPaused;
         isPaused = !isPaused;
-        if (!isPaused) pauseSoundsStoppedOnce = false;
+        
+        if (!wasPaused && isPaused) {
+            if (pauseResumeButton) core::uiInput->registerElement(pauseResumeButton);
+            if (pauseQuitButton) core::uiInput->registerElement(pauseQuitButton);
+            if (saveButton) core::uiInput->unregisterElement(saveButton);
+        } else if (wasPaused && !isPaused) {
+            if (pauseResumeButton) core::uiInput->unregisterElement(pauseResumeButton);
+            if (pauseQuitButton) core::uiInput->unregisterElement(pauseQuitButton);
+            if (saveButton) core::uiInput->registerElement(saveButton);
+            pauseSoundsStoppedOnce = false;
+        }
     }
     
-    if (!isPaused) {
-        if (player) player->handleEvent(event);
-        if (game->getInventory()) game->getInventory()->handleEvent(event);
+    if (isPaused) {
+        // When paused, ONLY handle pause menu UI events
+        core::uiInput->handleEvent(event);
+        return; 
     }
+    if (player) player->handleEvent(event);
+    if (game->getInventory()) game->getInventory()->handleEvent(event);
     core::uiInput->handleEvent(event);
 }
 
@@ -95,7 +87,6 @@ void LevelState::update(Game* game, float deltaTime) {
     updateGameplay(game, deltaTime);
     updateTransitionZones(game, deltaTime);
     
-    // Check for death
     if (player && !player->isAlive()) {
         game->changeState(StateFactory::createDeathState());
     }
@@ -103,20 +94,34 @@ void LevelState::update(Game* game, float deltaTime) {
 
 void LevelState::render(Game* game) {
     renderGameplay(game);
-    
     if (isPaused) renderPauseOverlay(game);
-    
-    
     renderControlHints(game);
 }
 
-void LevelState::updateUILayout() {
+void LevelState::updateUILayout(Game* game) {
+    saveButtonRect = { 20, 20, 100, 40 };
     int buttonWidth = SCREEN_WIDTH / 4;
     int buttonHeight = SCREEN_HEIGHT / 10;
     int centerX = SCREEN_WIDTH / 2 - buttonWidth / 2;
 
     resumeButtonRect = { centerX, SCREEN_HEIGHT / 2, buttonWidth, buttonHeight };
     quitButtonRect = { centerX, SCREEN_HEIGHT / 2 + buttonHeight + 20, buttonWidth, buttonHeight };
+
+    saveButton = std::make_shared<UIButton>(
+        saveButtonRect,
+        core::textures->getTexture(texture::save_button),
+        [game]() { game->saveGame("save.json"); }
+    );
+    pauseResumeButton = std::make_shared<UIButton>(
+        resumeButtonRect,
+        core::textures->getTexture(texture::resume_button),
+        [this]() { isPaused = false; }
+    );
+    pauseQuitButton = std::make_shared<UIButton>(
+        quitButtonRect,
+        core::textures->getTexture(texture::quit_button),
+        [this, game]() { game->setRunning(false); }
+    );
 }
 
 void LevelState::createLevelEntities(Game *game)
@@ -146,31 +151,23 @@ void LevelState::createLevelEntities(Game *game)
 }
 
 void LevelState::updateGameplay(Game* game, float deltaTime) {
-    // Update game entities
     if (player) {
         player->update(deltaTime);
-        
-        // Handle keyboard input for movement
         const Uint8* keystate = SDL_GetKeyboardState(NULL);
         player->move(keystate);
-        
-        // Update camera to follow player
         game->getCamera()->update(player->getBounds());
     }
     
-    // Update zombies
     for (auto& zombie : zombies) {
         zombie->update(deltaTime);
     }
     
-    // Update core systems
     if (core::itemHandler && player)
         core::itemHandler->update(SDL_GetTicks(), *player);
     
     if (core::soundEvent)
         core::soundEvent->update(deltaTime);
     
-    // Handle item collection
     if (player && gameMap) {
         for (auto& item : gameMap->getItems()) {
             SDL_Rect playerRect = player->getBounds();
@@ -185,22 +182,16 @@ void LevelState::updateGameplay(Game* game, float deltaTime) {
 void LevelState::renderGameplay(Game* game) {
     SDL_Renderer* renderer = game->getRenderer();
     
-    // Render game world
     if (gameMap) gameMap->render();
     if (player) player->render(renderer);
     
-    for (auto& zombie : zombies) {
-        zombie->render(renderer);
-    }
+    for (auto& zombie : zombies) zombie->render(renderer);
     
     if (gameMap) gameMap->renderAboveLayer();
     
-    // Render UI
     renderTransitionZones(game);
     
-    if (game->getInventory() && gameMap) 
-        game->getInventory()->render(renderer);
-    
+    if (game->getInventory() && gameMap) game->getInventory()->render(renderer);
     
     if (saveButton) saveButton->render(core::uiRenderer);
 }
@@ -247,7 +238,7 @@ void LevelState::updateTransitionZones(Game* game, float deltaTime) {
         if (zone.toZone == "ToNextMap") {
             callback = [game, this]() { 
                 int nextLevel = getLevelNumber() + 1;
-                if (nextLevel > 3) nextLevel = 1; // Loop back to level 1
+                if (nextLevel > 5) nextLevel = 1; // Loop back to level 1
                 game->startLevel(nextLevel);
             };
         } else if (zone.toZone == "StartCutScene") {
@@ -380,13 +371,18 @@ void LevelState::renderPauseOverlay(Game* game) {
         core::audio->stopAllSounds();
         pauseSoundsStoppedOnce = true;
     }
+    
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 128);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 180); // Darker overlay
     SDL_Rect overlay = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
     SDL_RenderFillRect(renderer, &overlay);
 
-    if (pauseResumeButton) pauseResumeButton->render(core::uiRenderer);
-    if (pauseQuitButton) pauseQuitButton->render(core::uiRenderer);
+    if (pauseResumeButton) {
+        pauseResumeButton->render(core::uiRenderer);
+    }
+    if (pauseQuitButton) {
+        pauseQuitButton->render(core::uiRenderer);
+    }
 }
 
 void LevelState::renderControlHints(Game* game) {
