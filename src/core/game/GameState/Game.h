@@ -6,7 +6,6 @@
 #include <vector>
 #include <memory>
 #include <utility>
-#include "GameStateType.h"
 #include "GameStateMachine.h"
 #include "Player.h"
 #include "ZombieCat.h"
@@ -17,6 +16,9 @@
 #include "UILabel.h"
 #include "TransitionManager.h"
 #include "InventoryTextureManager.h"
+#include "Tutorial.h"
+#include "TutorialTextureManager.h"
+#include "StateFactory.h"
 
 class Player;
 class Inventory;
@@ -34,61 +36,37 @@ public:
     bool init(const char* title);
     float calculateDeltaTime(Uint32& lastTime);
     void handleEvents();
-    void handleTitleEvents(const SDL_Event& event);
-    void handleCutsceneEvents(const SDL_Event& event);
-    void handleDeathEvents(const SDL_Event& event);
     void run();
-    void startCutscene1();
-    void startNextLevel();
-    void startLevel1();
-    void startLevel2();
-    void startLevel3();
+    void startLevel(int level);
+    void startCutscenePlot(); 
 
     SDL_Renderer* getRenderer() const; 
     Camera* getCamera() const;
     Inventory* getInventory() const;
     TransitionManager* getTransitionManager() const;
+    InventoryTextureManager* getInventoryTextureManager() const;
+    GameStateMachine* getStateMachine() const;
+    void setRunning(bool state);
+
     void saveGame(const std::string& filename);
     void loadGame(const std::string& filename);
+    void changeState(std::unique_ptr<GameStateBase> newState);
 
 private:
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;
     bool running = false;
-    bool isPaused = false;
 
-    GameStateMachine stateMachine;
+    GameStateMachine* stateMachine;
+    std::unique_ptr<GameStateBase> currentState;
 
-    std::shared_ptr<UIButton> startButton;
-    std::shared_ptr<UIButton> loadButton;
-    std::shared_ptr<UIButton> saveButton;
-    std::shared_ptr<UIButton> pauseResumeButton;
-    std::shared_ptr<UIButton> pauseQuitButton;
-    SDL_Rect startButtonRect;
-    SDL_Rect loadButtonRect; //For title screen
-    SDL_Rect saveButtonRect; // For Levels (LEVEL1 and LEVEL2)
-    SDL_Rect resumeButtonRect;
-    SDL_Rect quitButtonRect;
-
-    Player* player = nullptr;
-    MapRender* gameMap = nullptr;
     Inventory* inventory = nullptr;
     InventoryTextureManager* inventoryTextureManager;
     Camera* camera = nullptr;
-    std::vector<std::shared_ptr<ZombieCat>> zombies;
+    Tutorial* tutorial = nullptr;
+    TutorialTextureManager* tutorialTextureManager = nullptr;
 
     TransitionManager* transitionManager;
-    std::vector<TransitionZone> transitionZones;
-
-    std::shared_ptr<UILabel> cutsceneSubtitleLabel = nullptr;
-    std::vector<SDL_Texture*> cutscene1Images;
-    std::vector<std::string> cutscene1Audios;
-    std::vector<std::vector<std::pair<std::string, float>>> cutscene1Subtitles;
-    int currentCutscene1Index = 0;
-    const int maxCutscene1 = 3;
-    float cutscene1Zoom = 1.0f;
-    int currentSubtitleIndex = 0;
-    float subtitleTimer = 0.0f;
 
     bool mouseClicked = false;
     float clickCursorTimer = 0.0f;
@@ -97,26 +75,9 @@ private:
     float clickCursorAnimTimer = 0.0f;
     const float frameDuration = 0.05f;
 
-
-
-    void updateUILayout();
     void update(float deltaTime);
     void updateCursorAnimation(float deltaTime);
-    void updateTransitionZones(float deltaTime);
-    void updateCollectItem(Item& item, const std::vector<Tileset>& tilesets);
-
 
     void render();
-    void renderTitleScreen();
-    void renderCutscene1();
-    void renderLevel1();
-    void renderLevel2();
-    void renderLevel3();
-    void renderDeathScreen();
-    void renderPauseOverlay();
-    void renderControlHints();
     void renderCursor();
-    void renderTransitionZones();
-    void renderZoneGlow(const SDL_Rect& renderZone, const TransitionZone& zone);
-    void renderZonePopup(const SDL_Rect& renderZone, const TransitionZone& zone);
 };

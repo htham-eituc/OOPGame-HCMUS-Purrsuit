@@ -8,38 +8,68 @@
 #include "UILabel.h"
 #include "TransitionManager.h"
 #include "MapRender.h"
+#include "GameStateBase.h"
 
-void LevelState::enter(Game* game) {
-    // Clear any existing data
+LevelState::~LevelState() {
+}
+
+void LevelState::enter(Game *game)
+{
     zombies.clear();
     safeDelete(gameMap);
     safeDelete(player);
     
     createLevelEntities(game);
     
-    // Setup camera
     game->getCamera()->setNewWorld(gameMap->getMapPixelWidth(), gameMap->getMapPixelHeight());
     
-    // Setup audio
     core::audio->stopMusic();
     core::audio->playMusic(getBackgroundMusic());
     
-    // Create save button
+    updateUILayout();
     saveButtonRect = { 20, 20, 100, 40 };
     saveButton = std::make_shared<UIButton>(
         saveButtonRect,
         core::textures->getTexture(texture::save_button),
         [game]() { game->saveGame("save.json"); }
     );
+
     core::uiInput->registerElement(saveButton);
+    pauseResumeButton = std::make_shared<UIButton>(
+        resumeButtonRect,
+        core::textures->getTexture(texture::resume_button),
+        [this]() { isPaused = false; }
+    );
+    core::uiInput->registerElement(pauseResumeButton);
+
+    pauseQuitButton = std::make_shared<UIButton>(
+        quitButtonRect,
+        core::textures->getTexture(texture::quit_button),
+        [this, game]() { game->setRunning(false); }
+    );
+    core::uiInput->registerElement(pauseQuitButton);
     
     isPaused = false;
 }
 
 void LevelState::exit(Game* game) {
-    // Clean up level-specific resources
-    if (saveButton) core::uiInput->unregisterElement(saveButton);
-    saveButton.reset();
+    if (game->getInventory()) 
+        game->getInventory()->setVisible(false); 
+
+    if (saveButton) {
+        core::uiInput->unregisterElement(saveButton);
+        saveButton.reset();
+    }
+    
+    if (pauseResumeButton) {
+        core::uiInput->unregisterElement(pauseResumeButton);
+        pauseResumeButton.reset();
+    }
+    
+    if (pauseQuitButton) {  
+        core::uiInput->unregisterElement(pauseQuitButton);
+        pauseQuitButton.reset();
+    }
     
     zombies.clear();
     safeDelete(gameMap);
@@ -49,12 +79,14 @@ void LevelState::exit(Game* game) {
 void LevelState::handleEvent(Game* game, const SDL_Event& event) {
     if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
         isPaused = !isPaused;
+        if (!isPaused) pauseSoundsStoppedOnce = false;
     }
     
     if (!isPaused) {
         if (player) player->handleEvent(event);
         if (game->getInventory()) game->getInventory()->handleEvent(event);
     }
+    core::uiInput->handleEvent(event);
 }
 
 void LevelState::update(Game* game, float deltaTime) {
@@ -65,22 +97,30 @@ void LevelState::update(Game* game, float deltaTime) {
     
     // Check for death
     if (player && !player->isAlive()) {
-        game->changeToDeathState();
+        game->changeState(StateFactory::createDeathState());
     }
 }
 
 void LevelState::render(Game* game) {
     renderGameplay(game);
     
-    // Render overlays
-    if (isPaused) {
-        renderPauseOverlay(game);
-    }
+    if (isPaused) renderPauseOverlay(game);
+    
     
     renderControlHints(game);
 }
 
-void LevelState::createLevelEntities(Game* game) {
+void LevelState::updateUILayout() {
+    int buttonWidth = SCREEN_WIDTH / 4;
+    int buttonHeight = SCREEN_HEIGHT / 10;
+    int centerX = SCREEN_WIDTH / 2 - buttonWidth / 2;
+
+    resumeButtonRect = { centerX, SCREEN_HEIGHT / 2, buttonWidth, buttonHeight };
+    quitButtonRect = { centerX, SCREEN_HEIGHT / 2 + buttonHeight + 20, buttonWidth, buttonHeight };
+}
+
+void LevelState::createLevelEntities(Game *game)
+{
     // Create map
     gameMap = MapFactory::create(game->getRenderer(), getMapPath());
     const auto& spawns = gameMap->getSpawnPoints();
@@ -156,10 +196,11 @@ void LevelState::renderGameplay(Game* game) {
     if (gameMap) gameMap->renderAboveLayer();
     
     // Render UI
+    renderTransitionZones(game);
+    
     if (game->getInventory() && gameMap) 
         game->getInventory()->render(renderer);
     
-    renderTransitionZones(game);
     
     if (saveButton) saveButton->render(core::uiRenderer);
 }
@@ -210,13 +251,16 @@ void LevelState::updateTransitionZones(Game* game, float deltaTime) {
                 game->startLevel(nextLevel);
             };
         } else if (zone.toZone == "StartCutScene") {
-            callback = [game]() { game->startCutscene1(); };
+            callback = [game]() { game->startCutscenePlot(); };
         }
         
         if (callback && completed && 
             CollisionHandler::checkCollision(playerBounds, zone.bounds) &&
             game->getTransitionManager()->getState() == TransitionState::None) {
-            
+            if (game->getInventory()->getVisible()) {
+                game->getInventory()->setVisible(false);
+                return;
+            }
             game->getTransitionManager()->onTransitionTriggered(callback);
         }
         
@@ -332,15 +376,17 @@ void LevelState::renderTransitionZones(Game* game) {
 void LevelState::renderPauseOverlay(Game* game) {
     SDL_Renderer* renderer = game->getRenderer();
     
-    core::audio->stopAllSounds();
+    if (!pauseSoundsStoppedOnce) {
+        core::audio->stopAllSounds();
+        pauseSoundsStoppedOnce = true;
+    }
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 128);
     SDL_Rect overlay = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
     SDL_RenderFillRect(renderer, &overlay);
-    
-    // Render pause UI buttons (you'll need to create these in Game class)
-    // if (pauseResumeButton) pauseResumeButton->render(core::uiRenderer);
-    // if (pauseQuitButton) pauseQuitButton->render(core::uiRenderer);
+
+    if (pauseResumeButton) pauseResumeButton->render(core::uiRenderer);
+    if (pauseQuitButton) pauseQuitButton->render(core::uiRenderer);
 }
 
 void LevelState::renderControlHints(Game* game) {

@@ -2,7 +2,6 @@
 #include <vector>
 #include <memory>
 #include "GameStateBase.h"
-#include "Constants.h"
 
 class Item;
 class Tileset;
@@ -11,10 +10,12 @@ class MapRender;
 class ZombieCat;
 class UIButton;
 class TransitionZone;
+class Game;
+class GameStateBase; 
 
 class LevelState : public GameStateBase {
 public:
-    virtual ~LevelState() override;
+    ~LevelState() override; 
     void enter(Game* game) override;
     void exit(Game* game) override;
     void handleEvent(Game* game, const SDL_Event& event) override;
@@ -32,11 +33,20 @@ protected:
     MapRender* gameMap = nullptr;
     std::vector<std::shared_ptr<ZombieCat>> zombies;
     std::vector<TransitionZone> transitionZones;
+
     std::shared_ptr<UIButton> saveButton;
+    std::shared_ptr<UIButton> pauseResumeButton;
+    std::shared_ptr<UIButton> pauseQuitButton;
     SDL_Rect saveButtonRect;
+    SDL_Rect resumeButtonRect;
+    SDL_Rect quitButtonRect;
+
     bool isPaused = false;
-    
+    bool pauseSoundsStoppedOnce = false;
+        bool isTransitioning = false;  // ADD THIS FLAG
+    bool isExiting = false;  
     // Shared helper methods
+    void updateUILayout();
     void createLevelEntities(Game* game);
     void updateGameplay(Game* game, float deltaTime);
     void renderGameplay(Game* game);
@@ -47,24 +57,23 @@ protected:
     void renderControlHints(Game* game);
 };
 
-// Concrete level implementations - just need to specify their unique data
 class Level1State : public LevelState {
 protected:
-    const char* getMapPath() override { return MAP_PATH_1; }
-    const char* getBackgroundMusic() override { return audio::lv1m; }
-    int getLevelNumber() override { return 1; }
+    const char* getMapPath() override;
+    const char* getBackgroundMusic() override;
+    int getLevelNumber() override;
 };
 
 class Level2State : public LevelState {
 protected:
-    const char* getMapPath() override { return MAP_PATH_2; }
-    const char* getBackgroundMusic() override { return audio::lv1m; }
-    int getLevelNumber() override { return 2; }
+    const char* getMapPath() override;
+    const char* getBackgroundMusic() override;
+    int getLevelNumber() override;
 };
 
 class Level3State : public LevelState {
 protected:
-    const char* getMapPath() override { return MAP_PATH_3; }
-    const char* getBackgroundMusic() override { return audio::lv1m; }
-    int getLevelNumber() override { return 3; }
+    const char* getMapPath() override;
+    const char* getBackgroundMusic() override;
+    int getLevelNumber() override;
 };

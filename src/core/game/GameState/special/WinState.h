@@ -1,6 +1,7 @@
+#pragma once
 #include "GameStateBase.h"
 
-class DeathState : public GameStateBase {
+class WinState : public GameStateBase {
 public:
     void enter(Game* game) override;
     void exit(Game* game) override;
@@ -8,4 +9,3 @@ public:
     void update(Game* game, float deltaTime) override;
     void render(Game* game) override;
 };
-

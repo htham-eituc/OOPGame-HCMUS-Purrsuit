@@ -15,7 +15,7 @@ void TitleState::enter(Game* game) {
     startButton = std::make_shared<UIButton>(
         startButtonRect,
         core::textures->getTexture(texture::start_button),
-        [game]() { game->startCutscene1(); }
+        [game]() { game->startCutscenePlot(); }
     );
     core::uiInput->registerElement(startButton);
     
@@ -38,7 +38,7 @@ void TitleState::exit(Game* game) {
 
 void TitleState::handleEvent(Game* game, const SDL_Event& event) {
     if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_9) {
-        game->startCutscene1();
+        game->startCutscenePlot();
     }
 }
 

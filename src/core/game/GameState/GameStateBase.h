@@ -2,7 +2,6 @@
 #include <SDL.h>
 
 class Game;
-
 class GameStateBase {
 public:
     virtual ~GameStateBase() = default;

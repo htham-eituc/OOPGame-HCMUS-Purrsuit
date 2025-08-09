@@ -10,7 +10,7 @@
 void CutsceneState::enter(Game* game) {
     // Stop all current audio
     core::audio->stopAllSounds();
-    
+    game->getTransitionManager()->reset(); 
     // Reset cutscene state
     currentImageIndex = 0;
     currentSubtitleIndex = 0;

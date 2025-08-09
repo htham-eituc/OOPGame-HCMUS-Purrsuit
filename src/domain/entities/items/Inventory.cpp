@@ -1,6 +1,7 @@
 #include "Inventory.h"
 #include "InventoryTextureManager.h"
 #include <iostream>
+#include <algorithm>
 
 Inventory::Inventory(InventoryTextureManager* texManager) : isVisible(false), textureManager(texManager) {
     items.reserve(MAX_SLOTS);
@@ -8,7 +9,6 @@ Inventory::Inventory(InventoryTextureManager* texManager) : isVisible(false), te
 }
 
 void Inventory::addItem(const std::string& itemName) {
-    // Check if item already exists
     for (const auto& item : items) {
         if (item.name == itemName) {
             std::cout << "Already have: " << itemName << "\n";
@@ -29,6 +29,21 @@ void Inventory::addItem(const std::string& itemName) {
     }
 }
 
+void Inventory::removeItem(const std::string& itemName) {
+    auto it = std::find_if(items.begin(), items.end(), 
+        [&itemName](const InventoryItem& item) {
+            return item.name == itemName;
+        });
+    
+    if (it != items.end()) {
+        items.erase(it);
+        std::cout << "Removed: " << itemName << "\n";
+    } else {
+        std::cout << "Item not found for removal: " << itemName << "\n";
+    }
+}
+
+
 bool Inventory::hasItem(const std::string& itemName) const {
     for (const auto& item : items) {
         if (item.name == itemName) {
@@ -40,6 +55,7 @@ bool Inventory::hasItem(const std::string& itemName) const {
 
 void Inventory::render(SDL_Renderer* renderer) {
     if (!isVisible) return;
+    
     
     // Calculate inventory position (centered horizontally)
     int totalWidth = MAX_SLOTS * SLOT_SIZE + (MAX_SLOTS - 1) * SLOT_PADDING;

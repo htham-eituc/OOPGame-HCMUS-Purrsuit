@@ -4,8 +4,8 @@
 #include "GameStateBase.h"
 #include "Services.h"
 #include "Constants.h"
-#include "Game.h"
 
+class Game;
 class UILabel;
 
 class CutsceneState : public GameStateBase {
@@ -29,7 +29,6 @@ protected:
     int currentSubtitleIndex = 0;
     float subtitleTimer = 0.0f;
     float zoom = 1.0f;
-    const int maxImages = 3; // or make this virtual too
     
     // Shared helper methods
     void setupSubtitleLabel();
@@ -40,27 +39,11 @@ protected:
 
 class Cutscene1State : public CutsceneState {
 protected:
-    std::vector<SDL_Texture*> getImages() override {
-        return {
-            core::textures->getTexture(texture::cutscene_1_1),
-            core::textures->getTexture(texture::cutscene_1_2),
-            core::textures->getTexture(texture::cutscene_1_3)
-        };
-    }
+    std::vector<SDL_Texture*> getImages() override;
+
+    std::vector<std::string> getAudioFiles() override;
     
-    std::vector<std::string> getAudioFiles() override {
-        return { audio::cutscene_1_1, audio::cutscene_1_2, audio::cutscene_1_3 };
-    }
+    std::vector<std::vector<std::pair<std::string, float>>> getSubtitles() override;
     
-    std::vector<std::vector<std::pair<std::string, float>>> getSubtitles() override {
-        return {
-            { {"He came from the shadows.", 3.0f}, {"But the world wasn't ready for him.", 6.0f} },
-            { {"They feared what they couldn't understand.", 5.0f} },
-            { {"Yet, silence could no longer protect them.", 5.0f} }
-        };
-    }
-    
-    void onCutsceneComplete(Game* game) override {
-        game->startLevel1();
-    }
+    void onCutsceneComplete(Game* game) override;
 };

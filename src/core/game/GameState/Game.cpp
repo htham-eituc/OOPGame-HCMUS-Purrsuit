@@ -12,8 +12,6 @@
 
 Game::Game() {}
 Game::~Game() {
-    safeDelete(gameMap);
-    safeDelete(player);
     safeDelete(camera);
     safeDelete(inventory);
     safeDelete(inventoryTextureManager);
@@ -50,48 +48,19 @@ bool Game::init(const char* title) {
 
     app::init::registerCoreServices(renderer);
     app::init::loadAssets();
-
-    updateUILayout();
-    startButton = std::make_shared<UIButton>(
-        startButtonRect,
-        core::textures->getTexture(texture::start_button),
-        [this]() { this->startCutscene1(); }  // onClick action
-    );
-    core::uiInput->registerElement(startButton);
-    loadButton = std::make_shared<UIButton>(
-        loadButtonRect,
-        core::textures->getTexture(texture::load_button),
-        [this]() { this->loadGame("save.json"); }  // onClick action
-    );
-    core::uiInput->registerElement(loadButton);
-    pauseResumeButton = std::make_shared<UIButton>(
-        resumeButtonRect,
-        core::textures->getTexture(texture::resume_button),
-        [this]() { isPaused = false; }
-    );
-    core::uiInput->registerElement(pauseResumeButton);
-
-    pauseQuitButton = std::make_shared<UIButton>(
-        quitButtonRect,
-        core::textures->getTexture(texture::quit_button),
-        [this]() { running = false; }
-    );
-    core::uiInput->registerElement(pauseQuitButton);
+    
     running = true;
-    stateMachine.changeState(GameState::TITLE);
 
+    stateMachine = new GameStateMachine();
+    StateFactory::setGame(this);
     camera = new Camera(SCREEN_WIDTH, SCREEN_HEIGHT);
     transitionManager = new TransitionManager();
     inventoryTextureManager = new InventoryTextureManager(renderer);
     inventory = new Inventory(inventoryTextureManager);
-    return true;
-}
 
-float Game::calculateDeltaTime(Uint32& lastTime) {
-    Uint32 currentTime = SDL_GetTicks();
-    float deltaTime = (currentTime - lastTime) / 1000.0f;
-    lastTime = currentTime;
-    return deltaTime;
+    changeState(StateFactory::createTitleState());
+
+    return true;
 }
 
 void Game::run() {
@@ -100,48 +69,80 @@ void Game::run() {
     while (running) {
         float deltaTime = calculateDeltaTime(lastTime);
         handleEvents();
-
-        updateCursorAnimation(deltaTime);
-
-        if (!isPaused && (stateMachine.getCurrentState() == GameState::LEVEL1 || 
-            stateMachine.getCurrentState() == GameState::LEVEL2 || 
-            stateMachine.getCurrentState() == GameState::LEVEL3)) {
-            const Uint8* keystate = SDL_GetKeyboardState(NULL);
-            update(deltaTime);
-            player->move(keystate);
-        }
-        if (stateMachine.getCurrentState() == GameState::TITLE && !core::audio->isPlayingMusic()) {
-            core::audio->playMusic(audio::title);
-        }
-
+        update(deltaTime);
         render();
     }
 }
 
-void Game::saveGame(const std::string& filename)
-{
+void Game::handleEvents() {
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        if (event.type == SDL_QUIT) {
+            running = false;
+            return;
+        }
+        
+        if (event.type == SDL_MOUSEBUTTONDOWN) {
+            if (event.button.button == SDL_BUTTON_LEFT) {
+                mouseClicked = true;
+                clickCursorTimer = 0.0f;
+                clickCursorFrame = 0;
+                clickCursorAnimTimer = 0.0f;
+            }
+        }
+        
+        core::uiInput->handleEvent(event);
+        
+        // Delegate to current state - no more giant switch!
+        if (currentState) {
+            currentState->handleEvent(this, event);
+        }
+    }
+}
+
+void Game::update(float deltaTime) {
+    updateCursorAnimation(deltaTime);
+    
+    if (currentState) {
+        currentState->update(this, deltaTime);
+    }
+}
+
+void Game::render() {
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+    SDL_RenderClear(renderer);
+    
+    if (currentState) {
+        currentState->render(this);
+    }
+    
+    if (transitionManager) {
+        transitionManager->render(renderer);
+    }
+    renderCursor();
+    
+    SDL_RenderPresent(renderer);
+}
+
+void Game::saveGame(const std::string& filename) {
     GameSave save;
-    save.CurrentLevel = stateMachine.getCurrentState();
+    save.CurrentLevel = stateMachine->getCurrentState();
 
     // for (const std::string& item : inventory->getItemNames())
     // {   
     //     save.items.insert(item);
     // }
 
-    save.playerX = player->getX();
-    save.playerY = player->getY();
-
     save.Write(filename);
     std::cout << "Game saved to: " << filename << "\n";
 }
 
-void Game::loadGame(const std::string& filename)
-{
+void Game::loadGame(const std::string& filename) {
     GameSave save(filename);
     
-    if (save.CurrentLevel == GameState::LEVEL1) startLevel1();
-    else if (save.CurrentLevel == GameState::LEVEL2) startLevel2();
-    else stateMachine.changeState(GameState::TITLE);
+    if (save.CurrentLevel == GameState::LEVEL1) startLevel(1);
+    else if (save.CurrentLevel == GameState::LEVEL2) startLevel(2);
+    else stateMachine->changeState(GameState::TITLE);
 
     // for (const std::string& item : save.items)
     // {
@@ -151,3 +152,5 @@ void Game::loadGame(const std::string& filename)
     // Don't know how to load zombie yet 
     std::cout << "Game loaded from: " << filename << "\n";
 }
+
+
