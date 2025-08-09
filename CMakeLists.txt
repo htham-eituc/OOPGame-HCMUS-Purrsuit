@@ -25,6 +25,7 @@ include_directories(
     ${SRC_DIR}/core/assets/texture
     ${SRC_DIR}/core/utils
     ${SRC_DIR}/core/game
+    ${SRC_DIR}/core/game/GameState
     
     ${SRC_DIR}/domain
     ${SRC_DIR}/domain/entities
