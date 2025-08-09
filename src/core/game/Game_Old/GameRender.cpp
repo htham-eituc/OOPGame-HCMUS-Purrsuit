@@ -53,6 +53,9 @@ void Game::render() {
         transitionManager->render(renderer);
     }
     
+    if (tutorial) {
+        tutorial->render(renderer);
+    }
     // Render cursor last (always on top)
     renderCursor();
     

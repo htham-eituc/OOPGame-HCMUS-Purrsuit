@@ -17,6 +17,8 @@
 #include "UILabel.h "
 #include "TransitionManager.h"
 #include "InventoryTextureManager.h"
+#include "Tutorial.h"
+#include "TutorialTextureManager.h"
 
 class Player;
 class Inventory;
@@ -91,6 +93,9 @@ private:
     int clickCursorFrame = 0;
     float clickCursorAnimTimer = 0.0f;
     const float frameDuration = 0.05f;
+
+    Tutorial* tutorial = nullptr;
+    TutorialTextureManager* tutorialTextureManager = nullptr;
 
     void saveGame(const std::string& filename);
     void loadGame(const std::string& filename);

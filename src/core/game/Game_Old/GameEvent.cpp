@@ -20,6 +20,15 @@ void Game::handleEvents() {
             return;
         }
 
+        if (tutorial && tutorial->getVisible()) {
+            tutorial->handleEvent(event);
+            continue; // Skip other input when tutorial is open
+        }
+
+        if (tutorial && !tutorial->getVisible()) {
+            tutorial->handleEvent(event);
+        }
+
         if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
             if (stateMachine.getCurrentState() == GameState::LEVEL1 || 
                 stateMachine.getCurrentState() == GameState::LEVEL2) {
