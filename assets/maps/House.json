@@ -367,7 +367,7 @@
                          "value":"Find a diary in the house"
                         }, 
                         {
-                         "name":"Item ",
+                         "name":"Item",
                          "type":"string",
                          "value":"Diary"
                         }],
