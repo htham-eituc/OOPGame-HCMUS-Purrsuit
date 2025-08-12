@@ -29,6 +29,8 @@ void LevelState::enter(Game *game)
     updateUILayout(game);
     core::uiInput->registerElement(saveButton);
     
+    tutorialTextureManager = new TutorialTextureManager(game->getRenderer());
+    tutorial = new Tutorial(tutorialTextureManager, core::uiRenderer);
     isPaused = false;
 }
 
@@ -52,9 +54,20 @@ void LevelState::exit(Game* game) {
     zombies.clear();
     safeDelete(gameMap);
     safeDelete(player);
+    safeDelete(tutorial);
+    safeDelete(tutorialTextureManager);
 }
 
 void LevelState::handleEvent(Game* game, const SDL_Event& event) {
+    if (tutorial && tutorial->getVisible()) {
+        tutorial->handleEvent(event);
+        return; // Skip other input when tutorial is open
+    }
+
+    if (tutorial && !tutorial->getVisible()) {
+        tutorial->handleEvent(event);
+    }
+    
     if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
         bool wasPaused = isPaused;
         isPaused = !isPaused;
@@ -85,6 +98,8 @@ void LevelState::update(Game* game, float deltaTime) {
     if (isPaused) return;
     
     updateGameplay(game, deltaTime);
+    if (tutorial) tutorial->update(deltaTime);
+        
     updateTransitionZones(game, deltaTime);
     
     if (player && !player->isAlive()) {
@@ -94,6 +109,9 @@ void LevelState::update(Game* game, float deltaTime) {
 
 void LevelState::render(Game* game) {
     renderGameplay(game);
+    if (tutorial) {
+        tutorial->render(game->getRenderer());
+    }
     if (isPaused) renderPauseOverlay(game);
     renderControlHints(game);
 }
@@ -238,7 +256,7 @@ void LevelState::updateTransitionZones(Game* game, float deltaTime) {
         if (zone.toZone == "ToNextMap") {
             callback = [game, this]() { 
                 int nextLevel = getLevelNumber() + 1;
-                if (nextLevel > 5) nextLevel = 1; // Loop back to level 1
+                if (nextLevel > 11) nextLevel = 1; // Loop back to level 1
                 game->startLevel(nextLevel);
             };
         } else if (zone.toZone == "StartCutScene") {

@@ -97,20 +97,20 @@ void Game::startCutscenePlot() {
     case GameState::LEVEL1: 
         changeState(StateFactory::createCutscene1State()); 
         break;
+    case GameState::LEVEL3: 
+        changeState(StateFactory::createCutscene2State()); 
+        break;
+    case GameState::LEVEL9:
+        changeState(StateFactory::createCutscene3State()); 
+        break;
     default:
         changeState(StateFactory::createCutscene1State());
         break;
     }
 }
 
-void Game::startLevel(int level)
-{
-    switch (level) {
-        case 1: changeState(StateFactory::createLevel1State()); break;
-        case 2: changeState(StateFactory::createLevel2State()); break;
-        case 3: changeState(StateFactory::createLevel3State()); break;
-        default: changeState(StateFactory::createLevel1State()); break;
-    }
+void Game::startLevel(int level) {
+    changeState(StateFactory::createLevelState(level));
 }
 
 void Game::renderCursor() {

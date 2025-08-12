@@ -16,7 +16,7 @@ void DeathState::exit(Game* game) {
 
 void DeathState::handleEvent(Game* game, const SDL_Event& event) {
     if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_SPACE) {
-        game->startLevel(1); 
+        game->startLevel(4); 
     }
 }
 
@@ -32,6 +32,4 @@ void DeathState::render(Game* game) {
     SDL_Texture* deathTex = core::textures->getTexture(texture::death_screen);
     SDL_RenderCopy(renderer, deathTex, nullptr, nullptr);
 
-    // Note: Death screen handles its own SDL_RenderPresent in your original code
-    // You might want to move that logic here or handle it in the main render loop
 }

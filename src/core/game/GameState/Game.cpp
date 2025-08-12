@@ -16,8 +16,6 @@ Game::~Game() {
     safeDelete(inventory);
     safeDelete(inventoryTextureManager);
     safeDelete(transitionManager);
-    safeDelete(tutorial);
-    safeDelete(tutorialTextureManager);
     
     safeDelete(core::audio);
     safeDelete(core::textures);
@@ -59,8 +57,6 @@ bool Game::init(const char* title) {
     transitionManager = new TransitionManager();
     inventoryTextureManager = new InventoryTextureManager(renderer);
     inventory = new Inventory(inventoryTextureManager);
-    tutorialTextureManager = new TutorialTextureManager(renderer);
-    tutorial = new Tutorial(tutorialTextureManager, core::uiRenderer);
 
     changeState(StateFactory::createTitleState());
 

@@ -62,8 +62,6 @@ private:
     Inventory* inventory = nullptr;
     InventoryTextureManager* inventoryTextureManager;
     Camera* camera = nullptr;
-    Tutorial* tutorial = nullptr;
-    TutorialTextureManager* tutorialTextureManager = nullptr;
 
     TransitionManager* transitionManager;
 

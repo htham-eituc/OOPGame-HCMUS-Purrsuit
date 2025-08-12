@@ -18,8 +18,17 @@ public:
     static std::unique_ptr<GameStateBase> createLevel3State();
     static std::unique_ptr<GameStateBase> createLevel4State();
     static std::unique_ptr<GameStateBase> createLevel5State();
+    static std::unique_ptr<GameStateBase> createLevel6State();
+    static std::unique_ptr<GameStateBase> createLevel7State();
+    static std::unique_ptr<GameStateBase> createLevel8State();
+    static std::unique_ptr<GameStateBase> createLevel9State();
+    static std::unique_ptr<GameStateBase> createLevel10State();
+    static std::unique_ptr<GameStateBase> createLevel11State();
 
     static std::unique_ptr<GameStateBase> createCutscene1State();
+    static std::unique_ptr<GameStateBase> createCutscene2State();
+    static std::unique_ptr<GameStateBase> createCutscene3State();
+
     static std::unique_ptr<GameStateBase> createDeathState();
 
     static std::unique_ptr<GameStateBase> createLevelState(int levelNumber);

@@ -12,6 +12,8 @@ class UIButton;
 class TransitionZone;
 class Game;
 class GameStateBase; 
+class Tutorial;
+class TutorialTextureManager;
 
 class LevelState : public GameStateBase {
 public:
@@ -40,6 +42,9 @@ protected:
     SDL_Rect saveButtonRect;
     SDL_Rect resumeButtonRect;
     SDL_Rect quitButtonRect;
+
+    Tutorial* tutorial = nullptr;
+    TutorialTextureManager* tutorialTextureManager = nullptr;
 
     bool isPaused = false;
     bool pauseSoundsStoppedOnce = false;
@@ -87,6 +92,48 @@ protected:
 };
 
 class Level5State : public LevelState {
+protected:
+    const char* getMapPath() override;
+    const char* getBackgroundMusic() override;
+    int getLevelNumber() override;
+};
+
+class Level6State : public LevelState {
+protected:
+    const char* getMapPath() override;
+    const char* getBackgroundMusic() override;
+    int getLevelNumber() override;
+};
+
+class Level7State : public LevelState {
+protected:
+    const char* getMapPath() override;
+    const char* getBackgroundMusic() override;
+    int getLevelNumber() override;
+};
+
+class Level8State : public LevelState {
+protected:
+    const char* getMapPath() override;
+    const char* getBackgroundMusic() override;
+    int getLevelNumber() override;
+};
+
+class Level9State : public LevelState {
+protected:
+    const char* getMapPath() override;
+    const char* getBackgroundMusic() override;
+    int getLevelNumber() override;
+};
+
+class Level10State : public LevelState {
+protected:
+    const char* getMapPath() override;
+    const char* getBackgroundMusic() override;
+    int getLevelNumber() override;
+};
+
+class Level11State : public LevelState {
 protected:
     const char* getMapPath() override;
     const char* getBackgroundMusic() override;
