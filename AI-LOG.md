@@ -161,9 +161,38 @@ Selected the mystical tree root concept (idea #2). It fits the natural and magic
 - [Was the fix correct? Did it help identify the root cause?]
 
 ---
+### Zombie AI Cat  
+**Prompt Used:**  
+"Help me create AI for zombies in my game. Zombie cat AI behavior: 
+1. Zombies are blind but have strong hearing.
+2. They hear player footsteps only when the player is moving nearby.
+3. If footsteps are heard nearby, zombies will chase the player until they catch them or the player escapes their hearing zone.
+4. Loud sound events attract zombies to the source using A* pathfinding, then they wander around that area.
+5. When undisturbed, zombies idle or wander randomly.
+
+**AI Response Summary:**  
+- **State Machine Design**: AI proposed a comprehensive state-based system with `ZombieState` enum (Idle, Patrolling, Chasing, Attacking, Stunned) to manage different zombie behaviors
+- **Pathfinding Integration**: Implemented A* pathfinding algorithm with `PathfindingUtils` class to handle obstacle avoidance and intelligent navigation around walls and barriers
+- **Audio-Based Detection**: Created hearing system where zombies can detect player movement sounds, with `canBeHeard()` checks and audio range calculations
+- **Smart Navigation**: 
+  - Line-of-sight detection for direct player visibility
+  - Fallback to pathfinding when direct path is blocked
+  - Dynamic path recalculation when target moves
+  - Collision avoidance with map boundaries
+- **Behavioral Logic**:
+  - Patrol patterns with waypoint systems
+  - Smooth transitions between states based on distance and conditions
+  - Attack cooldowns and range-based combat
+  - Memory system to continue searching after losing sight of player
+- **Performance Optimizations**: Suggested limiting pathfinding frequency and using distance checks before expensive calculations
+
+**Decision & Application:**  
+- **Architecture**: The state machine approach provided clean, maintainable code that's easy to debug and extend. Each zombie state has clear entry/exit conditions and specific behaviors.
+- **Pathfinding Success**: The A* implementation with grid-based collision detection effectively solved wall navigation issues, making zombies appear intelligent rather than getting stuck on obstacles.
+
 ### Spawning and Zone Transition in tilemap
 **Prompt Used:**  
-Implement a TiledMapLoader::LoadSpawnPointsFromMap function that reads from an object layer named ‘Spawning’ and returns a SpawnPoints struct with player, princess, and zombie spawn points using tileson.hpp. This is the example of the tilemap.json. Ask me question until you can do properly.  
+*(For new feature)* Implement a TiledMapLoader::LoadSpawnPointsFromMap function that reads from an object layer named ‘Spawning’ and returns a SpawnPoints struct with player, princess, and zombie spawn points using tileson.hpp. This is the example of the tilemap.json. Ask me question until you can do properly.  
 <<tilemap.json file>>  
 
 **AI Response Summary:**  
@@ -223,7 +252,7 @@ Used this almost exactly as suggested, with minor adjustments for the Vector2 ty
 ---
 ### Item and Inventory 
 **Prompt Used:**  
-**(For Debug)** The logic and mechanism run well on seperate stage. But the problem is, the item is not in the same tileset on map, so the gid might be different right. I'm using Tiled for parsing. So if i manage an inventory through out the game, i couldn't, how do i fix this?
+*(For Debug)* The logic and mechanism run well on seperate stage. But the problem is, the item is not in the same tileset on map, so the gid might be different right. I'm using Tiled for parsing. So if i manage an inventory through out the game, i couldn't, how do i fix this?
 
 **AI Response Summary:**  
 Solution Options:
@@ -259,6 +288,29 @@ Choose option 1, due to:
 - Faster rendering: No tileset lookup needed during inventory render
 - Memory efficient: Only stores texture pointers (textures are managed elsewhere)
 - Simple integration: Just call getTextureInfo() when collecting items
+---
+**Prompt Used:**  
+"Help me create a visual inventory system for my game. I have items with different GIDs across maps using Tiled, and need a horizontal inventory bar with 6 slots that shows actual item sprites. Items should persist visually when changing maps, and I want to enhance it with custom UI sprites (slot frames, banner background, special item cursors)."
+
+**AI Response Summary:**  
+- **Initial Problem Identification**: AI recognized that storing GIDs directly would cause issues when changing maps because tilesets get destroyed/recreated, making texture pointers invalid
+- **Solution Architecture**: Proposed creating a separate `InventoryTextureManager` that loads and caches item textures independently from map tilesets, ensuring persistence across map changes
+- **Two-Phase Implementation**: 
+  1. First solved the core texture persistence issue by storing `SDL_Texture*` and `SDL_Rect` when items are collected
+  2. Then enhanced with UI sprites (banner background, slot frames, special item highlighting system)
+- **Key Technical Solutions**:
+  - Texture caching system to prevent redundant loading
+  - Separation of map tilesets from inventory textures
+  - Proper sprite scaling and positioning for UI elements
+  - Special item management system with cursor overlays
+- **Debugging Support**: Provided diagnostic code to identify missing `imagePath` field in tileset loading, which was the root cause of texture loading failures
+
+**Decision & Application:**  
+- **Highly Effective**: The solution correctly identified and solved the fundamental issue of texture persistence across map changes. The two-phase approach (fix core logic first, then enhance visuals) was logical and practical.
+- **Root Cause Analysis**: AI successfully diagnosed that the missing `tileset.imagePath = imgPath;` assignment in the map loader was causing texture loading failures.
+- **Scalable Architecture**: The `InventoryTextureManager` design provides a clean separation of concerns and is easily extensible for future inventory features.
+- **Visual Enhancement**: The UI sprite integration (banner, frames, cursors) significantly improved the visual polish while maintaining code organization.
+- **Final Result**: Achieved a professional-looking inventory system that persists across map changes with proper sprite rendering and special item highlighting capabilities.
 ---
 
 ### 🧹 Refactoring & Optimization
