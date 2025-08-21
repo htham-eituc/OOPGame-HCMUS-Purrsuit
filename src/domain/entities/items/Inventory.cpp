@@ -1,6 +1,7 @@
 #include "Inventory.h"
 #include "InventoryTextureManager.h"
 #include <iostream>
+#include <algorithm>
 
 Inventory::Inventory(InventoryTextureManager* texManager) : isVisible(false), textureManager(texManager) {
     items.reserve(MAX_SLOTS);
@@ -8,7 +9,6 @@ Inventory::Inventory(InventoryTextureManager* texManager) : isVisible(false), te
 }
 
 void Inventory::addItem(const std::string& itemName) {
-    // Check if item already exists
     for (const auto& item : items) {
         if (item.name == itemName) {
             std::cout << "Already have: " << itemName << "\n";
@@ -29,6 +29,21 @@ void Inventory::addItem(const std::string& itemName) {
     }
 }
 
+void Inventory::removeItem(const std::string& itemName) {
+    auto it = std::find_if(items.begin(), items.end(), 
+        [&itemName](const InventoryItem& item) {
+            return item.name == itemName;
+        });
+    
+    if (it != items.end()) {
+        items.erase(it);
+        std::cout << "Removed: " << itemName << "\n";
+    } else {
+        std::cout << "Item not found for removal: " << itemName << "\n";
+    }
+}
+
+
 bool Inventory::hasItem(const std::string& itemName) const {
     for (const auto& item : items) {
         if (item.name == itemName) {
@@ -41,16 +56,13 @@ bool Inventory::hasItem(const std::string& itemName) const {
 void Inventory::render(SDL_Renderer* renderer) {
     if (!isVisible) return;
     
-    // Calculate inventory position (centered horizontally)
     int totalWidth = MAX_SLOTS * SLOT_SIZE + (MAX_SLOTS - 1) * SLOT_PADDING;
     int centerX = 450; // Center of 900px screen
     int startX = (900 - totalWidth) / 2;
     int startY = INVENTORY_Y;
     
-    // Render banner background first (behind slots)
     renderBanner(renderer, centerX, startY + SLOT_SIZE / 2);
     
-    // Render each slot on top of banner
     for (int i = 0; i < MAX_SLOTS; i++) {
         int slotX = startX + i * (SLOT_SIZE + SLOT_PADDING);
         renderSlot(renderer, i, slotX, startY);
@@ -79,7 +91,6 @@ void Inventory::renderSlot(SDL_Renderer* renderer, int slotIndex, int x, int y) 
     
     bool hasItem = slotIndex < static_cast<int>(items.size());
     
-    // Choose slot frame texture based on whether slot has item
     SDL_Texture* slotTexture = hasItem ? 
         textureManager->getSlotFrameTexture() : 
         textureManager->getSlotFrameUnavailableTexture();
@@ -93,7 +104,6 @@ void Inventory::renderSlot(SDL_Renderer* renderer, int slotIndex, int x, int y) 
     if (hasItem) {
         renderItem(renderer, items[slotIndex], x + 8, y + 8); // 8px padding inside slot
         
-        // Render cursor if this is a special item
         if (isSpecialItem(items[slotIndex].name)) {
             renderSlotCursor(renderer, x, y);
         }
@@ -107,14 +117,12 @@ void Inventory::renderItem(SDL_Renderer* renderer, const InventoryItem& item, in
     SDL_Rect srcRect;
     
     if (!textureManager->getItemTexture(item.name, texture, srcRect)) {
-        return; // Texture not found
+        return; 
     }
     
-    // Calculate destination rectangle (fit within slot with padding)
     int itemSize = SLOT_SIZE - 16; // 8px padding on each side
     SDL_Rect destRect = {x, y, itemSize, itemSize};
     
-    // Render the item sprite using texture manager
     SDL_RenderCopy(renderer, texture, &srcRect, &destRect);
 }
 
@@ -125,7 +133,6 @@ void Inventory::renderSlotCursor(SDL_Renderer* renderer, int x, int y) {
     SDL_RenderCopy(renderer, textureManager->getSlotCursorTexture(), nullptr, &cursorRect);
 }
 
-// Special item management methods
 void Inventory::addSpecialItem(const std::string& itemName) {
     specialItems.insert(itemName);
 }

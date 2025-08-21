@@ -12,9 +12,18 @@ inline constexpr SDL_Rect CAMERA_DEADZONE = {
 };
 
 
-inline const char* MAP_PATH_1 = "assets/maps/House.json";
-inline const char* MAP_PATH_2 = "assets/maps/Stage1_new.json";
-inline const char* MAP_PATH_3 = "assets/maps/House.json";
+inline const char* MAP_PATH[] = {"","assets/maps/Level1_TransitionMap1.json",
+                                    "assets/maps/Level2_Stage1.json",
+                                    "assets/maps/Level3_House.json",
+                                    "assets/maps/Level4_House_after.json",
+                                    "assets/maps/Level5_Stage1_after.json",
+                                    "assets/maps/Level6_Stage2.json",
+                                    "assets/maps/Level7_Stage3.json",
+                                    "assets/maps/Level8_TransitionMap2.json",
+                                    "assets/maps/Level9_Stage4.json",
+                                    "assets/maps/Level10_Stage4_after.json",
+                                    "assets/maps/Level11_Castle.json",
+                                };
 
 namespace audio {
     // music

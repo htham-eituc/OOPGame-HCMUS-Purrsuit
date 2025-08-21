@@ -597,7 +597,7 @@
                         {
                          "name":"Item",
                          "type":"string",
-                         "value":"Strawberries"
+                         "value":"Diary"
                         }],
                  "rotation":0,
                  "type":"",
@@ -609,7 +609,7 @@
                 {
                  "height":30,
                  "id":166,
-                 "name":"StartCutScene",
+                 "name":"ToNextMap",
                  "properties":[
                         {
                          "name":"Entering",
