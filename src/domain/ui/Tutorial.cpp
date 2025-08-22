@@ -48,6 +48,26 @@ Tutorial::Tutorial(TutorialTextureManager* texManager, UIRenderer* renderer)
         pageCounterLabel = new UILabel(counterPos, counterSize, initialText, white, blackOutline, counterFont);
         pageCounterLabel->enableOutline(blackOutline);
     }
+    
+    // Create controls hint label
+    controlsFont = TTF_OpenFont("assets/fonts/Pixel12x10Mono-v1.1.0.ttf", 14);
+    if (!controlsFont) {
+        std::cout << "Failed to load controls font" << std::endl;
+    } else {
+        int bookX = (SCREEN_WIDTH - BOOK_WIDTH) / 2;
+        int bookY = (SCREEN_HEIGHT - BOOK_HEIGHT) / 2;
+
+        Vector2 controlsPos(bookX + BOOK_WIDTH - 200, bookY + BOOK_HEIGHT - 10);
+        Vector2 controlsSize(200, 20);
+
+        Color lightGray(200, 200, 200, 255);
+        Color blackOutline(0, 0, 0, 180);
+
+        std::string controlsText = "SPACE: Next | ESC: Quit";
+        controlsLabel = new UILabel(controlsPos, controlsSize, controlsText, lightGray, blackOutline, controlsFont);
+        controlsLabel->enableOutline(blackOutline);
+    }
+    
     initializeTutorialData();
 }
 
@@ -65,6 +85,13 @@ Tutorial::~Tutorial() {
     if (pageCounterLabel) {
         delete pageCounterLabel;
         pageCounterLabel = nullptr;
+    }
+    if (controlsFont) {
+        TTF_CloseFont(controlsFont);
+    }
+    if (controlsLabel) {
+        delete controlsLabel;
+        controlsLabel = nullptr;
     }
 }
 
@@ -171,6 +198,9 @@ void Tutorial::render(SDL_Renderer* renderer) {
         pageCounterLabel->setText(ss.str());
 
         pageCounterLabel->render(core::uiRenderer);
+    }
+    if (controlsLabel) {
+        controlsLabel->render(core::uiRenderer);
     }
 }
 
@@ -297,8 +327,12 @@ void Tutorial::handleEvent(const SDL_Event& e) {
     if (e.type == SDL_KEYDOWN) {
         if (e.key.keysym.scancode == SDL_SCANCODE_T && !isVisible) {
             open();
-        } else if (e.key.keysym.scancode == SDL_SCANCODE_SPACE && isVisible) {
-            nextTip();
+        } else if (isVisible) {
+            if (e.key.keysym.scancode == SDL_SCANCODE_SPACE) {
+                nextTip();
+            } else if (e.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
+                close();
+            }
         }
     }
 }
