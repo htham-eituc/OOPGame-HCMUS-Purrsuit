@@ -416,42 +416,6 @@
                  "y":405.17
                 }, 
                 {
-                 "gid":963,
-                 "height":32,
-                 "id":100,
-                 "name":"Catnip",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":457,
-                 "y":139.166666666667
-                }, 
-                {
-                 "gid":963,
-                 "height":32,
-                 "id":104,
-                 "name":"Catnip",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":413.5,
-                 "y":564.5
-                }, 
-                {
-                 "gid":986,
-                 "height":32,
-                 "id":137,
-                 "name":"Apple",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":864,
-                 "y":453
-                }, 
-                {
                  "gid":971,
                  "height":32,
                  "id":138,
@@ -464,28 +428,52 @@
                  "y":761
                 }, 
                 {
-                 "gid":997,
+                 "gid":1012,
                  "height":32,
-                 "id":167,
-                 "name":"Strawberries",
+                 "id":171,
+                 "name":"Apple",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":97,
-                 "y":769
+                 "x":849.333333333333,
+                 "y":457.666666666667
                 }, 
                 {
-                 "gid":962,
+                 "gid":1013,
                  "height":32,
-                 "id":168,
+                 "id":172,
+                 "name":"Catnip",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":386.666666666667,
+                 "y":583
+                }, 
+                {
+                 "gid":1011,
+                 "height":32,
+                 "id":173,
                  "name":"Milk",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":686,
-                 "y":405
+                 "x":680,
+                 "y":413.666666666667
+                }, 
+                {
+                 "gid":1013,
+                 "height":32,
+                 "id":174,
+                 "name":"Catnip",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":477.333333333333,
+                 "y":177.666666666667
                 }],
          "offsetx":0,
          "offsety":1,
@@ -589,7 +577,6 @@
                  "name":"ToNextMap",
                  "properties":[
                         {
-
                          "name":"Entering",
                          "type":"string",
                          "value":"Save the princess!"
@@ -640,7 +627,7 @@
          "y":0
         }],
  "nextlayerid":46,
- "nextobjectid":169,
+ "nextobjectid":175,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
@@ -786,6 +773,19 @@
          "name":"Basic Grass Biom things 1",
          "spacing":0,
          "tilecount":45,
+         "tileheight":32,
+         "tilewidth":32
+        }, 
+        {
+         "columns":4,
+         "firstgid":1011,
+         "image":"map1\/items.png",
+         "imageheight":32,
+         "imagewidth":128,
+         "margin":0,
+         "name":"items",
+         "spacing":0,
+         "tilecount":4,
          "tileheight":32,
          "tilewidth":32
         }],

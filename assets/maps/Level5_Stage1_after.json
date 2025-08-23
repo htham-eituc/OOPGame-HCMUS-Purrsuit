@@ -404,16 +404,16 @@
          "name":"Object",
          "objects":[
                 {
-                 "gid":986,
+                 "gid":1012,
                  "height":32,
-                 "id":137,
+                 "id":170,
                  "name":"Apple",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":472.621553884712,
-                 "y":706.4335839599
+                 "x":436.330827067669,
+                 "y":690.288220551378
                 }],
          "offsetx":0,
          "offsety":1,
@@ -552,7 +552,7 @@
          "y":0
         }],
  "nextlayerid":46,
- "nextobjectid":170,
+ "nextobjectid":171,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
@@ -698,6 +698,19 @@
          "name":"Basic Grass Biom things 1",
          "spacing":0,
          "tilecount":45,
+         "tileheight":32,
+         "tilewidth":32
+        }, 
+        {
+         "columns":4,
+         "firstgid":1011,
+         "image":"map1\/items.png",
+         "imageheight":32,
+         "imagewidth":128,
+         "margin":0,
+         "name":"items",
+         "spacing":0,
+         "tilecount":4,
          "tileheight":32,
          "tilewidth":32
         }],

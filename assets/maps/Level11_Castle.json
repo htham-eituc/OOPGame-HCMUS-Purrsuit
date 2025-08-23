@@ -80,6 +80,18 @@
                  "width":0,
                  "x":85.3333333333333,
                  "y":332
+                }, 
+                {
+                 "height":0,
+                 "id":4,
+                 "name":"princess",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1082,
+                 "y":278
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -96,6 +108,12 @@
                  "height":104,
                  "id":2,
                  "name":"StartCutScene",
+                 "properties":[
+                        {
+                         "name":"Entering",
+                         "type":"string",
+                         "value":"Meow! :3"
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -141,7 +159,7 @@
          "y":0
         }],
  "nextlayerid":10,
- "nextobjectid":4,
+ "nextobjectid":5,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

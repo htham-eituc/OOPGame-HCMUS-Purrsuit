@@ -58,7 +58,7 @@ bool Game::init(const char* title) {
     inventoryTextureManager = new InventoryTextureManager(renderer);
     inventory = new Inventory(inventoryTextureManager);
 
-    changeState(StateFactory::createTitleState());
+    changeState(StateFactory::createLevel8State());
 
     return true;
 }

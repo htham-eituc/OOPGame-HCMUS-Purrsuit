@@ -409,7 +409,7 @@
                  "y":655.5
                 }, 
                 {
-                 "height":35.5,
+                 "height":28,
                  "id":12,
                  "name":"StartCutScene",
                  "properties":[
@@ -421,8 +421,8 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":52,
-                 "x":421,
+                 "width":30,
+                 "x":430,
                  "y":344
                 }],
          "opacity":1,

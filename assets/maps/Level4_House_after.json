@@ -366,17 +366,7 @@
                         {
                          "name":"Entering",
                          "type":"string",
-                         "value":"Left the house"
-                        }, 
-                        {
-                         "name":"Instruction",
-                         "type":"string",
-                         "value":"Find a diary in the house"
-                        }, 
-                        {
-                         "name":"Item",
-                         "type":"string",
-                         "value":"Diary"
+                         "value":"Leave the house"
                         }],
                  "rotation":0,
                  "type":"",
