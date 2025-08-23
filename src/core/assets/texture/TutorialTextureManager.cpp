@@ -3,7 +3,7 @@
 #include <iostream>
 
 TutorialTextureManager::TutorialTextureManager(SDL_Renderer* renderer) 
-    : renderer(renderer), bookPagesTexture(nullptr) {
+    : renderer(renderer), bookPagesTexture(nullptr), itemsTexture(nullptr) {
     loadTextures();
 }
 
@@ -24,6 +24,9 @@ SDL_Texture* TutorialTextureManager::loadTexture(const std::string& filename) {
 bool TutorialTextureManager::loadTextures() {
     // Load book pages background
     bookPagesTexture = loadTexture("assets/ui/tutorial/book_pages.png");
+    
+    // Load items texture
+    itemsTexture = loadTexture("assets/tiles/map1/items.png");
     
     // Load animation textures with different frame times for variety
     SDL_Texture* playerIdleTex = loadTexture("assets/character/main_cat_idle.png");
@@ -51,7 +54,7 @@ bool TutorialTextureManager::loadTextures() {
         animations["zombie_idle"] = AnimationInfo(zombieIdleTex, 4, 0.2f); // Slow idle
     }
     
-    bool success = bookPagesTexture && !animations.empty();
+    bool success = bookPagesTexture && itemsTexture && !animations.empty();
     
     if (!success) {
         std::cout << "Failed to load some tutorial textures" << std::endl;
@@ -79,9 +82,14 @@ void TutorialTextureManager::cleanup() {
     }
     animations.clear();
     
-    // Clean up UI texture
+    // Clean up UI textures
     if (bookPagesTexture) {
         SDL_DestroyTexture(bookPagesTexture);
         bookPagesTexture = nullptr;
+    }
+    
+    if (itemsTexture) {
+        SDL_DestroyTexture(itemsTexture);
+        itemsTexture = nullptr;
     }
 }

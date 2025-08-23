@@ -22,7 +22,8 @@ private:
     
     // UI texture
     SDL_Texture* bookPagesTexture;
-    
+    SDL_Texture* itemsTexture;
+
     SDL_Texture* loadTexture(const std::string& filename);
     
 public:
@@ -36,6 +37,7 @@ public:
     
     // Get UI texture
     SDL_Texture* getBookPagesTexture() const { return bookPagesTexture; }
+    SDL_Texture* getItemsTexture() const { return itemsTexture; }
     
     void cleanup();
 };

@@ -110,6 +110,11 @@ void Tutorial::initializeTutorialData() {
     stage2.addTip("They get angry easily!", "zombie_stand_walk");
     stage2.addTip("Stay still or they will hear you ~", "zombie_idle");
     stages.push_back(stage2);
+    
+    // Stage 3 - Items
+    TutorialStage stage3;
+    stage3.addTip("Catnip: You move silently!\n\nApple: You move faster!\n\nMilk: You are unstoppable!!!\n\nMushroom: Beware! Slowness!", "items");
+    stages.push_back(stage3);
 }
 
 void Tutorial::open() {
@@ -165,6 +170,10 @@ void Tutorial::updateAnimation(float deltaTime) {
     if (currentTip >= static_cast<int>(stage.tips.size())) return;
     
     const TutorialTip& tip = stage.tips[currentTip];
+    
+    // Skip animation update for items page
+    if (tip.animationName == "items") return;
+    
     const AnimationInfo* animInfo = textureManager->getAnimation(tip.animationName);
     
     if (!animInfo || !animInfo->texture) return;
@@ -222,8 +231,15 @@ void Tutorial::renderAnimations(SDL_Renderer* renderer) {
     const TutorialStage& stage = stages[currentStage];
     if (currentTip >= static_cast<int>(stage.tips.size())) return;
     
-    // Only render the current tip's animation
     const TutorialTip& tip = stage.tips[currentTip];
+    
+    // Handle items page specially
+    if (tip.animationName == "items") {
+        renderItemsGrid(renderer);
+        return;
+    }
+    
+    // Regular animation rendering
     const AnimationInfo* animInfo = textureManager->getAnimation(tip.animationName);
     
     if (!animInfo || !animInfo->texture) return;
@@ -254,6 +270,51 @@ void Tutorial::renderAnimations(SDL_Renderer* renderer) {
     SDL_RenderCopy(renderer, animInfo->texture, &srcRect, &destRect);
 }
 
+void Tutorial::renderItemsGrid(SDL_Renderer* renderer) {
+    SDL_Texture* itemsTexture = textureManager->getItemsTexture();
+    if (!itemsTexture) return;
+    
+    // Calculate book position
+    int bookX = (SCREEN_WIDTH - BOOK_WIDTH) / 2 + 50;
+    int bookY = (SCREEN_HEIGHT - BOOK_HEIGHT) / 2 - 50;
+    
+    // Calculate base position on left page
+    int baseX = bookX + LEFT_PAGE_X + 20;
+    int baseY = bookY + PAGE_Y + 20;
+    
+    // Item size (each item is 32x32 from the 128x32 sprite sheet)
+    const int ITEM_SIZE = 48; // Display size
+    const int ITEM_SPACING = 20;
+    
+    // Render items in 2x2 grid
+    // Top row: Milk (0), Apple (1)
+    // Bottom row: Catnip (2), Mushroom (3)
+    
+    for (int row = 0; row < 2; row++) {
+        for (int col = 0; col < 2; col++) {
+            int itemIndex = row * 2 + col;
+            
+            // Source rect from sprite sheet (32x32 each)
+            SDL_Rect srcRect = {
+                itemIndex * 32,  // x offset in sprite sheet
+                0,               // y is always 0
+                32,              // width
+                32               // height
+            };
+            
+            // Destination rect
+            SDL_Rect destRect = {
+                baseX + col * (ITEM_SIZE + ITEM_SPACING),
+                baseY + row * (ITEM_SIZE + ITEM_SPACING),
+                ITEM_SIZE,
+                ITEM_SIZE
+            };
+            
+            SDL_RenderCopy(renderer, itemsTexture, &srcRect, &destRect);
+        }
+    }
+}
+
 void Tutorial::renderTexts() {
     if (!font || !uiRenderer || currentStage >= static_cast<int>(stages.size())) return;
     
@@ -269,7 +330,7 @@ void Tutorial::renderTexts() {
     
     // Calculate text position on right page
     int textX = bookX + RIGHT_PAGE_X + TEXT_MARGIN;
-    int textY = bookY + PAGE_Y;
+    int textY = bookY + PAGE_Y - 50;
     
     // Create color for current tip
     Color textColor(255, 255, 255, 255); // White text
@@ -294,30 +355,39 @@ std::vector<std::string> Tutorial::wrapText(const std::string& text, int maxWidt
         return lines;
     }
     
-    std::istringstream words(text);
-    std::string word;
-    std::string currentLine;
+    // First, split by \n characters
+    std::istringstream textStream(text);
+    std::string line;
     
-    while (words >> word) {
-        std::string testLine = currentLine.empty() ? word : currentLine + " " + word;
+    while (std::getline(textStream, line)) {
+        // Now wrap each line individually
+        std::istringstream words(line);
+        std::string word;
+        std::string currentLine;
         
-        int textWidth;
-        TTF_SizeText(font, testLine.c_str(), &textWidth, nullptr);
-        
-        if (textWidth <= maxWidth) {
-            currentLine = testLine;
-        } else {
-            if (!currentLine.empty()) {
-                lines.push_back(currentLine);
-                currentLine = word;
+        while (words >> word) {
+            std::string testLine = currentLine.empty() ? word : currentLine + " " + word;
+            
+            int textWidth;
+            TTF_SizeText(font, testLine.c_str(), &textWidth, nullptr);
+            
+            if (textWidth <= maxWidth) {
+                currentLine = testLine;
             } else {
-                lines.push_back(word); // Single word too long, add anyway
+                if (!currentLine.empty()) {
+                    lines.push_back(currentLine);
+                    currentLine = word;
+                } else {
+                    lines.push_back(word); // Single word too long, add anyway
+                }
             }
         }
-    }
-    
-    if (!currentLine.empty()) {
-        lines.push_back(currentLine);
+        
+        if (!currentLine.empty()) {
+            lines.push_back(currentLine);
+        } else if (line.empty()) {
+            lines.push_back(""); // Preserve empty lines
+        }
     }
     
     return lines;

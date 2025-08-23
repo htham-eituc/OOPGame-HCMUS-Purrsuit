@@ -62,6 +62,7 @@ private:
     void initializeTutorialData();
     void renderBackground(SDL_Renderer* renderer);
     void renderAnimations(SDL_Renderer* renderer);
+    void renderItemsGrid(SDL_Renderer* renderer);
     void renderTexts();
     void updateAnimation(float deltaTime);
     std::vector<std::string> wrapText(const std::string& text, int maxWidth);
