@@ -15,9 +15,9 @@ std::vector<std::string> Cutscene1State::getAudioFiles() {
 
 std::vector<std::vector<std::pair<std::string, float>>> Cutscene1State::getSubtitles() {
     return {
-        { {"He came from the shadows.", 3.0f}, {"But the world wasn't ready for him.", 6.0f} },
-        { {"They feared what they couldn't understand.", 5.0f} },
-        { {"Yet, silence could no longer protect them.", 5.0f} }
+        { {"Once upon a time, there were happy little cats.", 5.0f}, {"Living their life, showing their love to one another.", 8.0f} },
+        { {"But one day, the zombie cats striked!", 5.0f}, {"Villages were pillaged and the princess now kidnapped.", 8.0f} },
+        { {"Who would save her? Who would step up to the challenge?", 5.0f}, {"Let the story begin.", 8.0f} }
     };
 }
 
@@ -27,21 +27,19 @@ void Cutscene1State::onCutsceneComplete(Game *game) {
 
 std::vector<SDL_Texture*> Cutscene2State::getImages()  {
     return {
-        core::textures->getTexture(texture::cutscene_1_1),
-        core::textures->getTexture(texture::cutscene_1_2),
-        core::textures->getTexture(texture::cutscene_1_3)
+        core::textures->getTexture(texture::cutscene_2_1),
+        core::textures->getTexture(texture::cutscene_2_2)
     };
 }
 
 std::vector<std::string> Cutscene2State::getAudioFiles() {
-    return { audio::cutscene_1_1, audio::cutscene_1_2, audio::cutscene_1_3 };
+    return { audio::cutscene_2_1, audio::cutscene_2_2};
 }
 
 std::vector<std::vector<std::pair<std::string, float>>> Cutscene2State::getSubtitles() {
     return {
-        { {"He came from the shadows.", 3.0f}, {"But the world wasn't ready for him.", 6.0f} },
-        { {"They feared what they couldn't understand.", 5.0f} },
-        { {"Yet, silence could no longer protect them.", 5.0f} }
+        { {"The secret lies in the diary.", 6.0f}, {"He now knows the forbidden magic!", 6.0f} },
+        { {"The potion shall eradicate the zombie!", 10.0f} }
     };
 }
 
@@ -51,21 +49,19 @@ void Cutscene2State::onCutsceneComplete(Game *game) {
 
 std::vector<SDL_Texture*> Cutscene3State::getImages()  {
     return {
-        core::textures->getTexture(texture::cutscene_1_1),
-        core::textures->getTexture(texture::cutscene_1_2),
-        core::textures->getTexture(texture::cutscene_1_3)
+        core::textures->getTexture(texture::cutscene_3_1),
+        core::textures->getTexture(texture::cutscene_3_2)
     };
 }
 
 std::vector<std::string> Cutscene3State::getAudioFiles() {
-    return { audio::cutscene_1_1, audio::cutscene_1_2, audio::cutscene_1_3 };
+    return { audio::cutscene_3_1, audio::cutscene_3_2 };
 }
 
 std::vector<std::vector<std::pair<std::string, float>>> Cutscene3State::getSubtitles() {
     return {
-        { {"He came from the shadows.", 3.0f}, {"But the world wasn't ready for him.", 6.0f} },
-        { {"They feared what they couldn't understand.", 5.0f} },
-        { {"Yet, silence could no longer protect them.", 5.0f} }
+        { {"Using the potent potion, all evils were cleansed.", 10.0f} },
+        { {"With peace restored, his story shall come to a close.", 10.0f} }
     };
 }
 

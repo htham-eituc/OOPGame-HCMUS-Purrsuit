@@ -47,6 +47,10 @@ namespace app::init {
         core::audio->loadMusic(audio::cutscene_1_1, audio::cutscene_1_1);
         core::audio->loadMusic(audio::cutscene_1_2, audio::cutscene_1_2);
         core::audio->loadMusic(audio::cutscene_1_3, audio::cutscene_1_3);
+        core::audio->loadMusic(audio::cutscene_2_1, audio::cutscene_2_1);
+        core::audio->loadMusic(audio::cutscene_2_2, audio::cutscene_2_2);
+        core::audio->loadMusic(audio::cutscene_3_1, audio::cutscene_3_1);
+        core::audio->loadMusic(audio::cutscene_3_2, audio::cutscene_3_2);
         core::audio->loadMusic(audio::lv1m, audio::lv1m);
         core::audio->loadSound(audio::ping, audio::ping);
         core::audio->loadSound(audio::move, audio::move);
@@ -69,6 +73,10 @@ namespace app::init {
         core::textures->loadTexture(texture::cutscene_1_1, texture::cutscene_1_1);
         core::textures->loadTexture(texture::cutscene_1_2, texture::cutscene_1_2);
         core::textures->loadTexture(texture::cutscene_1_3, texture::cutscene_1_3);
+        core::textures->loadTexture(texture::cutscene_2_1, texture::cutscene_2_1);
+        core::textures->loadTexture(texture::cutscene_2_2, texture::cutscene_2_2);
+        core::textures->loadTexture(texture::cutscene_3_1, texture::cutscene_3_1);
+        core::textures->loadTexture(texture::cutscene_3_2, texture::cutscene_3_2);
         core::textures->loadTexture(texture::load_button, texture::load_button);
         core::textures->loadTexture(texture::save_button, texture::save_button);
         core::textures->loadTexture(texture::death_screen, texture::death_screen);
