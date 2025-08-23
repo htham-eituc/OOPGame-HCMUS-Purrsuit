@@ -9,11 +9,11 @@ if not exist build (
 cd build
 
 echo Configuring with CMake...
-cmake .. -G "MinGW Makefiles"
+cmake .. -G "Ninja"
 if errorlevel 1 goto :error
 
 echo Building...
-mingw32-make
+ninja
 if errorlevel 1 goto :error
 
 cd ..

@@ -35,6 +35,8 @@ private:
     TTF_Font* titleFont;
     TTF_Font* counterFont;
     UILabel* titleLabel;
+    TTF_Font* controlsFont;
+    UILabel* controlsLabel;
     UILabel* pageCounterLabel;
 
     // Tutorial data

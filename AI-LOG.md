@@ -3,9 +3,9 @@
 - **Project Name**: Purrsuit: A Whisker - A Whisper 😸⚔️
 - **Team Members**:  
     1. **Ngo Huynh Tham** [GitHub](https://github.com/htham-eituc) | [Email](mailto:nhtham2413@clc.fitus.edu.vn)  
-    2. **Nguyen Cao Thong** [GitHub](https://github.com/merdeput) | [Email](mailto:ncthong@clc.fitus.edu.vn)  
+    2. **Nguyen Cao Thong** [GitHub](https://github.com/merdeput) | [Email](mailto:ncthong2427@clc.fitus.edu.vn)  
     3. **Tran Minh Tien** [GitHub](https://github.com/tien140406) | [Email](mailto:tmtien2418@clc.fitus.edu.vn)
-    4. **Huynh Thai Hoang** [GitHub](https://github.com/tohuu123) | [Email](mailto:tmtien2418@clc.fitus.edu.vn)
+    4. **Huynh Thai Hoang** [GitHub](https://github.com/tohuu123) | [Email](mailto:hthoang2412@clc.fitus.edu.vn)
 - **AI Tools Used**: ChatGPT, Claude  
 - **Period of Use**: 1/6/2025 – 24/8/2025  
 
@@ -568,8 +568,247 @@ Choose option 1, due to:
 - **Scalable Architecture**: The `InventoryTextureManager` design provides a clean separation of concerns and is easily extensible for future inventory features.
 - **Visual Enhancement**: The UI sprite integration (banner, frames, cursors) significantly improved the visual polish while maintaining code organization.
 - **Final Result**: Achieved a professional-looking inventory system that persists across map changes with proper sprite rendering and special item highlighting capabilities.
+
+
+### Interactive Tutorial System
+
 ---
 
+**Prompt Used:** *(For generate code)* 
+"I need to create an interactive tutorial system for my 2D SDL game that teaches players the core mechanics. The system should have multiple stages with animated demonstrations and text explanations. Players should be able to progress through different tutorial sections that cover movement, item collection, and enemy behavior. The interface should feel integrated with the game's aesthetic and not disrupt the gameplay flow."
+
+---
+
+**AI Response Summary:**
+
+- **Component Architecture**
+-- Designed a **modular system** with `TutorialTextureManager` for assets and a main `Tutorial` class for logic.  
+-- Ensures **separation of concerns** and **maintainability**.  
+
+- **Multi-Stage Framework**
+--Built a **stage-based system** with `TutorialStage` and `TutorialTip`.  
+--Supports **2–3 tips per stage** with easy future expansion.  
+
+**Dynamic Animation Engine**
+- Implemented **sprite animation system** with support for **4–7 frames**.  
+- Individual **timing controls** for different animations (movement, zombie behaviors).  
+
+**Integrated UI System**
+- Integrated with existing **font rendering and UI components**.  
+- **Smart text wrapping** within defined bounds.  
+- **Visual feedback** through color-coded highlights.  
+- **Book-style interface** that matches medieval aesthetic.  
+
+**State & Input Management**
+- **Independent pause mechanism** that doesn’t disrupt the game state.  
+- **Intuitive controls**: `T` to open, `Space` to progress, `Esc` to quit.  
+- **Smooth transitions** with proper cleanup.  
+- Tutorial has **input priority** when active.  
+
+**Performance Optimizations**
+- Added **texture caching** and efficient frame management.  
+- Ensures **low memory usage** and smooth animations across hardware.  
+
+---
+
+**Decision & Application**
+
+- **Scalable Architecture**
+-- Component-based design allows **adding content/animations** without touching core systems.  
+--  Provides a **foundation for future educational features**.  
+
+- **Visual Learning Success**
+-- Combined **animated demonstrations** with **text explanations**.  
+-- **Improved player comprehension** and reduced learning curve.  
+
+- **User Experience Excellence**
+-- **Book-style presentation** feels **immersive and lore-appropriate**.  
+-- Integrated naturally into the game world rather than as an intrusive overlay. 
+
+---
+
+### On-Screen Hint Alignment
+
+---
+
+**Prompt Used:**  *(For generate code)* 
+"I want to display tutorial hints at the bottom of the gameplay screen using image assets like `wasd_onscreen.png` and `esc_onscreen.png`, followed by text like 'move' and 'pause'. I need the text to stay in the same place, but the image should sit slightly above the text for better alignment."  
+
+---
+
+**AI Response Summary:**
+
+- **UI Layout Strategy**  
+-- Suggested separating the **y-position of the image and text**.  
+-- Proposed shifting the image upwards using `y - offset` while keeping the label’s y fixed.  
+-- Ensured both elements remain horizontally aligned and spaced consistently.  
+
+- **Implementation Details**  
+-- Used `SDL_Rect` for the key image with `y - 8` adjustment.  
+-- Rendered `UILabel` for explanatory text below at the original `y`.  
+-- Example code snippet demonstrated correct placement of both.  
+
+- **Design Considerations**  
+-- Hints should remain **non-intrusive** and easy to read.  
+-- Icons and text must feel like a **single unit** while keeping **visual hierarchy** (icon slightly above, text baseline steady).  
+
+---
+
+**Decision & Application**
+
+- **Final Layout**  
+-- `[wasd_onscreen] move     [esc_onscreen] pause` displayed at the bottom of the screen.  
+-- Icons shifted upward **8 pixels** for a balanced look.  
+
+- **Improved Readability**  
+-- Players instantly associate key images with their actions.  
+-- Text alignment remains consistent, avoiding visual jitter.  
+
+- **Scalable Approach**  
+-- The same technique can be applied to add more hint icons.  
+-- Maintains a **clean separation** between rendering logic for icons and labels.  
+---
+### Custom Mouse Sprite Animation
+
+---
+
+**Prompt Used:**  *(For generate code)* 
+"I found a sprite asset `mouse_on_click.png` consisting of multiple frames. I want to animate the mouse cursor so that when the player clicks, the cursor shows a short animation. It should still behave as a functional cursor and not break button interactions."  
+
+---
+
+**AI Response Summary:**
+
+- **Cursor Replacement Strategy**  
+-- Recommended disabling the default SDL cursor using `SDL_ShowCursor(SDL_DISABLE)`.  
+-- Proposed rendering a **custom texture** at the mouse’s logical position each frame.  
+-- Ensured compatibility with `SDL_RenderSetLogicalSize` so the cursor aligns with UI elements.  
+
+- **Animation System**  
+-- Suggested slicing `mouse_on_click.png` into individual frames using `SDL_Rect` clips.  
+-- Implemented a **frame index with timing logic** (advance every X ms).  
+-- Reset animation when `SDL_MOUSEBUTTONDOWN` is received.  
+
+- **Input Preservation**  
+-- Kept `UIButton::handleInput` unchanged for hit detection.  
+-- Clarified that cursor rendering is **visual only**, input events still use SDL’s raw mouse events.  
+
+---
+
+**Decision & Application**
+
+- **Functional Animated Cursor**  
+-- Cursor now shows a **click animation** whenever the player presses LMB.  
+-- Animation resets smoothly and does not interfere with normal rendering.  
+
+- **Enhanced Player Feedback**  
+-- Provides immediate **visual confirmation** of a click.  
+-- Makes the UI feel more polished and responsive.  
+
+- **Maintainable Design**  
+-- Easy to extend with additional states (hover, drag).  
+-- Keeps rendering and input handling cleanly separated. 
+---
+
+### Cutscene Playback System
+
+---
+
+**Prompt Used:**  
+"I want to implement cutscene playback logic in my SDL2 game. The system should display still-image scenes with background music, and players should progress through the cutscene by pressing the spacebar. It should feel cinematic but remain lightweight."  
+
+---
+
+**AI Response Summary:**
+
+- **Cutscene Structure**  
+-- Designed a **cutscene state** in the game state machine.  
+-- Each cutscene consists of an array of **image + audio pairs**.  
+-- Progression handled through **spacebar input** (`SDL_KEYDOWN`).  
+
+- **Playback Logic**  
+-- On entering cutscene state: load the current image and play associated music track.  
+-- On `Space` press: advance to the next scene (swap image, play new audio if specified).  
+-- On reaching the final scene: **transition to the next game state** (e.g., gameplay or title).  
+
+- **Rendering Approach**  
+-- Used SDL textures for static background images.  
+-- Added optional **subtitle text rendering** for story narration.  
+-- Integrated with existing render loop for smooth transitions.  
+
+- **Design Considerations**  
+-- Ensured cutscenes can be **skipped or advanced cleanly**.  
+-- Lightweight logic avoids complex timing — progression is **fully player-controlled**.  
+-- Flexible enough to add new cutscenes by simply extending the scene list.  
+
+---
+
+**Decision & Application**
+
+- **Cinematic Flow**  
+-- Players experience story moments through **static but atmospheric scenes**.  
+-- Music tracks enhance immersion and tone.  
+
+- **Simple & Effective Control**  
+-- `Spacebar` provides intuitive progression.  
+-- Cutscenes never lock the player in — they can always continue at their pace.  
+
+- **Scalability**  
+-- New cutscenes are easy to implement using the same framework.  
+-- Supports expansion with additional features like **fade-in/out transitions** or **animated elements** in the future.  
+
+---
+### Sequential Cutscene System
+
+---
+
+**Prompt Used:**  
+"I want to implement sequential cutscenes in my SDL2 game. Each cutscene should display a series of images or simple motion frames, accompanied by music. Cutscenes can be triggered automatically (e.g., after a level starts) or via player input."  
+
+---
+
+**AI Response Summary:**
+
+- **Cutscene Sequencing**  
+-- Designed a **scene list system**, each containing one or more images and an optional audio track.  
+-- Supports **sequential progression**, either automatically after a timer or manually via `Spacebar` or other input.  
+-- Allows **branching triggers** for different gameplay events.  
+
+- **Playback Logic**  
+-- Automatically load the current image/frame and play its associated music.  
+-- On input or timer, advance to the next scene with optional subtitle updates.  
+-- On reaching the final scene, transition cleanly to the next game state (level, menu, or other).  
+
+- **Rendering & Motion**  
+-- Images rendered as SDL textures, scaled to maintain aspect ratio.  
+-- Optional **motion effects** like slow zoom, fade-in/fade-out, or simple translations.  
+-- Integrated with existing rendering pipeline to maintain frame consistency.  
+
+- **Audio Integration**  
+-- Each scene can have its own **music or sound effect track**.  
+-- Smooth audio transitions handled to prevent abrupt stops or overlaps.  
+
+- **Design Considerations**  
+-- Lightweight system to avoid blocking main game loop.  
+-- Fully **data-driven**, allowing easy addition of new cutscenes by extending scene arrays.  
+-- Supports both **automatic triggers** (e.g., level start) and **player-initiated triggers** (e.g., menu selection).  
+
+---
+
+**Decision & Application**
+
+- **Immersive Storytelling**  
+-- Sequential cutscenes provide narrative flow without interrupting gameplay.  
+-- Music adds emotional depth and atmosphere.  
+
+- **Player-Friendly Control**  
+-- Cutscenes can be **skipped or advanced manually** to suit player preference.  
+-- Automatic triggers allow for cinematic flow without additional code per scene.  
+
+- **Extensibility**  
+-- Framework supports future additions such as **animated overlays**, **branching storylines**, or **subtitles**.  
+-- System remains modular and maintainable across multiple levels and cutscenes.
+---
 ### 🧹 Refactoring & Optimization
 
 **Prompt Used:**  
@@ -583,6 +822,59 @@ Choose option 1, due to:
 
 ---
 
+### UI Element System
+
+---
+
+**Prompt Used:**  
+"I need a modular UI system for my SDL2 game, including interactive buttons, labels, and cursor rendering. Buttons should handle hover, click, and press states, and support callbacks. Labels should allow text rendering with outlines. The UI should work across different game states and integrate smoothly with the game’s input system."  
+
+---
+
+**AI Response Summary:**
+
+- **Component Architecture**  
+-- Created modular UI elements: `UIButton` for interactive buttons, `UILabel` for text, and `UIInputHandler` to manage event propagation.  
+-- Ensures **separation of concerns**, allowing UI logic to be independent from game logic.  
+
+- **Interactive Buttons**  
+-- Support **hover, pressed, and normal states** with visual feedback.  
+-- Accept **lambda callbacks** for `onClick` events.  
+-- Integrates with `UIInputHandler` for **priority-based event handling**.  
+
+- **Label Rendering**  
+-- Text rendering using SDL_ttf, with support for **outline and color customization**.  
+-- Enables **dynamic text updates**, e.g., subtitles, tutorial hints, or inventory labels.  
+
+- **Cursor & Mouse Feedback**  
+-- Implemented **animated cursor sprite** with click effect.  
+-- Cursor animation frame management synchronized with delta time for smooth visuals.  
+
+- **Event Handling & State Management**  
+-- Input events routed through `UIInputHandler`, allowing **UI elements to consume events** before the main game handles them.  
+-- Works across multiple **game states**, including TITLE, LEVEL1/2, and PAUSE screens.  
+-- Supports **dynamic registration/unregistration** of UI elements depending on the current game state.  
+
+- **Visual Integration**  
+-- UI elements render in logical coordinates consistent with **SDL_RenderSetLogicalSize**.  
+-- Supports **hints and overlays** that integrate naturally with gameplay.  
+
+---
+
+**Decision & Application**
+
+- **User Experience Enhancement**  
+-- Buttons and labels provide **intuitive feedback** on interaction.  
+-- Cursor animations improve **visual clarity of player actions**.  
+
+- **Maintainable Architecture**  
+-- Modular design allows **easy addition of new UI elements** or modifications without affecting core systems.  
+-- Provides a foundation for future **HUD, menus, or tutorial overlays**.  
+
+- **Cross-State Consistency**  
+-- Ensures that UI behaves **predictably across different game states**, maintaining a polished, professional feel.   
+
+---
 ## 🧠 Summary & Reflections
 
 - **Overall Benefit:**  
