@@ -19,12 +19,12 @@ void MapRender::render() {
     for (auto& item : mapData.items)
         item.render(renderer, mapData.tilesets);
         
-    if (!mapData.aboveObject.data.empty())
+    if (!mapData.aboveObject.tiles.empty())
         drawLayer(mapData.aboveObject);
 }
 
 void MapRender::renderAboveLayer() {
-    if (!mapData.aboveLayer.data.empty())
+    if (!mapData.aboveLayer.tiles.empty())
         drawLayer(mapData.aboveLayer);
 }
 
@@ -32,17 +32,17 @@ void MapRender::drawLayer(const TileLayer& layer) {
     for (int y = 0; y < layer.height; ++y) {
         for (int x = 0; x < layer.width; ++x) {
             int index = y * layer.width + x;
-            int tileID = layer.data[index];
+            const Tile& tile = layer.tiles[index];
 
-            if (tileID == 0) continue;
+            if (tile.gid == 0) continue; // empty
 
             const Tileset* tileset = nullptr;
             int localID = 0;
 
             for (int i = static_cast<int>(mapData.tilesets.size()) - 1; i >= 0; --i) {
-                if (tileID >= mapData.tilesets[i].firstgid) {
+                if (tile.gid >= mapData.tilesets[i].firstgid) {
                     tileset = &mapData.tilesets[i];
-                    localID = tileID - mapData.tilesets[i].firstgid;
+                    localID = tile.gid - mapData.tilesets[i].firstgid;
                     break;
                 }
             }
@@ -62,8 +62,18 @@ void MapRender::drawLayer(const TileLayer& layer) {
                 TILE_SIZE,
                 TILE_SIZE
             };
+
             SDL_Rect camDes = Camera::ToCamView(destRect);
-            SDL_RenderCopy(renderer, tileset->texture, &srcRect, &camDes);
+
+            // 🚀 Handle flipping
+            SDL_RendererFlip flip = SDL_FLIP_NONE;
+            if (tile.flipH) flip = (SDL_RendererFlip)(flip | SDL_FLIP_HORIZONTAL);
+            if (tile.flipV) flip = (SDL_RendererFlip)(flip | SDL_FLIP_VERTICAL);
+
+            // ⚠ SDL2 cannot do diagonal flip directly, you’ll need rotation
+            double angle = tile.flipD ? 90.0 : 0.0;
+
+            SDL_RenderCopyEx(renderer, tileset->texture, &srcRect, &camDes, angle, nullptr, flip);
         }
     }
 }

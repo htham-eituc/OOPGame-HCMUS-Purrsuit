@@ -6,9 +6,16 @@
 #include "Item.h"
 #include "TransitionZone.h"
 
+struct Tile {
+    int gid = 0;          // the actual tile ID (masked, no flip flags)
+    bool flipH = false;   // horizontal flip
+    bool flipV = false;   // vertical flip
+    bool flipD = false;   // diagonal/rotation flip
+};
+
 struct TileLayer {
     std::string name;
-    std::vector<int> data;
+    std::vector<Tile> tiles;
     int width, height;
 };
 

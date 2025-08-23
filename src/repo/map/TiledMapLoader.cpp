@@ -6,6 +6,11 @@
 #include "Services.h"
 #include "tileson.hpp"
 
+const uint32_t FLIPPED_HORIZONTALLY_FLAG = 0x80000000;
+const uint32_t FLIPPED_VERTICALLY_FLAG   = 0x40000000;
+const uint32_t FLIPPED_DIAGONALLY_FLAG   = 0x20000000;
+const uint32_t GID_MASK                  = 0x0FFFFFFF;
+
 SDL_Texture* TiledMapLoader::loadTexture(const std::string& path, SDL_Renderer* renderer) {
     SDL_Texture* tex = IMG_LoadTexture(renderer, path.c_str());
     if (!tex) {
@@ -24,22 +29,23 @@ MapData TiledMapLoader::loadMap(const std::string& path, SDL_Renderer* renderer)
         return mapData;
     }
 
-    mapData.mapWidth = map->getSize().x;
-    mapData.mapHeight = map->getSize().y;
-    mapData.tileWidth = map->getTileSize().x;
+    mapData.mapWidth   = map->getSize().x;
+    mapData.mapHeight  = map->getSize().y;
+    mapData.tileWidth  = map->getTileSize().x;
     mapData.tileHeight = map->getTileSize().y;
 
-    // Load tileset
+    // Load tilesets
     for (const auto& ts : map->getTilesets()) {
         Tileset tileset;
-        tileset.firstgid = ts.getFirstgid();
-        tileset.tileWidth = ts.getTileSize().x;
+        tileset.firstgid   = ts.getFirstgid();
+        tileset.tileWidth  = ts.getTileSize().x;
         tileset.tileHeight = ts.getTileSize().y;
-        tileset.columns = ts.getColumns();
-        tileset.tilecount = ts.getTileCount();
+        tileset.columns    = ts.getColumns();
+        tileset.tilecount  = ts.getTileCount();
 
         std::string imgPath = "assets/tiles/" + ts.getImagePath().u8string();
-        tileset.imagePath = imgPath; 
+        tileset.imagePath   = imgPath;
+
         std::string imageId = ts.getImagePath().filename().string();
         core::textures->loadTexture(imageId, imgPath);
         tileset.texture = core::textures->getTexture(imageId);
@@ -49,41 +55,59 @@ MapData TiledMapLoader::loadMap(const std::string& path, SDL_Renderer* renderer)
 
     // Load tile layers
     for (auto& layer : map->getLayers()) {
-        if (layer.getType() != tson::LayerType::TileLayer || !layer.isVisible()) continue;
+        if (layer.getType() != tson::LayerType::TileLayer || !layer.isVisible())
+            continue;
 
         TileLayer tileLayer;
-        tileLayer.name = layer.getName();
-        tileLayer.width = layer.getSize().x;
+        tileLayer.name   = layer.getName();
+        tileLayer.width  = layer.getSize().x;
         tileLayer.height = layer.getSize().y;
 
         auto& data = layer.getData();
-        tileLayer.data.assign(data.begin(), data.end());
+
+        tileLayer.tiles.reserve(data.size());
+        for (auto raw : data) {
+            Tile t;
+            uint32_t val = static_cast<uint32_t>(raw);
+
+            t.gid   = val & GID_MASK;
+            t.flipH = (val & FLIPPED_HORIZONTALLY_FLAG) != 0;
+            t.flipV = (val & FLIPPED_VERTICALLY_FLAG)   != 0;
+            t.flipD = (val & FLIPPED_DIAGONALLY_FLAG)   != 0;
+
+            tileLayer.tiles.push_back(t);
+        }
+
+        // Collision layer
         if (tileLayer.name == "Collision") {
-            mapData.collisionMap.resize(mapData.mapHeight, std::vector<bool>(mapData.mapWidth, false));
+            mapData.collisionMap.resize(mapData.mapHeight,
+                std::vector<bool>(mapData.mapWidth, false));
 
             for (int y = 0; y < mapData.mapHeight; ++y) {
                 for (int x = 0; x < mapData.mapWidth; ++x) {
                     int index = y * tileLayer.width + x;
-                    int gid = tileLayer.data[index];  
-                    if (gid != 0) {
-                        mapData.collisionMap[y][x] = true;  
+                    if (tileLayer.tiles[index].gid != 0) {
+                        mapData.collisionMap[y][x] = true;
                     }
                 }
             }
         }
+
         if (tileLayer.name == "Above")
             mapData.aboveLayer = tileLayer;
         else if (tileLayer.name == "Above Object")
             mapData.aboveObject = tileLayer;
-        else 
+        else
             mapData.layers.push_back(tileLayer);
     }
 
-    mapData.items = LoadItemsFromMap(path);
-    mapData.spawnPoints = LoadSpawnPointsFromMap(path);
-    mapData.transitionZones = LoadTransitionZonesFromMap(path);
+    mapData.items          = LoadItemsFromMap(path);
+    mapData.spawnPoints    = LoadSpawnPointsFromMap(path);
+    mapData.transitionZones= LoadTransitionZonesFromMap(path);
+
     return mapData;
 }
+
 
 std::vector<Item> TiledMapLoader::LoadItemsFromMap(const std::string& path) {
     tson::Tileson parser;
