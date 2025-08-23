@@ -568,6 +568,105 @@ Choose option 1, due to:
 - **Scalable Architecture**: The `InventoryTextureManager` design provides a clean separation of concerns and is easily extensible for future inventory features.
 - **Visual Enhancement**: The UI sprite integration (banner, frames, cursors) significantly improved the visual polish while maintaining code organization.
 - **Final Result**: Achieved a professional-looking inventory system that persists across map changes with proper sprite rendering and special item highlighting capabilities.
+
+
+### Interactive Tutorial System
+
+---
+
+**Prompt Used:**
+"I need to create an interactive tutorial system for my 2D SDL game that teaches players the core mechanics. The system should have multiple stages with animated demonstrations and text explanations. Players should be able to progress through different tutorial sections that cover movement, item collection, and enemy behavior. The interface should feel integrated with the game's aesthetic and not disrupt the gameplay flow."
+
+---
+
+**AI Response Summary:**
+
+- **Component Architecture**
+-- Designed a **modular system** with `TutorialTextureManager` for assets and a main `Tutorial` class for logic.  
+-- Ensures **separation of concerns** and **maintainability**.  
+
+- **Multi-Stage Framework**
+--Built a **stage-based system** with `TutorialStage` and `TutorialTip`.  
+--Supports **2–3 tips per stage** with easy future expansion.  
+
+**Dynamic Animation Engine**
+- Implemented **sprite animation system** with support for **4–7 frames**.  
+- Individual **timing controls** for different animations (movement, zombie behaviors).  
+
+**Integrated UI System**
+- Integrated with existing **font rendering and UI components**.  
+- **Smart text wrapping** within defined bounds.  
+- **Visual feedback** through color-coded highlights.  
+- **Book-style interface** that matches medieval aesthetic.  
+
+**State & Input Management**
+- **Independent pause mechanism** that doesn’t disrupt the game state.  
+- **Intuitive controls**: `T` to open, `Space` to progress.  
+- **Smooth transitions** with proper cleanup.  
+- Tutorial has **input priority** when active.  
+
+**Performance Optimizations**
+- Added **texture caching** and efficient frame management.  
+- Ensures **low memory usage** and smooth animations across hardware.  
+
+---
+
+**Decision & Application**
+
+- **Scalable Architecture**
+-- Component-based design allows **adding content/animations** without touching core systems.  
+--  Provides a **foundation for future educational features**.  
+
+- **Visual Learning Success**
+-- Combined **animated demonstrations** with **text explanations**.  
+-- **Improved player comprehension** and reduced learning curve.  
+
+- **User Experience Excellence**
+-- **Book-style presentation** feels **immersive and lore-appropriate**.  
+-- Integrated naturally into the game world rather than as an intrusive overlay. 
+
+---
+
+### On-Screen Hint Alignment
+
+---
+
+**Prompt Used:**  
+"I want to display tutorial hints at the bottom of the gameplay screen using image assets like `wasd_onscreen.png` and `esc_onscreen.png`, followed by text like 'move' and 'pause'. I need the text to stay in the same place, but the image should sit slightly above the text for better alignment."  
+
+---
+
+**AI Response Summary:**
+
+- **UI Layout Strategy**  
+-- Suggested separating the **y-position of the image and text**.  
+-- Proposed shifting the image upwards using `y - offset` while keeping the label’s y fixed.  
+-- Ensured both elements remain horizontally aligned and spaced consistently.  
+
+- **Implementation Details**  
+-- Used `SDL_Rect` for the key image with `y - 8` adjustment.  
+-- Rendered `UILabel` for explanatory text below at the original `y`.  
+-- Example code snippet demonstrated correct placement of both.  
+
+- **Design Considerations**  
+-- Hints should remain **non-intrusive** and easy to read.  
+-- Icons and text must feel like a **single unit** while keeping **visual hierarchy** (icon slightly above, text baseline steady).  
+
+---
+
+**Decision & Application**
+
+- **Final Layout**  
+-- `[wasd_onscreen] move     [esc_onscreen] pause` displayed at the bottom of the screen.  
+-- Icons shifted upward **8 pixels** for a balanced look.  
+
+- **Improved Readability**  
+-- Players instantly associate key images with their actions.  
+-- Text alignment remains consistent, avoiding visual jitter.  
+
+- **Scalable Approach**  
+-- The same technique can be applied to add more hint icons.  
+-- Maintains a **clean separation** between rendering logic for icons and labels.  
 ---
 
 ### 🧹 Refactoring & Optimization
