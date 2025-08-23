@@ -57,13 +57,13 @@ Tutorial::Tutorial(TutorialTextureManager* texManager, UIRenderer* renderer)
         int bookX = (SCREEN_WIDTH - BOOK_WIDTH) / 2;
         int bookY = (SCREEN_HEIGHT - BOOK_HEIGHT) / 2;
 
-        Vector2 controlsPos(bookX + BOOK_WIDTH - 200, bookY + BOOK_HEIGHT - 10);
+        Vector2 controlsPos(bookX + BOOK_WIDTH - 300, bookY + BOOK_HEIGHT - 38);
         Vector2 controlsSize(200, 20);
 
         Color lightGray(200, 200, 200, 255);
         Color blackOutline(0, 0, 0, 180);
 
-        std::string controlsText = "SPACE: Next | ESC: Quit";
+        std::string controlsText = "SPACE: Next    ESC: Quit";
         controlsLabel = new UILabel(controlsPos, controlsSize, controlsText, lightGray, blackOutline, controlsFont);
         controlsLabel->enableOutline(blackOutline);
     }
