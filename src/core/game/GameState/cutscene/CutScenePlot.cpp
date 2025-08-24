@@ -17,7 +17,7 @@ std::vector<std::vector<std::pair<std::string, float>>> Cutscene1State::getSubti
     return {
         { {"Once upon a time, there were happy little cats.", 5.0f}, {"Living their life, showing their love to one another.", 8.0f} },
         { {"But one day, the zombie cats striked!", 5.0f}, {"Villages were pillaged and the princess now kidnapped.", 8.0f} },
-        { {"Who would save her? Who would step up to the challenge?", 5.0f}, {"Let the story begin.", 8.0f} }
+        { {"Who would save her? Who would step up to the challenge?", 6.0f}, {"Let the story begin.", 8.0f} }
     };
 }
 
@@ -61,7 +61,7 @@ std::vector<std::string> Cutscene3State::getAudioFiles() {
 std::vector<std::vector<std::pair<std::string, float>>> Cutscene3State::getSubtitles() {
     return {
         { {"Using the potent potion, all evils were cleansed.", 10.0f} },
-        { {"With peace restored, his story shall come to a close.", 10.0f} }
+        { {"His story shall come to an end, a happy one.", 10.0f} }
     };
 }
 

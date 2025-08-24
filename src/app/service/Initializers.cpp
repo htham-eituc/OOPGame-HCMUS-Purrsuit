@@ -85,6 +85,8 @@ namespace app::init {
         core::textures->loadTexture(texture::wasd_onscreen, texture::wasd_onscreen);
         core::textures->loadTexture(texture::items, texture::items);
         core::textures->loadTexture(texture::esc_onscreen, texture::esc_onscreen);
+        core::textures->loadTexture(texture::t_onscreen, texture::t_onscreen);
+        core::textures->loadTexture(texture::i_onscreen, texture::i_onscreen);
         core::textures->loadTexture(texture::mouse_default, texture::mouse_default);
         core::textures->loadTexture(texture::mouse_on_click, texture::mouse_on_click);
     }

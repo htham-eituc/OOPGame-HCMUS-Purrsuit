@@ -33,10 +33,10 @@ namespace audio {
     constexpr const char* cutscene_1_1 = "assets/music/cutscene_1_1.mp3";
     constexpr const char* cutscene_1_2 = "assets/music/cutscene_1_2.mp3";
     constexpr const char* cutscene_1_3 = "assets/music/cutscene_1_3.mp3";
-    constexpr const char* cutscene_2_1 = "assets/music/cutscene_1_3.mp3";
-    constexpr const char* cutscene_2_2 = "assets/music/cutscene_1_3.mp3";
-    constexpr const char* cutscene_3_1 = "assets/music/cutscene_1_3.mp3";
-    constexpr const char* cutscene_3_2 = "assets/music/cutscene_1_3.mp3";
+    constexpr const char* cutscene_2_1 = "assets/music/cutscene_2_1.mp3";
+    constexpr const char* cutscene_2_2 = "assets/music/cutscene_2_2.mp3";
+    constexpr const char* cutscene_3_1 = "assets/music/cutscene_3_1.mp3";
+    constexpr const char* cutscene_3_2 = "assets/music/cutscene_2_2.mp3";
 
     // sfx
     constexpr const char* ping = "assets/music/itemPickupSound.wav";
@@ -80,6 +80,8 @@ namespace texture {
         //Tutorial
     constexpr const char* wasd_onscreen = "assets/ui/wasd_onscreen.png";
     constexpr const char* esc_onscreen = "assets/ui/esc_onscreen.png";
+    constexpr const char* t_onscreen = "assets/ui/t_onscreen.png";
+    constexpr const char* i_onscreen = "assets/ui/i_onscreen.png";
     constexpr const char* items = "assets/tiles/map1/items.png";
 
         //Mouse
