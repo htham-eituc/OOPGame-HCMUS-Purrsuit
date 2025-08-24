@@ -33,10 +33,10 @@ namespace audio {
     constexpr const char* cutscene_1_1 = "assets/music/cutscene_1_1.mp3";
     constexpr const char* cutscene_1_2 = "assets/music/cutscene_1_2.mp3";
     constexpr const char* cutscene_1_3 = "assets/music/cutscene_1_3.mp3";
-    constexpr const char* cutscene_2_1 = "assets/music/cutscene_1_3.mp3";
-    constexpr const char* cutscene_2_2 = "assets/music/cutscene_1_3.mp3";
-    constexpr const char* cutscene_3_1 = "assets/music/cutscene_1_3.mp3";
-    constexpr const char* cutscene_3_2 = "assets/music/cutscene_1_3.mp3";
+    constexpr const char* cutscene_2_1 = "assets/music/cutscene_2_1.mp3";
+    constexpr const char* cutscene_2_2 = "assets/music/cutscene_2_2.mp3";
+    constexpr const char* cutscene_3_1 = "assets/music/cutscene_3_1.mp3";
+    constexpr const char* cutscene_3_2 = "assets/music/cutscene_2_2.mp3";
 
     // sfx
     constexpr const char* ping = "assets/music/itemPickupSound.wav";
