@@ -438,5 +438,33 @@ void LevelState::renderControlHints(Game* game) {
     pauseLabel.enableOutline(Color(0, 0, 0, 255));
     pauseLabel.render(core::uiRenderer);
     
+    // T Tutorial hint
+    x += 80 + 40;
+    SDL_Rect tRect = { x, y, 32, 32 };
+    SDL_RenderCopy(renderer, core::textures->getTexture(texture::t_onscreen), nullptr, &tRect);
+
+    x += tRect.w + 10;
+    UILabel tutorialLabel(
+        Vector2(x, y + 6), Vector2(80, 24), "tutorial",
+        Color(255, 255, 255, 255), Color(0, 0, 0, 255),
+        subtitleFont
+    );
+    tutorialLabel.enableOutline(Color(0, 0, 0, 255));
+    tutorialLabel.render(core::uiRenderer);
+
+    // I Inventory hint
+    x += 130 + 40;
+    SDL_Rect iRect = { x, y, 32, 32 };
+    SDL_RenderCopy(renderer, core::textures->getTexture(texture::i_onscreen), nullptr, &iRect);
+
+    x += iRect.w + 10;
+    UILabel inventoryLabel(
+        Vector2(x, y + 6), Vector2(100, 24), "inventory",
+        Color(255, 255, 255, 255), Color(0, 0, 0, 255),
+        subtitleFont
+    );
+    inventoryLabel.enableOutline(Color(0, 0, 0, 255));
+    inventoryLabel.render(core::uiRenderer);
+
     TTF_CloseFont(subtitleFont);
 }

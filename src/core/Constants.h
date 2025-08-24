@@ -80,6 +80,8 @@ namespace texture {
         //Tutorial
     constexpr const char* wasd_onscreen = "assets/ui/wasd_onscreen.png";
     constexpr const char* esc_onscreen = "assets/ui/esc_onscreen.png";
+    constexpr const char* t_onscreen = "assets/ui/t_onscreen.png";
+    constexpr const char* i_onscreen = "assets/ui/i_onscreen.png";
     constexpr const char* items = "assets/tiles/map1/items.png";
 
         //Mouse
