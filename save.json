@@ -1,11 +1,11 @@
 {
-    "CurrentLevel": "LEVEL6",
+    "CurrentLevel": "LEVEL11",
     "InventoryItems": [
         {
-            "gid": 400,
-            "name": "Diary",
-            "sourceLevel": "LEVEL3",
-            "tilesetPath": "assets/tiles/map1/book1.png"
+            "gid": 1177,
+            "name": "Purple",
+            "sourceLevel": "LEVEL10",
+            "tilesetPath": "assets/tiles/map1/flowers.png"
         }
     ]
 }

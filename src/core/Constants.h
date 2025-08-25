@@ -30,6 +30,13 @@ namespace audio {
     // music
     constexpr const char* title = "assets/music/titleSoundtrack.mp3";
     constexpr const char* lv1m = "assets/music/level1-soundtrack.mp3";
+    constexpr const char* lv4m = "assets/music/level4_soundtrack.mp3";
+    constexpr const char* lv6m = "assets/music/level6_soundtrack.mp3";
+    constexpr const char* lv7m = "assets/music/level7_soundtrack.mp3";
+    constexpr const char* lv8m = "assets/music/level8_soundtrack.mp3";
+    constexpr const char* lv9m = "assets/music/level9_soundtrack.mp3";
+    constexpr const char* lv10m = "assets/music/level10_soundtrack.mp3";
+    constexpr const char* lv11m = "assets/music/level11_soundtrack.mp3";
     constexpr const char* cutscene_1_1 = "assets/music/cutscene_1_1.mp3";
     constexpr const char* cutscene_1_2 = "assets/music/cutscene_1_2.mp3";
     constexpr const char* cutscene_1_3 = "assets/music/cutscene_1_3.mp3";

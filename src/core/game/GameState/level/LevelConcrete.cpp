@@ -50,7 +50,7 @@ const char* Level4State::getMapPath() {
 }
 
 const char* Level4State::getBackgroundMusic() {
-    return audio::lv1m;
+    return audio::lv4m;
 }
 
 int Level4State::getLevelNumber() {
@@ -62,7 +62,7 @@ const char* Level5State::getMapPath() {
 }
 
 const char* Level5State::getBackgroundMusic() {
-    return audio::lv1m;
+    return audio::lv4m;
 }
 
 int Level5State::getLevelNumber() {
@@ -74,7 +74,7 @@ const char* Level6State::getMapPath() {
 }
 
 const char* Level6State::getBackgroundMusic() {
-    return audio::lv1m;
+    return audio::lv6m;
 }
 
 int Level6State::getLevelNumber() {
@@ -86,7 +86,7 @@ const char* Level7State::getMapPath() {
 }
 
 const char* Level7State::getBackgroundMusic() {
-    return audio::lv1m;
+    return audio::lv7m;
 }
 
 int Level7State::getLevelNumber() {
@@ -98,7 +98,7 @@ const char* Level8State::getMapPath() {
 }
 
 const char* Level8State::getBackgroundMusic() {
-    return audio::lv1m;
+    return audio::lv8m;
 }
 
 int Level8State::getLevelNumber() {
@@ -110,7 +110,7 @@ const char* Level9State::getMapPath() {
 }
 
 const char* Level9State::getBackgroundMusic() {
-    return audio::lv1m;
+    return audio::lv9m;
 }
 
 int Level9State::getLevelNumber() {
@@ -137,7 +137,7 @@ const char *Level10State::getMapPath()
 }
 
 const char* Level10State::getBackgroundMusic() {
-    return audio::lv1m;
+    return audio::lv10m;
 }
 
 int Level10State::getLevelNumber() {
@@ -148,7 +148,7 @@ const char* Level11State::getMapPath() {
 }
 
 const char* Level11State::getBackgroundMusic() {
-    return audio::lv1m;
+    return audio::lv11m;
 }
 
 int Level11State::getLevelNumber() {

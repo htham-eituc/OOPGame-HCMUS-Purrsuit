@@ -52,6 +52,13 @@ namespace app::init {
         core::audio->loadMusic(audio::cutscene_3_1, audio::cutscene_3_1);
         core::audio->loadMusic(audio::cutscene_3_2, audio::cutscene_3_2);
         core::audio->loadMusic(audio::lv1m, audio::lv1m);
+        core::audio->loadMusic(audio::lv4m, audio::lv4m);
+        core::audio->loadMusic(audio::lv6m, audio::lv6m);
+        core::audio->loadMusic(audio::lv7m, audio::lv7m);
+        core::audio->loadMusic(audio::lv8m, audio::lv8m);
+        core::audio->loadMusic(audio::lv9m, audio::lv9m);
+        core::audio->loadMusic(audio::lv10m, audio::lv10m);
+        core::audio->loadMusic(audio::lv11m, audio::lv11m);
         core::audio->loadSound(audio::ping, audio::ping);
         core::audio->loadSound(audio::move, audio::move);
         core::audio->loadSound(audio::growl, audio::growl);
