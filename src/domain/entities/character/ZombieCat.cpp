@@ -216,7 +216,7 @@ void ZombieCat::zombieAI(float deltaTime) {
             }
             
             // Only stop chasing after losing the player for a while
-            if (lostPlayerTimer > 1.7f) { // 1.7 second delay before giving up
+            if (lostPlayerTimer > 1.1f) { // 0.8 second delay before giving up
                 velocity = {0, 0};
                 transitionTo(ZombieState::Idle);
                 break;

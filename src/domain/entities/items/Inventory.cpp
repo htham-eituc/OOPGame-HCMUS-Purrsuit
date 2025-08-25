@@ -43,6 +43,11 @@ void Inventory::removeItem(const std::string& itemName) {
     }
 }
 
+void Inventory::clearAll() {
+    items.clear();
+    specialItems.clear();
+    std::cout << "Inventory cleared" << std::endl;
+}
 
 bool Inventory::hasItem(const std::string& itemName) const {
     for (const auto& item : items) {

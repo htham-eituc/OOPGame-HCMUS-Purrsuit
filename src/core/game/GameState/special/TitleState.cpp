@@ -4,14 +4,12 @@
 #include "Constants.h"
 
 void TitleState::enter(Game* game) {
-    // Start title music
     if (!core::audio->isPlayingMusic()) {
         core::audio->playMusic(audio::title);
     }
     
     updateUILayout();
     
-    // Create title-specific buttons
     startButton = std::make_shared<UIButton>(
         startButtonRect,
         core::textures->getTexture(texture::start_button),
@@ -22,13 +20,12 @@ void TitleState::enter(Game* game) {
     loadButton = std::make_shared<UIButton>(
         loadButtonRect,
         core::textures->getTexture(texture::load_button),
-        [game]() { game->loadGame("save.json"); }
+        [game]() { game->loadGame("save.json"); game->startLevel(0); }
     );
     core::uiInput->registerElement(loadButton);
 }
 
 void TitleState::exit(Game* game) {
-    // Clean up title-specific UI
     if (startButton) core::uiInput->unregisterElement(startButton);
     if (loadButton) core::uiInput->unregisterElement(loadButton);
     
@@ -43,7 +40,6 @@ void TitleState::handleEvent(Game* game, const SDL_Event& event) {
 }
 
 void TitleState::update(Game* game, float deltaTime) {
-    // Keep music playing
     if (!core::audio->isPlayingMusic()) {
         core::audio->playMusic(audio::title);
     }

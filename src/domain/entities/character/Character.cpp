@@ -88,20 +88,9 @@ void Character::render(SDL_Renderer* renderer) {
     SDL_Rect colBox = getCollisionBox(position);
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // Red
     SDL_Rect camDes = Camera::ToCamView(colBox);
-    SDL_RenderDrawRect(renderer, &camDes);
+    //SDL_RenderDrawRect(renderer, &camDes);
     camDes = Camera::ToCamView(destRect);
     SDL_RenderCopyEx(renderer, currentTexture, &srcRect, &camDes, 0, nullptr, flipFlag);
-}
-
-SDL_Texture* Character::loadTexture(SDL_Renderer* renderer, const char* path) {
-    SDL_Surface* tempSurface = IMG_Load(path);
-    if (!tempSurface) {
-        std::cerr << "Failed to load image: " << path << " Error: " << IMG_GetError() << "\n";
-        return nullptr;
-    }
-    SDL_Texture* tex = SDL_CreateTextureFromSurface(renderer, tempSurface);
-    SDL_FreeSurface(tempSurface);
-    return tex;
 }
 
 void Character::setAnimation(CharacterState newState) {

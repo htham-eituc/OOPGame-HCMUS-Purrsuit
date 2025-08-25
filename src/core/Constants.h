@@ -54,7 +54,8 @@ namespace texture {
     constexpr const char* zombie_idle = "assets/character/zombie_cat_idle.png";
     constexpr const char* zombie_walk = "assets/character/zombie_cat_walk.png";
     constexpr const char* zombie_stand_walk = "assets/character/zombie_cat_stand_walk.png";
-    constexpr const char* player_dead = "assets/character/pirate_cat_idle.png";
+    constexpr const char* player_dead = "assets/character/main_cat_idle.png";
+    constexpr const char* princess_idle = "assets/character/rin_cat_idle.png";
 
 
     // Asset
@@ -68,6 +69,7 @@ namespace texture {
     constexpr const char* cutscene_3_2 = "assets/cutscene/cutscene_3_2.png";
     constexpr const char* level1_exit_zone = "assets/ui/level1_exit_zone.png";
     constexpr const char* death_screen = "assets/ui/death-screen.png";
+    constexpr const char* win_screen = "assets/ui/win-screen.png";
 
     // UI
         //Button

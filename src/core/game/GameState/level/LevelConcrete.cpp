@@ -2,7 +2,6 @@
 #include "Constants.h"
 #include "Game.h"
 
-// Concrete level implementations - just need to specify their unique data
 const char* Level1State::getMapPath() {
     return MAP_PATH[getLevelNumber()];
 }
@@ -29,6 +28,8 @@ int Level2State::getLevelNumber() {
 
 void Level3State::exit(Game *game) {
     game->getInventory()->removeItem("Key");
+    game->getGameSave()->removeInventoryItem("Key");
+    LevelState::exit(game);
 }
 
 const char *Level3State::getMapPath()
@@ -115,7 +116,23 @@ const char* Level9State::getBackgroundMusic() {
 int Level9State::getLevelNumber() {
     return 9;
 }
-const char* Level10State::getMapPath() {
+
+void Level10State::exit(Game *game) {
+    game->getInventory()->removeItem("EmptyPotion");
+    game->getGameSave()->removeInventoryItem("EmptyPotion");
+    game->getInventory()->removeItem("EyeCat");
+    game->getGameSave()->removeInventoryItem("EyeCat");
+    game->getInventory()->removeItem("Diary");
+    game->getGameSave()->removeInventoryItem("Diary");
+    game->getInventory()->removeItem("Tear");
+    game->getGameSave()->removeInventoryItem("Tear");
+    game->getInventory()->removeItem("GoldenWhisker");
+    game->getGameSave()->removeInventoryItem("GoldenWhisker");
+    LevelState::exit(game);
+}
+
+const char *Level10State::getMapPath()
+{
     return MAP_PATH[getLevelNumber()];
 }
 

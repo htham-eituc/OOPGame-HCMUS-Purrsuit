@@ -34,7 +34,6 @@ MapData TiledMapLoader::loadMap(const std::string& path, SDL_Renderer* renderer)
     mapData.tileWidth  = map->getTileSize().x;
     mapData.tileHeight = map->getTileSize().y;
 
-    // Load tilesets
     for (const auto& ts : map->getTilesets()) {
         Tileset tileset;
         tileset.firstgid   = ts.getFirstgid();
@@ -42,6 +41,7 @@ MapData TiledMapLoader::loadMap(const std::string& path, SDL_Renderer* renderer)
         tileset.tileHeight = ts.getTileSize().y;
         tileset.columns    = ts.getColumns();
         tileset.tilecount  = ts.getTileCount();
+        tileset.rows    = (ts.getColumns() > 0) ? ts.getTileCount() / ts.getColumns() : 0;
 
         std::string imgPath = "assets/tiles/" + ts.getImagePath().u8string();
         tileset.imagePath   = imgPath;

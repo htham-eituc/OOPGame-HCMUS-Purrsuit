@@ -21,6 +21,10 @@ InventoryTextureManager *Game::getInventoryTextureManager() const {
     return inventoryTextureManager;
 }
 
+GameSave *Game::getGameSave() {
+    return &gameSave;
+}
+
 GameStateMachine *Game::getStateMachine() const {
     return stateMachine;
 }
@@ -35,8 +39,6 @@ float Game::calculateDeltaTime(Uint32& lastTime) {
     lastTime = currentTime;
     return deltaTime;
 }
-
-
 
 void Game::changeState(std::unique_ptr<GameStateBase> newState) {
     pendingState = std::move(newState);
@@ -109,7 +111,13 @@ void Game::startCutscenePlot() {
     }
 }
 
-void Game::startLevel(int level) {
+void Game::startLevel(int level = 0) {
+    if(level == 0) 
+        level = static_cast<int>(stateMachine->getCurrentState()) - static_cast<int>(GameState::LEVEL1) + 1;
+    if(level > 11) {
+        changeState(StateFactory::createWinState());
+        return;
+    }
     changeState(StateFactory::createLevelState(level));
 }
 

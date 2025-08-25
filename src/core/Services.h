@@ -16,7 +16,4 @@ namespace core {
     inline UIManager* ui = nullptr;
     inline UIInputHandler* uiInput = nullptr;
     inline UIRenderer* uiRenderer = nullptr;
-    // Future:
-    // inline InputManager* input = nullptr;
-    // inline EventBus* events = nullptr;
 }

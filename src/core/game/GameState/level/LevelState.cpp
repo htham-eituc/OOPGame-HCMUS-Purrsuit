@@ -9,6 +9,8 @@
 #include "TransitionManager.h"
 #include "MapRender.h"
 #include "GameStateBase.h"
+#include "Princess.h"
+#include <iostream>
 
 LevelState::~LevelState() {
 }
@@ -58,10 +60,22 @@ void LevelState::exit(Game* game) {
     safeDelete(tutorialTextureManager);
 }
 
+void LevelState::levelQuit(Game *game) {
+    GameState currentLevel = static_cast<GameState>(
+        static_cast<int>(GameState::LEVEL1) + getLevelNumber() - 1
+    );
+    
+    game->getGameSave()->rollbackLevel(currentLevel);
+    game->syncInventoryWithSave();
+    game->saveGame("save.json");
+
+    std::cout << "Level " << getLevelNumber() << " quit - items from this level rolled back!" << std::endl;
+}
+
 void LevelState::handleEvent(Game* game, const SDL_Event& event) {
     if (tutorial && tutorial->getVisible()) {
         tutorial->handleEvent(event);
-        return; // Skip other input when tutorial is open
+        return; 
     }
 
     if (tutorial && !tutorial->getVisible()) {
@@ -85,7 +99,6 @@ void LevelState::handleEvent(Game* game, const SDL_Event& event) {
     }
     
     if (isPaused) {
-        // When paused, ONLY handle pause menu UI events
         core::uiInput->handleEvent(event);
         return; 
     }
@@ -102,7 +115,8 @@ void LevelState::update(Game* game, float deltaTime) {
         
     updateTransitionZones(game, deltaTime);
     
-    if (player && !player->isAlive()) {
+    if (player && !player->isAlive() && game->getTransitionManager()->getState() == TransitionState::None) {
+        levelQuit(game);
         game->changeState(StateFactory::createDeathState());
     }
 }
@@ -138,15 +152,14 @@ void LevelState::updateUILayout(Game* game) {
     pauseQuitButton = std::make_shared<UIButton>(
         quitButtonRect,
         core::textures->getTexture(texture::quit_button),
-        [this, game]() { game->setRunning(false); }
+        [this, game]() { game->setRunning(false); levelQuit(game); }
     );
 }
 
-void LevelState::createLevelEntities(Game *game)
-{
+void LevelState::createLevelEntities(Game *game) {
     // Create map
     gameMap = MapFactory::create(game->getRenderer(), getMapPath());
-    const auto& spawns = gameMap->getSpawnPoints();
+    auto& spawns = gameMap->getSpawnPoints();
     transitionZones = gameMap->getTransitionZones();
     
     // Create player
@@ -154,7 +167,13 @@ void LevelState::createLevelEntities(Game *game)
                        static_cast<int>(spawns.playerSpawn.x), 
                        static_cast<int>(spawns.playerSpawn.y), 
                        gameMap);
-    
+    // Creat princess
+    if(spawns.princessSpawn.x != 0 && spawns.princessSpawn.y != 0)
+    princess = new Princess(game->getRenderer(), 
+                       static_cast<int>(spawns.princessSpawn.x), 
+                       static_cast<int>(spawns.princessSpawn.y), 
+                       gameMap);
+    std::cout << spawns.princessSpawn.x << ' ' << spawns.princessSpawn.y << '\n';
     // Create zombies
     if (gameMap && game->getRenderer() && player) {
         for (const auto& pos : spawns.zombieSpawns) {
@@ -174,6 +193,10 @@ void LevelState::updateGameplay(Game* game, float deltaTime) {
         const Uint8* keystate = SDL_GetKeyboardState(NULL);
         player->move(keystate);
         game->getCamera()->update(player->getBounds());
+    }
+
+    if(princess) {
+        princess->update(deltaTime);
     }
     
     for (auto& zombie : zombies) {
@@ -202,6 +225,7 @@ void LevelState::renderGameplay(Game* game) {
     
     if (gameMap) gameMap->render();
     if (player) player->render(renderer);
+    if (princess) princess->render(renderer);
     
     for (auto& zombie : zombies) zombie->render(renderer);
     
@@ -221,6 +245,15 @@ void LevelState::updateCollectItem(Game* game, Item& item, const std::vector<Til
             core::audio->playSound(audio::ping, 0);
         else {
             game->getInventory()->addItem(item.getName());
+            GameState currentLevel = game->getStateMachine()->getCurrentState(); // You need to add getter for state machine
+            
+            for (const auto& tileset : tilesets) {
+                if (item.getGid() >= tileset.firstgid && 
+                    item.getGid() < tileset.firstgid + (tileset.columns * tileset.rows)) {
+                    game->getGameSave()->addInventoryItem(item.getName(), item.getGid(), tileset.imagePath, currentLevel);
+                    break;
+                }
+            }
             core::audio->playSound(audio::inventory, 0);
         }
     }
@@ -256,7 +289,6 @@ void LevelState::updateTransitionZones(Game* game, float deltaTime) {
         if (zone.toZone == "ToNextMap") {
             callback = [game, this]() { 
                 int nextLevel = getLevelNumber() + 1;
-                if (nextLevel > 11) nextLevel = 1; // Loop back to level 1
                 game->startLevel(nextLevel);
             };
         } else if (zone.toZone == "StartCutScene") {
@@ -271,6 +303,7 @@ void LevelState::updateTransitionZones(Game* game, float deltaTime) {
                 return;
             }
             game->getTransitionManager()->onTransitionTriggered(callback);
+            game->saveGame("save.json");
         }
         
         game->getTransitionManager()->update(deltaTime, playerBounds, zone.bounds, completed);

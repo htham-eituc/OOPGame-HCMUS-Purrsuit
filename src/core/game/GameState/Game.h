@@ -19,6 +19,7 @@
 #include "Tutorial.h"
 #include "TutorialTextureManager.h"
 #include "StateFactory.h"
+#include "GameSave.h"
 
 class Player;
 class Inventory;
@@ -45,11 +46,13 @@ public:
     Inventory* getInventory() const;
     TransitionManager* getTransitionManager() const;
     InventoryTextureManager* getInventoryTextureManager() const;
+    GameSave* getGameSave();
     GameStateMachine* getStateMachine() const;
     void setRunning(bool state);
 
     void saveGame(const std::string& filename);
     void loadGame(const std::string& filename);
+    void syncInventoryWithSave();
     void changeState(std::unique_ptr<GameStateBase> newState);
 
 private:
@@ -57,6 +60,7 @@ private:
     SDL_Renderer* renderer = nullptr;
     bool running = false;
 
+    GameSave gameSave;
     GameStateMachine* stateMachine;
 
     Inventory* inventory = nullptr;

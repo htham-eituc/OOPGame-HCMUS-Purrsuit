@@ -14,12 +14,14 @@ class Game;
 class GameStateBase; 
 class Tutorial;
 class TutorialTextureManager;
+class Princess;
 
 class LevelState : public GameStateBase {
 public:
     ~LevelState() override; 
     void enter(Game* game) override;
     virtual void exit(Game* game) override;
+    void levelQuit(Game* game);
     void handleEvent(Game* game, const SDL_Event& event) override;
     void update(Game* game, float deltaTime) override;
     void render(Game* game) override;
@@ -32,6 +34,7 @@ protected:
     
     // Common level functionality
     Player* player = nullptr;
+    Princess* princess = nullptr;
     MapRender* gameMap = nullptr;
     std::vector<std::shared_ptr<ZombieCat>> zombies;
     std::vector<TransitionZone> transitionZones;
@@ -128,6 +131,7 @@ protected:
 
 class Level10State : public LevelState {
 protected:
+    void exit(Game* game) override;
     const char* getMapPath() override;
     const char* getBackgroundMusic() override;
     int getLevelNumber() override;

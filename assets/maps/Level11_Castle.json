@@ -90,8 +90,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":1082,
-                 "y":278
+                 "x":1070,
+                 "y":268
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -107,7 +107,7 @@
                 {
                  "height":104,
                  "id":2,
-                 "name":"StartCutScene",
+                 "name":"ToNextMap",
                  "properties":[
                         {
                          "name":"Entering",

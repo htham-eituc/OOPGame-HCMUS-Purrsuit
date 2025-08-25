@@ -5,6 +5,7 @@
 #include "TitleState.h"
 #include "CutSceneState.h"
 #include "DeathState.h"
+#include "WinState.h"
 
 class Game; 
 
@@ -30,6 +31,7 @@ public:
     static std::unique_ptr<GameStateBase> createCutscene3State();
 
     static std::unique_ptr<GameStateBase> createDeathState();
+    static std::unique_ptr<GameStateBase> createWinState();
 
     static std::unique_ptr<GameStateBase> createLevelState(int levelNumber);
     static std::unique_ptr<GameStateBase> createCutsceneState(int cutsceneNumber);

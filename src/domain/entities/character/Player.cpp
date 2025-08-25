@@ -7,7 +7,6 @@
 #include <SDL_image.h>
 #include <cmath>
 
-
 Player::Player(SDL_Renderer* renderer, int x, int y, Map *map)
     : Character(renderer, x, y, map), glowPulse(0.0f) {
     currentTexture = core::textures->getTexture(texture::player_idle);

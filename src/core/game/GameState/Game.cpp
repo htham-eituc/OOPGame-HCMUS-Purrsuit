@@ -9,6 +9,7 @@
 #include "Initializers.h"
 #include "MemoryUtils.h"
 #include "GameSave.h"
+#include "MapFactory.h"
 
 Game::Game() {}
 Game::~Game() {
@@ -58,7 +59,7 @@ bool Game::init(const char* title) {
     inventoryTextureManager = new InventoryTextureManager(renderer);
     inventory = new Inventory(inventoryTextureManager);
 
-    changeState(StateFactory::createLevel8State());
+    changeState(StateFactory::createTitleState());
 
     return true;
 }
@@ -139,32 +140,58 @@ void Game::render() {
 }
 
 void Game::saveGame(const std::string& filename) {
-    GameSave save;
-    save.CurrentLevel = stateMachine->getCurrentState();
-
-    // for (const std::string& item : inventory->getItemNames())
-    // {   
-    //     save.items.insert(item);
-    // }
-
-    save.Write(filename);
-    std::cout << "Game saved to: " << filename << "\n";
+    gameSave.CurrentLevel = stateMachine->getCurrentState();
+    gameSave.Write(filename);
+    std::cout << "Game saved successfully!" << std::endl;
 }
 
 void Game::loadGame(const std::string& filename) {
-    GameSave save(filename);
-    
-    if (save.CurrentLevel == GameState::LEVEL1) startLevel(1);
-    else if (save.CurrentLevel == GameState::LEVEL2) startLevel(2);
-    else stateMachine->changeState(GameState::TITLE);
-
-    // for (const std::string& item : save.items)
-    // {
-    //     inventory->addItem(item, item.getGid());
-    // }
-
-    // Don't know how to load zombie yet 
-    std::cout << "Game loaded from: " << filename << "\n";
+    gameSave = GameSave(filename);
+    stateMachine->changeState(gameSave.CurrentLevel);
+    syncInventoryWithSave();
+    std::cout << "Game loaded successfully!" << std::endl;
 }
 
-
+void Game::syncInventoryWithSave() {
+    inventory->clearAll();
+    
+    const auto& savedItems = gameSave.getInventoryItems();
+    
+    // Group items by their source level to minimize map loading
+    std::unordered_map<GameState, std::vector<const SavedInventoryItem*>> itemsByLevel;
+    for (const auto& savedItem : savedItems) {
+        itemsByLevel[savedItem.sourceLevel].push_back(&savedItem);
+    }
+    
+    // Load each level's map only once and restore its items
+    for (const auto& levelGroup : itemsByLevel) {
+        GameState sourceLevel = levelGroup.first;
+        const auto& levelItems = levelGroup.second;
+        
+        // Convert GameState to level index
+        int levelIndex = -1;
+        if (sourceLevel >= GameState::LEVEL1 && sourceLevel <= GameState::LEVEL11) {
+            levelIndex = static_cast<int>(sourceLevel) - static_cast<int>(GameState::LEVEL1) + 1;
+        }
+        
+        if (levelIndex >= 1 && levelIndex <= 11) {
+            MapRender* sourceMap = MapFactory::create(renderer, MAP_PATH[levelIndex]);
+            const auto& tilesets = sourceMap->getTileSets();
+            
+            for (const auto* savedItem : levelItems) {
+                if (inventoryTextureManager->registerItemTexture(savedItem->name, tilesets, savedItem->gid)) {
+                    inventory->addItem(savedItem->name);
+                    std::cout << "Restored inventory item: " << savedItem->name << " (from level " << levelIndex << ")" << std::endl;
+                } else {
+                    std::cout << "Failed to restore item texture for: " << savedItem->name << std::endl;
+                }
+            }
+            
+            delete sourceMap; 
+        } else {
+            std::cout << "Warning: Invalid level index " << levelIndex << " for source level" << std::endl;
+        }
+    }
+    
+    std::cout << "Restored " << savedItems.size() << " inventory items from " << itemsByLevel.size() << " levels" << std::endl;
+}

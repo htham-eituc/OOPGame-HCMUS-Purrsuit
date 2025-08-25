@@ -88,6 +88,11 @@ std::unique_ptr<GameStateBase> StateFactory::createDeathState() {
     return std::make_unique<DeathState>();
 }
 
+std::unique_ptr<GameStateBase> StateFactory::createWinState() {
+    game->getStateMachine()->changeState(GameState::WINNING);
+    return std::make_unique<WinState>();
+}
+
 std::unique_ptr<GameStateBase> StateFactory::createLevelState(int levelNumber) {
     switch (levelNumber) {
         case 1:  return createLevel1State();

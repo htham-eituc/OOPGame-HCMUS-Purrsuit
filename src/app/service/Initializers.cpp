@@ -66,6 +66,7 @@ namespace app::init {
         core::textures->loadTexture(texture::zombie_idle, texture::zombie_idle);
         core::textures->loadTexture(texture::zombie_walk, texture::zombie_walk);
         core::textures->loadTexture(texture::zombie_stand_walk, texture::zombie_stand_walk);
+        core::textures->loadTexture(texture::princess_idle, texture::princess_idle);
 
         core::textures->loadTexture(texture::title_screen, texture::title_screen);
         core::textures->loadTexture(texture::start_button, texture::start_button);
@@ -80,6 +81,7 @@ namespace app::init {
         core::textures->loadTexture(texture::load_button, texture::load_button);
         core::textures->loadTexture(texture::save_button, texture::save_button);
         core::textures->loadTexture(texture::death_screen, texture::death_screen);
+        core::textures->loadTexture(texture::win_screen, texture::win_screen);
         core::textures->loadTexture(texture::resume_button, texture::resume_button);
         core::textures->loadTexture(texture::quit_button, texture::quit_button);
         core::textures->loadTexture(texture::wasd_onscreen, texture::wasd_onscreen);

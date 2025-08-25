@@ -24,6 +24,7 @@ struct Tileset {
     int tilecount;
     int tileWidth, tileHeight;
     int columns;
+    int rows;
     SDL_Texture* texture = nullptr;
     std::string imagePath;
 };
@@ -33,8 +34,6 @@ struct SpawnPoints {
     Vector2 princessSpawn{};
     std::vector<Vector2> zombieSpawns;
 };
-
-
 
 struct MapData {
     int mapWidth = 0;

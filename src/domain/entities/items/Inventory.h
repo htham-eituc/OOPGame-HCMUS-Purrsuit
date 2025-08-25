@@ -34,6 +34,7 @@ public:
     
     void addItem(const std::string& itemName);
     void removeItem(const std::string& itemName);
+    void clearAll();
     bool hasItem(const std::string& itemName) const;
     void render(SDL_Renderer* renderer);
     void handleEvent(const SDL_Event& e);
