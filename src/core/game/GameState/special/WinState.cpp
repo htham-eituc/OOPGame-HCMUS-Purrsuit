@@ -8,7 +8,6 @@ void WinState::enter(Game* game) {
     core::audio->stopMusic();
     core::audio->stopAllSounds();
     core::audio->playSound(audio::meow, 0);
-    core::audio->playMusic(audio::lv11m, 0);
 }
 
 void WinState::exit(Game* game) {

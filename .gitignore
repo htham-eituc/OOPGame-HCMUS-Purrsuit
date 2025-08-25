@@ -15,9 +15,6 @@ bin/
 # === Editor/IDE Configs ===
 .vscode/
 
-# === Package Game ===
-.dist/
-
 # === CMake / Make Output (if used later) ===
 CMakeFiles/
 CMakeCache.txt
