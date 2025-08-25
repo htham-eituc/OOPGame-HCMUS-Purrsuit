@@ -61,7 +61,7 @@ std::vector<std::string> Cutscene3State::getAudioFiles() {
 std::vector<std::vector<std::pair<std::string, float>>> Cutscene3State::getSubtitles() {
     return {
         { {"Using the potent potion, all evils were cleansed.", 10.0f} },
-        { {"His story shall come to an end, a happy one.", 10.0f} }
+        { {"Before his eyes was finally, the castle.", 10.0f} }
     };
 }
 
@@ -77,13 +77,13 @@ std::vector<SDL_Texture*> Cutscene4State::getImages()  {
 }
 
 std::vector<std::string> Cutscene4State::getAudioFiles() {
-    return { audio::cutscene_3_1, audio::cutscene_3_2 };
+    return { audio::cutscene_4_1, audio::cutscene_4_2 };
 }
 
 std::vector<std::vector<std::pair<std::string, float>>> Cutscene4State::getSubtitles() {
     return {
-        { {"Oe oe.", 10.0f} },
-        { {"deo lam nua.", 10.0f} }
+        { {"Now united with the princess, he couldn't hide his joy.", 6.0f}, {"He gave her a wonderful purple flower.", 10.0f} },
+        { {"His story ended there, or had it just begun?", 10.0f} }
     };
 }
 

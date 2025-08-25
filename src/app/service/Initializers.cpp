@@ -51,6 +51,8 @@ namespace app::init {
         core::audio->loadMusic(audio::cutscene_2_2, audio::cutscene_2_2);
         core::audio->loadMusic(audio::cutscene_3_1, audio::cutscene_3_1);
         core::audio->loadMusic(audio::cutscene_3_2, audio::cutscene_3_2);
+        core::audio->loadMusic(audio::cutscene_4_1, audio::cutscene_4_1);
+        core::audio->loadMusic(audio::cutscene_4_2, audio::cutscene_4_2);
         core::audio->loadMusic(audio::lv1m, audio::lv1m);
         core::audio->loadMusic(audio::lv4m, audio::lv4m);
         core::audio->loadMusic(audio::lv6m, audio::lv6m);
