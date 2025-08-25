@@ -69,3 +69,24 @@ void Cutscene3State::onCutsceneComplete(Game *game) {
     game->startLevel(10);
 }
 
+std::vector<SDL_Texture*> Cutscene4State::getImages()  {
+    return {
+        core::textures->getTexture(texture::cutscene_4_1),
+        core::textures->getTexture(texture::cutscene_4_2)
+    };
+}
+
+std::vector<std::string> Cutscene4State::getAudioFiles() {
+    return { audio::cutscene_3_1, audio::cutscene_3_2 };
+}
+
+std::vector<std::vector<std::pair<std::string, float>>> Cutscene4State::getSubtitles() {
+    return {
+        { {"Oe oe.", 10.0f} },
+        { {"deo lam nua.", 10.0f} }
+    };
+}
+
+void Cutscene4State::onCutsceneComplete(Game *game) {
+    game->changeState(StateFactory::createWinState());
+}

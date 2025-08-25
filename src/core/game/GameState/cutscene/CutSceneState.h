@@ -60,3 +60,11 @@ protected:
     std::vector<std::vector<std::pair<std::string, float>>> getSubtitles() override;
     void onCutsceneComplete(Game* game) override;
 };
+
+class Cutscene4State : public CutsceneState {
+protected:
+    std::vector<SDL_Texture*> getImages() override;
+    std::vector<std::string> getAudioFiles() override;
+    std::vector<std::vector<std::pair<std::string, float>>> getSubtitles() override;
+    void onCutsceneComplete(Game* game) override;
+};

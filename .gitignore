@@ -16,7 +16,7 @@ bin/
 .vscode/
 
 # === Package Game ===
-.dist/
+dist/
 
 # === CMake / Make Output (if used later) ===
 CMakeFiles/

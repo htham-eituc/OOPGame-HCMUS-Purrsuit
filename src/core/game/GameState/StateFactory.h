@@ -29,6 +29,7 @@ public:
     static std::unique_ptr<GameStateBase> createCutscene1State();
     static std::unique_ptr<GameStateBase> createCutscene2State();
     static std::unique_ptr<GameStateBase> createCutscene3State();
+    static std::unique_ptr<GameStateBase> createCutscene4State();
 
     static std::unique_ptr<GameStateBase> createDeathState();
     static std::unique_ptr<GameStateBase> createWinState();

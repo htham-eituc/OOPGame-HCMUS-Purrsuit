@@ -105,6 +105,9 @@ void Game::startCutscenePlot() {
     case GameState::LEVEL9:
         changeState(StateFactory::createCutscene3State()); 
         break;
+    case GameState::LEVEL11:
+        changeState(StateFactory::createCutscene4State()); 
+        break;
     default:
         changeState(StateFactory::createCutscene1State());
         break;

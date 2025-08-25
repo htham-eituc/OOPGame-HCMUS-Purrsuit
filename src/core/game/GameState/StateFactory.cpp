@@ -83,6 +83,11 @@ std::unique_ptr<GameStateBase> StateFactory::createCutscene3State() {
     return std::make_unique<Cutscene3State>();
 }
 
+std::unique_ptr<GameStateBase> StateFactory::createCutscene4State() {
+    game->getStateMachine()->changeState(GameState::CUTSCENE4);
+    return std::make_unique<Cutscene4State>();
+}
+
 std::unique_ptr<GameStateBase> StateFactory::createDeathState() {
     game->getStateMachine()->changeState(GameState::DEATH);
     return std::make_unique<DeathState>();
@@ -113,6 +118,9 @@ std::unique_ptr<GameStateBase> StateFactory::createLevelState(int levelNumber) {
 std::unique_ptr<GameStateBase> StateFactory::createCutsceneState(int cutsceneNumber) {
     switch (cutsceneNumber) {
         case 1: return createCutscene1State();
+        case 2: return createCutscene2State();
+        case 3: return createCutscene3State();
+        case 4: return createCutscene4State();
         default: return createLevel1State();
     }
 }

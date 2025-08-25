@@ -66,7 +66,7 @@ namespace texture {
 
 
     // Asset
-    constexpr const char* title_screen = "assets/ui/forg2kg.png";
+    constexpr const char* title_screen = "assets/ui/title_screen.png";
     constexpr const char* cutscene_1_1 = "assets/cutscene/cutscene_1_1.png";
     constexpr const char* cutscene_1_2 = "assets/cutscene/cutscene_1_2.png";
     constexpr const char* cutscene_1_3 = "assets/cutscene/cutscene_1_3.png";
@@ -74,6 +74,8 @@ namespace texture {
     constexpr const char* cutscene_2_2 = "assets/cutscene/cutscene_2_2.png";
     constexpr const char* cutscene_3_1 = "assets/cutscene/cutscene_3_1.png";
     constexpr const char* cutscene_3_2 = "assets/cutscene/cutscene_3_2.png";
+    constexpr const char* cutscene_4_1 = "assets/cutscene/cutscene_4_1.png";
+    constexpr const char* cutscene_4_2 = "assets/cutscene/cutscene_4_2.png";
     constexpr const char* level1_exit_zone = "assets/ui/level1_exit_zone.png";
     constexpr const char* death_screen = "assets/ui/death-screen.png";
     constexpr const char* win_screen = "assets/ui/win-screen.png";

@@ -107,7 +107,7 @@
                 {
                  "height":104,
                  "id":2,
-                 "name":"ToNextMap",
+                 "name":"StartCutScene",
                  "properties":[
                         {
                          "name":"Entering",

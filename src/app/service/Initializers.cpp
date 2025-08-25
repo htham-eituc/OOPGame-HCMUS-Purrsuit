@@ -85,6 +85,8 @@ namespace app::init {
         core::textures->loadTexture(texture::cutscene_2_2, texture::cutscene_2_2);
         core::textures->loadTexture(texture::cutscene_3_1, texture::cutscene_3_1);
         core::textures->loadTexture(texture::cutscene_3_2, texture::cutscene_3_2);
+        core::textures->loadTexture(texture::cutscene_4_1, texture::cutscene_4_1);
+        core::textures->loadTexture(texture::cutscene_4_2, texture::cutscene_4_2);
         core::textures->loadTexture(texture::load_button, texture::load_button);
         core::textures->loadTexture(texture::save_button, texture::save_button);
         core::textures->loadTexture(texture::death_screen, texture::death_screen);
