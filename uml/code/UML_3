@@ -1,0 +1,148 @@
+@startuml Core Game Architecture
+
+!define CORE_COLOR #E1F5FE
+!define MANAGER_COLOR #FFF3E0
+!define SYSTEM_COLOR #E8F5E8
+!define SERVICE_COLOR #FCE4EC
+
+package "Core Game Loop" CORE_COLOR {
+    class Game {
+        -window: SDL_Window*
+        -renderer: SDL_Renderer*
+        -running: bool
+        -currentState: unique_ptr<GameStateBase>
+        -pendingState: unique_ptr<GameStateBase>
+        -isChangingState: bool
+        -blockAllInput: bool
+        -stateChangeTimer: Uint32
+        --
+        +init(title: const char*): bool
+        +run(): void
+        +handleEvents(): void
+        +calculateDeltaTime(lastTime: Uint32&): float
+        -update(deltaTime: float): void
+        -render(): void
+        +getRenderer(): SDL_Renderer*
+        +setRunning(state: bool): void
+        +changeState(newState: unique_ptr<GameStateBase>): void
+        -performStateChange(): void
+        +saveGame(filename: string): void
+        +loadGame(filename: string): void
+    }
+}
+
+package "Core Systems" SYSTEM_COLOR {
+    class Camera {
+        -view: SDL_Rect {static}
+        -mapW, mapH: int {static}
+        -screenW, screenH: int
+        -x, y: float
+        -deadZone: SDL_Rect
+        --
+        +Camera(screenWidth: int, screenHeight: int)
+        +update(target: const SDL_Rect&): void
+        +getView(): SDL_Rect
+        +ToCamView(worldRect: const SDL_Rect&): SDL_Rect {static}
+        +setNewWorld(mapWidth: int, mapHeight: int): void {static}
+        -lerp(a: float, b: float, t: float): float
+    }
+
+    class CollisionHandler {
+        --
+        +checkMapCollision(box: const SDL_Rect&, map: const Map&): bool {static}
+        +checkCollision(a: const SDL_Rect&, b: const SDL_Rect&): bool {static}
+    }
+
+    class PathFinder {
+        -map: vector<vector<bool>>
+        -mapWidth: int
+        -mapHeight: int
+        --
+        +PathFinder(collisionMap: const vector<vector<bool>>&, width: int, height: int)
+        +findPath(startWorld: const Vector2&, endWorld: const Vector2&, tileSize: int): vector<Vector2>
+    }
+}
+
+package "Managers" MANAGER_COLOR {
+    class TransitionManager {
+        -State: TransitionState
+        -Alpha: float
+        -FadeSpeed: float
+        -TransitionCallback: function<void()>
+        --
+        +update(deltaTime: float, playerBounds: const SDL_Rect&, zones: const SDL_Rect&, taskCompleted: bool): void
+        +render(renderer: SDL_Renderer*): void
+        +reset(): void
+        +onTransitionTriggered(callback: function<void()>): void
+        +getState(): TransitionState
+    }
+
+    enum TransitionState {
+        None
+        FadeOut
+        FadeIn
+    }
+}
+
+package "Service Locator" SERVICE_COLOR {
+    class "core namespace" as CoreServices {
+        +audio: AudioManager* {static}
+        +textures: TextureManager* {static}
+        +soundEvent: SoundEventManager* {static}
+        +itemHandler: ItemEffectHandler* {static}
+        +ui: UIManager* {static}
+        +uiInput: UIInputHandler* {static}
+        +uiRenderer: UIRenderer* {static}
+    }
+}
+
+package "Game Components" {
+    class GameStateMachine
+    class Inventory
+    class InventoryTextureManager
+    class GameSave
+}
+
+' Relationships
+Game ||--|| Camera : owns
+Game ||--|| TransitionManager : owns
+Game ||--|| Inventory : owns
+Game ||--|| InventoryTextureManager : owns
+Game ||--|| GameStateMachine : owns
+Game ||--|| GameSave : contains
+
+Game ..> CollisionHandler : uses
+Game ..> PathFinder : creates for ZombieCat
+Game --> CoreServices : accesses global services
+
+TransitionManager --> TransitionState : uses
+
+Camera ..> CollisionHandler : static utility
+PathFinder ..> CollisionHandler : may use for validation
+
+' Notes
+note right of Game
+  Main game class that orchestrates
+  the game loop and manages core
+  systems. Follows traditional
+  Initialize → Update → Render pattern
+end note
+
+note right of CoreServices
+  Service Locator pattern providing
+  global access to managers and
+  systems throughout the application
+end note
+
+note bottom of Camera
+  Automatically follows player
+  with smooth scrolling and
+  dead zone implementation
+end note
+
+note bottom of PathFinder
+  Used specifically for ZombieCat
+  AI pathfinding on collision map
+end note
+
+@enduml

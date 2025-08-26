@@ -1,0 +1,180 @@
+@startuml Asset Management System
+
+!define TEXTURE_COLOR #E3F2FD
+!define AUDIO_COLOR #FFF8E1
+!define UI_COLOR #F3E5F5
+!define SPECIALIZED_COLOR #E8F5E8
+
+package "Core Asset Managers" TEXTURE_COLOR {
+    class TextureManager {
+        -renderer: SDL_Renderer*
+        -textureMap: unordered_map<string, SDL_Texture*>
+        --
+        +TextureManager()
+        +TextureManager(renderer: SDL_Renderer*)
+        +~TextureManager()
+        +setRenderer(renderer: SDL_Renderer*): void
+        +loadTexture(id: const string&, path: const string&): bool
+        +getTexture(id: const string&): SDL_Texture*
+        +clear(): void
+    }
+}
+
+package "Audio Management" AUDIO_COLOR {
+    class AudioManager {
+        -soundEffects: unordered_map<string, Mix_Chunk*>
+        -musicTracks: unordered_map<string, Mix_Music*>
+        -channels: unordered_map<string, int>
+        --
+        +~AudioManager()
+        +getInstance(): AudioManager& {static}
+        +loadSound(id: const string&, path: const string&): void
+        +loadMusic(id: const string&, path: const string&): void
+        +playMusic(id: const string&, loops: int = -1): void
+        +stopMusic(): void
+        +isPlayingMusic(): bool
+        +playSound(id: const string&, loops: int = -1): void
+        +stopSound(id: const string&): void
+        +stopAllSounds(): void
+    }
+    
+    note right of AudioManager
+        Singleton pattern for
+        global audio access
+    end note
+}
+
+package "Specialized Texture Managers" SPECIALIZED_COLOR {
+    class InventoryTextureManager {
+        -itemTextures: unordered_map<string, InventoryTextureInfo>
+        --
+        +InventoryTextureManager(renderer: SDL_Renderer*)
+        +~InventoryTextureManager()
+        +getSlotFrameTexture(): SDL_Texture*
+        +getSlotFrameUnavailableTexture(): SDL_Texture*
+        +getBannerTexture(): SDL_Texture*
+        +getSlotCursorTexture(): SDL_Texture*
+        +registerItemTexture(itemName: const string&, tilesets: const vector<Tileset>&, gid: int): bool
+        +getItemTexture(itemName: const string&, outTexture: SDL_Texture*&, outSrcRect: SDL_Rect&): bool
+        +hasItemTexture(itemName: const string&): bool
+        -loadUITextures(): bool
+        -generateTilesetTextureId(imagePath: const string&): string
+    }
+
+    class TutorialTextureManager {
+        -renderer: SDL_Renderer*
+        -animations: unordered_map<string, AnimationInfo>
+        -bookPagesTexture: SDL_Texture*
+        -itemsTexture: SDL_Texture*
+        --
+        +TutorialTextureManager(renderer: SDL_Renderer*)
+        +~TutorialTextureManager()
+        +loadTextures(): bool
+        +getAnimation(animationName: const string&): const AnimationInfo*
+        +getBookPagesTexture(): SDL_Texture*
+        +getItemsTexture(): SDL_Texture*
+        +cleanup(): void
+        -loadTexture(filename: const string&): SDL_Texture*
+    }
+
+    struct AnimationInfo {
+        +texture: SDL_Texture*
+        +frameCount: int
+        +frameWidth: int
+        +frameHeight: int
+        +frameTime: float
+        --
+        +AnimationInfo()
+        +AnimationInfo(tex: SDL_Texture*, frames: int, time: float)
+    }
+
+    struct InventoryTextureInfo {
+        +textureId: string
+        +srcRect: SDL_Rect
+        --
+        +InventoryTextureInfo()
+        +InventoryTextureInfo(id: const string&, rect: const SDL_Rect&)
+    }
+}
+
+package "UI Management" UI_COLOR {
+    class UIManager {
+        -renderer: UIRenderer*
+        -inputHandler: UIInputHandler
+        -elements: vector<shared_ptr<UIElement>>
+        --
+        +UIManager(renderer: UIRenderer*)
+        +~UIManager()
+        +update(deltaTime: float): void
+        +render(): void
+        +handleEvent(event: const SDL_Event&): bool
+        +addElement(element: shared_ptr<UIElement>): void
+        +clear(): void
+    }
+
+    class UIRenderer {
+        <<external>>
+    }
+
+    class UIInputHandler {
+        <<external>>
+    }
+
+    class UIElement {
+        <<external>>
+    }
+}
+
+package "Service Locator Integration" {
+    class "core namespace" as CoreServices {
+        +audio: AudioManager* {static}
+        +textures: TextureManager* {static}
+        +soundEvent: SoundEventManager* {static}
+        +itemHandler: ItemEffectHandler* {static}
+        +ui: UIManager* {static}
+        +uiInput: UIInputHandler* {static}
+        +uiRenderer: UIRenderer* {static}
+    }
+}
+
+' Inheritance relationships
+InventoryTextureManager --|> TextureManager : extends
+
+' Composition relationships
+TutorialTextureManager *-- AnimationInfo : contains
+InventoryTextureManager *-- InventoryTextureInfo : contains
+UIManager *-- UIInputHandler : contains
+UIManager o-- UIRenderer : uses
+UIManager o-- UIElement : manages
+
+' Service locator relationships
+CoreServices --> AudioManager : provides access
+CoreServices --> TextureManager : provides access
+CoreServices --> UIManager : provides access
+
+' Usage relationships
+TutorialTextureManager ..> SDL_Renderer : uses
+InventoryTextureManager ..> SDL_Renderer : uses
+TextureManager ..> SDL_Renderer : uses
+
+' Notes
+note bottom of InventoryTextureManager
+    Inherits from TextureManager and
+    adds specialized functionality for
+    inventory item texture mapping
+    from tilesets
+end note
+
+note bottom of TutorialTextureManager
+    Standalone manager for tutorial
+    animations and UI textures with
+    frame-based animation support
+end note
+
+note right of UIManager
+    Manages UI elements lifecycle,
+    coordinates rendering and input
+    handling for user interface
+end note
+
+@enduml

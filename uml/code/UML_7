@@ -1,0 +1,140 @@
+@startuml Save/Load System Diagram
+
+!define STRUCT struct
+!define ENUM enum
+
+' Core Save System
+class GameSave {
+    + CurrentLevel : GameState
+    - inventoryItems : vector<SavedInventoryItem>
+    - {static} levelItems : unordered_map<GameState, unordered_set<string>>
+    
+    + GameSave()
+    + GameSave(filename : string)
+    + Write(filename : string) : void
+    + addInventoryItem(itemName : string, gid : int, tilesetPath : string, sourceLevel : GameState) : void
+    + removeInventoryItem(itemName : string) : void
+    + hasInventoryItem(itemName : string) : bool
+    + getInventoryItems() : vector<SavedInventoryItem>&
+    + rollbackLevel(level : GameState) : void
+    - getLevelItems(level : GameState) : unordered_set<string>&
+}
+
+' Data Structure for Inventory Items
+STRUCT SavedInventoryItem {
+    + name : string
+    + gid : int
+    + tilesetPath : string
+    + sourceLevel : GameState
+    
+    + SavedInventoryItem()
+    + SavedInventoryItem(itemName : string, itemGid : int, tileset : string, level : GameState)
+}
+
+' External Dependencies
+ENUM GameState {
+    TITLE
+    LEVEL1
+    LEVEL2
+    LEVEL3
+    LEVEL4
+    LEVEL5
+    LEVEL6
+    LEVEL7
+    LEVEL8
+    LEVEL9
+    LEVEL10
+    LEVEL11
+    CUTSCENE_1_1
+    CUTSCENE_1_2
+    CUTSCENE_1_3
+    CUTSCENE_2_1
+    CUTSCENE_2_2
+    CUTSCENE_3_1
+    CUTSCENE_3_2
+    CUTSCENE_4_1
+    CUTSCENE_4_2
+    DEATH
+    WIN
+}
+
+' External Libraries/Classes
+class "nlohmann::json" as JsonLib {
+    + dump(indent : int) : string
+    + contains(key : string) : bool
+    + value(key : string, default : T) : T
+    + is_array() : bool
+    + get<T>() : T
+}
+
+class ifstream {
+    + ifstream(filename : string)
+    + is_open() : bool
+    + close() : void
+}
+
+class ofstream {
+    + ofstream(filename : string)
+    + is_open() : bool
+    + close() : void
+}
+
+class "std::algorithm" as Algorithm {
+    + find_if(first, last, predicate)
+    + remove_if(first, last, predicate)
+}
+
+' File System
+class "save.json" as SaveFile {
+    <<file>>
+    + CurrentLevel : string
+    + InventoryItems : array
+    + -- Item Properties --
+    + name : string
+    + gid : number
+    + tilesetPath : string
+    + sourceLevel : string
+}
+
+' Relationships
+GameSave *-- SavedInventoryItem : contains >
+GameSave --> GameState : uses >
+GameSave ..> JsonLib : uses for serialization >
+GameSave ..> ifstream : uses for reading >
+GameSave ..> ofstream : uses for writing >
+GameSave ..> Algorithm : uses for item operations >
+GameSave ..> SaveFile : reads/writes >
+
+SavedInventoryItem --> GameState : references >
+
+' Static Data Relationship
+GameSave --> GameSave : levelItems mapping >
+
+' Notes
+note top of GameSave : Handles game state persistence\nManages inventory items with level tracking\nSupports rollback functionality for level restart
+
+note right of SavedInventoryItem : Represents a saved inventory item\nTracks the source level for rollback purposes
+
+note bottom of SaveFile : JSON format save file\nStores current level and inventory state\nHuman-readable format
+
+note left of GameState : Enum representing all game states\nUsed for level progression and item tracking
+
+' Package grouping
+package "Save System Core" {
+    class GameSave
+    struct SavedInventoryItem
+}
+
+package "External Dependencies" {
+    class JsonLib
+    class ifstream
+    class ofstream
+    class Algorithm
+}
+
+package "Data Storage" {
+    class SaveFile
+    enum GameState
+}
+
+@enduml

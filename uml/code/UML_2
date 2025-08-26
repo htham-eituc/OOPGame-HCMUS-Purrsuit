@@ -1,0 +1,252 @@
+@startuml EntityCharacterSystem
+
+!theme plain
+skinparam classAttributeIconSize 0
+skinparam classFontSize 10
+
+' Character System Enums
+enum CharacterState {
+    Idle
+    Walking
+}
+
+enum ZombieState {
+    Idle
+    Wandering
+    InvestigatingSound
+    ChasingPlayer
+}
+
+' Base Character Class
+abstract class Character {
+    # position : Vector2
+    # velocity : Vector2
+    # currentTexture : SDL_Texture*
+    # srcRect : SDL_Rect
+    # destRect : SDL_Rect
+    # flipFlag : SDL_RendererFlip
+    # frameWidth : int = 32
+    # frameHeight : int = 32
+    # frameCount : int = 1
+    # frame : int = 0
+    # lastFrameTime : Uint32 = 0
+    # frameDelay : Uint32 = 100
+    # currentState : CharacterState
+    # map : Map*
+    
+    + Character(renderer : SDL_Renderer*, x : int, y : int, map : Map*)
+    + {abstract} ~Character()
+    + {virtual} move(keystate : const Uint8*) : void
+    + {virtual} handleEvent(e : const SDL_Event&) : void
+    + {virtual} update(deltaTime : float) : void
+    + {virtual} render(renderer : SDL_Renderer*) : void
+    + isMoving() : bool
+    + getBounds() : SDL_Rect
+    + getPosition() : Vector2
+    # loadTexture(renderer : SDL_Renderer*, path : const char*) : SDL_Texture*
+    # getCollisionBox(pos : const Vector2&) : SDL_Rect
+    # {virtual} setAnimation(newState : CharacterState) : void
+}
+
+' Player Class
+class Player {
+    - activeFlags : set<string>
+    - glowPulse : float
+    - moveSpeed : float
+    
+    + Player(renderer : SDL_Renderer*, x : int, y : int, map : Map*)
+    + ~Player()
+    + move(keystate : const Uint8*) : void
+    + handleEvent(e : const SDL_Event&) : void
+    + update(deltaTime : float) : void
+    + render(renderer : SDL_Renderer*) : void
+    + setAnimation(newState : CharacterState) : void
+    + hasFlag(flag : const string&) : bool
+    + addFlag(flag : const string&) : void
+    + removeFlag(flag : const string&) : void
+    + canBeHeard() : bool
+    + canBeKill() : bool
+    + isAlive() : bool
+    + setSpeed(newSpeed : const float&) : void
+    + kill() : void
+    + getSpeed() : float
+    + getX() : int
+    + getY() : int
+    - renderInvincibilityGlow(renderer : SDL_Renderer*) : void
+}
+
+' Princess Class
+class Princess {
+    - glowPulse : float
+    
+    + Princess(renderer : SDL_Renderer*, x : int, y : int, map : Map*)
+    + move(keystate : const Uint8*) : void
+    + handleEvent(e : const SDL_Event&) : void
+    + update(deltaTime : float) : void
+    + render(renderer : SDL_Renderer*) : void
+    + renderCuteGlow(renderer : SDL_Renderer*) : void
+}
+
+' ZombieCat Class
+class ZombieCat {
+    - player : Player*
+    - zombieState : ZombieState
+    - currentAnimationState : ZombieState
+    - hearingRadius : float = 200.0f
+    - soundAttractRadius : float = 500.0f
+    - pathFinder : PathFinder*
+    - path : vector<Vector2>
+    - currentPathIndex : int = 0
+    - pathTimer : float = 0.0f
+    - targetPos : Vector2
+    - wanderDirection : Vector2 = {0, 0}
+    - wanderTimer : float = 0
+    - idleTimer : float = 0
+    - lostPlayerTimer : float = 0
+    - speed : float = 50.0f
+    
+    + ZombieCat(renderer : SDL_Renderer*, x : int, y : int, map : Map*, player : Player*)
+    + ~ZombieCat()
+    + update(deltaTime : float) : void
+    + render(renderer : SDL_Renderer*) : void
+    - setAnimation(newState : ZombieState) : void
+    - zombieAI(deltaTime : float) : void
+    - transitionTo(newState : ZombieState) : void
+}
+
+' PathFinder Utility Class
+class PathFinder {
+    - map : vector<vector<bool>>
+    - mapWidth : int
+    - mapHeight : int
+    
+    + PathFinder(collisionMap : const vector<vector<bool>>&, width : int, height : int)
+    + findPath(startWorld : const Vector2&, endWorld : const Vector2&, tileSize : int) : vector<Vector2>
+}
+
+' A* Algorithm Support Structure
+struct AStarNode {
+    + x : int
+    + y : int
+    + gCost : float
+    + hCost : float
+    + parent : AStarNode*
+    
+    + fCost() : float
+    + operator>(other : const AStarNode&) : bool
+}
+
+' Item System
+struct InventoryItem {
+    + name : string
+    + InventoryItem(itemName : const string&)
+}
+
+class Item {
+    - name : string
+    - rect : SDL_Rect
+    - collected : bool = false
+    - gid : int = 0
+    
+    + Item(name : const string&, rect : const SDL_Rect&, gid : int)
+    + render(renderer : SDL_Renderer*, tilesets : const vector<Tileset>&) : void
+    + getName() : string
+    + isCollected() : bool
+    + getBounds() : SDL_Rect
+    + getGid() : int
+    + getTextureInfo(tilesets : const vector<Tileset>&, outTexture : SDL_Texture*&, outSrcRect : SDL_Rect&) : bool
+    + setCollected(state : bool) : void
+}
+
+' Inventory System
+class Inventory {
+    - {static} MAX_SLOTS : int = 8
+    - {static} SLOT_SIZE : int = 64
+    - {static} SLOT_PADDING : int = 8
+    - {static} INVENTORY_Y : int = 40
+    - items : vector<InventoryItem>
+    - isVisible : bool
+    - textureManager : InventoryTextureManager*
+    - specialItems : unordered_set<string>
+    
+    + Inventory(texManager : InventoryTextureManager*)
+    + addItem(itemName : const string&) : void
+    + removeItem(itemName : const string&) : void
+    + clearAll() : void
+    + hasItem(itemName : const string&) : bool
+    + render(renderer : SDL_Renderer*) : void
+    + handleEvent(e : const SDL_Event&) : void
+    + addSpecialItem(itemName : const string&) : void
+    + removeSpecialItem(itemName : const string&) : void
+    + isSpecialItem(itemName : const string&) : bool
+    + toggleVisibility() : void
+    + setVisible(visible : bool) : void
+    + getVisible() : bool
+    + getItems() : const vector<InventoryItem>&
+    - renderBanner(renderer : SDL_Renderer*, centerX : int, centerY : int) : void
+    - renderSlot(renderer : SDL_Renderer*, slotIndex : int, x : int, y : int) : void
+    - renderItem(renderer : SDL_Renderer*, item : const InventoryItem&, x : int, y : int) : void
+    - renderSlotCursor(renderer : SDL_Renderer*, x : int, y : int) : void
+}
+
+' Item Effect System (Strategy Pattern)
+interface IItemEffect {
+    + {abstract} apply(character : Player&) : void
+    + {abstract} remove(character : Player&) : void
+    + {abstract} ~IItemEffect()
+}
+
+class InvincibleEffect {
+    + apply(character : Player&) : void
+    + remove(character : Player&) : void
+}
+
+class SilentEffect {
+    + apply(character : Player&) : void
+    + remove(character : Player&) : void
+}
+
+class SpeedModifierEffect {
+    - multiplier : float
+    
+    + SpeedModifierEffect(multiplier : float)
+    + apply(character : Player&) : void
+    + remove(character : Player&) : void
+}
+
+' Relationships
+Character <|-- Player
+Character <|-- Princess  
+Character <|-- ZombieCat
+
+Character --> CharacterState : uses
+ZombieCat --> ZombieState : uses
+ZombieCat --> PathFinder : uses
+ZombieCat --> Player : references
+ZombieCat --> AStarNode : creates
+
+PathFinder --> AStarNode : uses
+AStarNode ..> AStarNode : parent
+
+Player o-- Inventory : composition
+Inventory o-- InventoryItem : contains
+
+IItemEffect <|-- InvincibleEffect
+IItemEffect <|-- SilentEffect
+IItemEffect <|-- SpeedModifierEffect
+
+IItemEffect ..> Player : affects
+
+note right of Character : Base class with common\nattributes and behavior\nfor all game characters
+
+note bottom of ZombieCat : AI-driven character with\nstate machine and A* pathfinding\nfor player tracking
+
+note left of Player : Flag-based system for\ntemporary effects\n(Silent, Invincible, etc.)
+
+note top of IItemEffect : Strategy Pattern\nDifferent effects can be\napplied to player
+
+note right of Inventory : Composition relationship\nPlayer owns inventory\nInventory manages items
+
+note bottom of PathFinder : A* pathfinding algorithm\nUsed by ZombieCat for\nintelligent navigation
+
+@enduml

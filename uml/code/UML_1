@@ -1,0 +1,229 @@
+@startuml GameStateManagement
+
+!theme plain
+skinparam classAttributeIconSize 0
+skinparam classFontSize 10
+
+' Enum
+enum GameState {
+    TITLE
+    CUTSCENE1
+    CUTSCENE2
+    CUTSCENE3
+    CUTSCENE4
+    CUTSCENE5
+    LEVEL1
+    LEVEL2
+    LEVEL3
+    LEVEL4
+    LEVEL5
+    LEVEL6
+    LEVEL7
+    LEVEL8
+    LEVEL9
+    LEVEL10
+    LEVEL11
+    DEATH
+    WINNING
+}
+
+' State Machine
+class GameStateMachine {
+    - currentState : GameState
+    - passLevel : int = 0
+    + GameStateMachine()
+    + changeState(newState : GameState) : void
+    + getCurrentState() : GameState
+    + getPassLevel() : int
+    - onExitState(state : GameState) : void
+    - onEnterState(state : GameState) : void
+}
+
+' Abstract Base State
+abstract class GameStateBase {
+    + {abstract} enter(game : Game*) : void
+    + {abstract} exit(game : Game*) : void
+    + {abstract} handleEvent(game : Game*, event : SDL_Event&) : void
+    + {abstract} update(game : Game*, deltaTime : float) : void
+    + {abstract} render(game : Game*) : void
+}
+
+' State Factory
+class StateFactory {
+    - {static} game : Game*
+    + {static} setGame(g : Game*) : void
+    + {static} createTitleState() : unique_ptr<GameStateBase>
+    + {static} createLevel1State() : unique_ptr<GameStateBase>
+    + {static} createLevel2State() : unique_ptr<GameStateBase>
+    + {static} createLevel3State() : unique_ptr<GameStateBase>
+    + {static} createLevel4State() : unique_ptr<GameStateBase>
+    + {static} createCutscene1State() : unique_ptr<GameStateBase>
+    + {static} createCutscene2State() : unique_ptr<GameStateBase>
+    + {static} createCutscene3State() : unique_ptr<GameStateBase>
+    + {static} createCutscene4State() : unique_ptr<GameStateBase>
+    + {static} createDeathState() : unique_ptr<GameStateBase>
+    + {static} createWinState() : unique_ptr<GameStateBase>
+    + {static} createLevelState(levelNumber : int) : unique_ptr<GameStateBase>
+    + {static} createCutsceneState(cutsceneNumber : int) : unique_ptr<GameStateBase>
+}
+
+' Concrete States
+class TitleState {
+    - startButton : shared_ptr<UIButton>
+    - loadButton : shared_ptr<UIButton>
+    - startButtonRect : SDL_Rect
+    - loadButtonRect : SDL_Rect
+    + enter(game : Game*) : void
+    + exit(game : Game*) : void
+    + handleEvent(game : Game*, event : SDL_Event&) : void
+    + update(game : Game*, deltaTime : float) : void
+    + render(game : Game*) : void
+    - updateUILayout() : void
+}
+
+class DeathState {
+    + enter(game : Game*) : void
+    + exit(game : Game*) : void
+    + handleEvent(game : Game*, event : SDL_Event&) : void
+    + update(game : Game*, deltaTime : float) : void
+    + render(game : Game*) : void
+}
+
+class WinState {
+    + enter(game : Game*) : void
+    + exit(game : Game*) : void
+    + handleEvent(game : Game*, event : SDL_Event&) : void
+    + update(game : Game*, deltaTime : float) : void
+    + render(game : Game*) : void
+}
+
+' Abstract Template States
+abstract class LevelState {
+    # player : Player*
+    # princess : Princess*
+    # gameMap : MapRender*
+    # zombies : vector<shared_ptr<ZombieCat>>
+    # transitionZones : vector<TransitionZone>
+    # saveButton : shared_ptr<UIButton>
+    # pauseResumeButton : shared_ptr<UIButton>
+    # pauseQuitButton : shared_ptr<UIButton>
+    # tutorial : Tutorial*
+    # isPaused : bool = false
+    # isTransitioning : bool = false
+    # isExiting : bool = false
+    + enter(game : Game*) : void
+    + exit(game : Game*) : void
+    + levelQuit(game : Game*) : void
+    + handleEvent(game : Game*, event : SDL_Event&) : void
+    + update(game : Game*, deltaTime : float) : void
+    + render(game : Game*) : void
+    # {abstract} getMapPath() : const char*
+    # {abstract} getBackgroundMusic() : const char*
+    # {abstract} getLevelNumber() : int
+    # updateUILayout(game : Game*) : void
+    # createLevelEntities(game : Game*) : void
+    # updateGameplay(game : Game*, deltaTime : float) : void
+    # renderGameplay(game : Game*) : void
+    # updateTransitionZones(game : Game*, deltaTime : float) : void
+    # renderTransitionZones(game : Game*) : void
+    # renderPauseOverlay(game : Game*) : void
+}
+
+abstract class CutsceneState {
+    # subtitleLabel : shared_ptr<UILabel>
+    # currentImageIndex : int = 0
+    # currentSubtitleIndex : int = 0
+    # subtitleTimer : float = 0.0f
+    # zoom : float = 1.0f
+    + enter(game : Game*) : void
+    + exit(game : Game*) : void
+    + handleEvent(game : Game*, event : SDL_Event&) : void
+    + update(game : Game*, deltaTime : float) : void
+    + render(game : Game*) : void
+    # {abstract} getImages() : vector<SDL_Texture*>
+    # {abstract} getAudioFiles() : vector<string>
+    # {abstract} getSubtitles() : vector<vector<pair<string, float>>>
+    # {abstract} onCutsceneComplete(game : Game*) : void
+    # setupSubtitleLabel() : void
+    # advanceToNextImage(game : Game*) : void
+    # updateSubtitles(deltaTime : float) : void
+    # renderCurrentImage(game : Game*) : void
+}
+
+' Concrete Level States
+class Level1State {
+    # getMapPath() : const char*
+    # getBackgroundMusic() : const char*
+    # getLevelNumber() : int
+}
+
+class Level2State {
+    # getMapPath() : const char*
+    # getBackgroundMusic() : const char*
+    # getLevelNumber() : int
+}
+
+class Level3State {
+    + exit(game : Game*) : void
+    # getMapPath() : const char*
+    # getBackgroundMusic() : const char*
+    # getLevelNumber() : int
+}
+
+class Level11State {
+    # getMapPath() : const char*
+    # getBackgroundMusic() : const char*
+    # getLevelNumber() : int
+}
+
+' Concrete Cutscene States
+class Cutscene1State {
+    # getImages() : vector<SDL_Texture*>
+    # getAudioFiles() : vector<string>
+    # getSubtitles() : vector<vector<pair<string, float>>>
+    # onCutsceneComplete(game : Game*) : void
+}
+
+class Cutscene2State {
+    # getImages() : vector<SDL_Texture*>
+    # getAudioFiles() : vector<string>
+    # getSubtitles() : vector<vector<pair<string, float>>>
+    # onCutsceneComplete(game : Game*) : void
+}
+
+class Cutscene4State {
+    # getImages() : vector<SDL_Texture*>
+    # getAudioFiles() : vector<string>
+    # getSubtitles() : vector<vector<pair<string, float>>>
+    # onCutsceneComplete(game : Game*) : void
+}
+
+' Relationships
+GameStateMachine --> GameState : uses
+StateFactory ..> GameStateBase : creates
+StateFactory --> GameStateBase : creates
+
+GameStateBase <|-- TitleState
+GameStateBase <|-- LevelState
+GameStateBase <|-- CutsceneState
+GameStateBase <|-- DeathState
+GameStateBase <|-- WinState
+
+LevelState <|-- Level1State
+LevelState <|-- Level2State
+LevelState <|-- Level3State
+LevelState <|-- Level11State
+
+CutsceneState <|-- Cutscene1State
+CutsceneState <|-- Cutscene2State
+CutsceneState <|-- Cutscene4State
+
+note right of LevelState : Template Method Pattern\nDefines common level behavior\nSubclasses implement specific details
+
+note right of CutsceneState : Template Method Pattern\nDefines common cutscene behavior\nSubclasses provide specific content
+
+note top of StateFactory : Factory Pattern\nCreates appropriate state instances\nbased on game requirements
+
+note left of GameStateMachine : Simple State Machine\nHolds current state\nManages transitions
+
+@enduml

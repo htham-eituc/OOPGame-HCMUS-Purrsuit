@@ -1,0 +1,256 @@
+@startuml Map and Level System
+
+!define LEVEL_COLOR #E8F5E8
+!define MAP_COLOR #E3F2FD
+!define DATA_COLOR #FFF8E1
+!define FACTORY_COLOR #F3E5F5
+
+package "Level State Hierarchy" LEVEL_COLOR {
+    abstract class LevelState {
+        #player: Player*
+        #princess: Princess*
+        #gameMap: MapRender*
+        #zombies: vector<shared_ptr<ZombieCat>>
+        #transitionZones: vector<TransitionZone>
+        #tutorial: Tutorial*
+        #tutorialTextureManager: TutorialTextureManager*
+        #isPaused: bool
+        #isTransitioning: bool
+        #isExiting: bool
+        --
+        +~LevelState()
+        +enter(game: Game*): void
+        +exit(game: Game*): void {virtual}
+        +handleEvent(game: Game*, event: const SDL_Event&): void
+        +update(game: Game*, deltaTime: float): void
+        +render(game: Game*): void
+        {abstract} +getMapPath(): const char*
+        {abstract} +getBackgroundMusic(): const char*
+        {abstract} +getLevelNumber(): int
+        #updateUILayout(game: Game*): void
+        #createLevelEntities(game: Game*): void
+        #updateGameplay(game: Game*, deltaTime: float): void
+        #renderGameplay(game: Game*): void
+        #updateTransitionZones(game: Game*, deltaTime: float): void
+        #renderTransitionZones(game: Game*): void
+    }
+
+    class Level1State {
+        +getMapPath(): const char*
+        +getBackgroundMusic(): const char*
+        +getLevelNumber(): int
+    }
+
+    class Level2State {
+        +getMapPath(): const char*
+        +getBackgroundMusic(): const char*
+        +getLevelNumber(): int
+    }
+
+    class Level3State {
+        +exit(game: Game*): void
+        +getMapPath(): const char*
+        +getBackgroundMusic(): const char*
+        +getLevelNumber(): int
+    }
+
+    class Level10State {
+        +exit(game: Game*): void
+        +getMapPath(): const char*
+        +getBackgroundMusic(): const char*
+        +getLevelNumber(): int
+    }
+
+    class Level11State {
+        +getMapPath(): const char*
+        +getBackgroundMusic(): const char*
+        +getLevelNumber(): int
+    }
+
+    note right of LevelState
+        Template Method Pattern:
+        - Common level functionality in base
+        - Subclasses provide specific paths,
+          music, and level numbers
+        - Some levels override exit() for
+          special item cleanup
+    end note
+}
+
+package "Map System" MAP_COLOR {
+    class Map {
+        #mapData: MapData
+        --
+        +Map()
+        +~Map() {virtual}
+        +loadFromData(data: const MapData&): void
+        +getItems(): const vector<Item>&
+        +getItems(): vector<Item>&
+        +isCollidable(x: int, y: int): bool
+        +getMapPixelWidth(): int
+        +getMapPixelHeight(): int
+        +getWidth(): int
+        +getHeight(): int
+        +getCollisionMap(): vector<vector<bool>>
+        +getSpawnPoints(): const SpawnPoints&
+        +getTransitionZones(): const vector<TransitionZone>&
+        +getTileSets(): const vector<Tileset>&
+    }
+
+    class MapRender {
+        -renderer: SDL_Renderer*
+        --
+        +MapRender(renderer: SDL_Renderer*)
+        +~MapRender()
+        +render(): void
+        +renderAboveLayer(): void
+        -drawLayer(layer: const TileLayer&): void
+    }
+}
+
+package "Map Data Structures" DATA_COLOR {
+    struct MapData {
+        +mapWidth: int
+        +mapHeight: int
+        +tileWidth: int
+        +tileHeight: int
+        +tilesets: vector<Tileset>
+        +layers: vector<TileLayer>
+        +aboveObject: TileLayer
+        +aboveLayer: TileLayer
+        +collisionMap: vector<vector<bool>>
+        +spawnPoints: SpawnPoints
+        +transitionZones: vector<TransitionZone>
+        +items: vector<Item>
+    }
+
+    struct Tileset {
+        +firstgid: int
+        +tilecount: int
+        +tileWidth: int
+        +tileHeight: int
+        +columns: int
+        +rows: int
+        +texture: SDL_Texture*
+        +imagePath: string
+    }
+
+    struct TileLayer {
+        +name: string
+        +tiles: vector<Tile>
+        +width: int
+        +height: int
+    }
+
+    struct Tile {
+        +gid: int
+        +flipH: bool
+        +flipV: bool
+        +flipD: bool
+    }
+
+    struct SpawnPoints {
+        +playerSpawn: Vector2
+        +princessSpawn: Vector2
+        +zombieSpawns: vector<Vector2>
+    }
+
+    struct TransitionZone {
+        +bounds: SDL_Rect
+        +toZone: string
+        +instruction: string
+        +entering: string
+        +requiredItem: string
+        +pulseTimer: float
+        +glowIntensity: float
+        +playerNear: bool
+    }
+}
+
+package "Factory System" FACTORY_COLOR {
+    class MapFactory {
+        --
+        +create(renderer: SDL_Renderer*, path: const string&): MapRender* {static}
+    }
+
+    class TiledMapLoader {
+        <<external>>
+        --
+        +loadFromJSON(): MapData {static}
+    }
+}
+
+package "External Dependencies" {
+    class GameStateBase {
+        <<from Game State System>>
+    }
+
+    class Player {
+        <<from Entity System>>
+    }
+
+    class ZombieCat {
+        <<from Entity System>>
+    }
+
+    class Princess {
+        <<from Entity System>>
+    }
+
+    class Item {
+        <<from Entity System>>
+    }
+}
+
+' Inheritance relationships
+LevelState --|> GameStateBase
+Level1State --|> LevelState
+Level2State --|> LevelState
+Level3State --|> LevelState
+Level10State --|> LevelState
+Level11State --|> LevelState
+MapRender --|> Map
+
+' Composition relationships
+Map *-- MapData : contains
+MapData *-- Tileset : contains
+MapData *-- TileLayer : contains
+MapData *-- SpawnPoints : contains
+MapData *-- TransitionZone : contains
+TileLayer *-- Tile : contains
+
+LevelState *-- TransitionZone : manages
+LevelState o-- MapRender : uses
+LevelState o-- Player : manages
+LevelState o-- Princess : manages
+LevelState o-- ZombieCat : manages
+
+' Factory relationships
+MapFactory ..> MapRender : creates
+MapFactory ..> TiledMapLoader : uses
+TiledMapLoader ..> MapData : produces
+
+' Usage relationships
+MapRender ..> SDL_Renderer : uses for rendering
+
+' Hidden relationships for layout
+Level1State -[hidden]down- Level2State
+Level2State -[hidden]down- Level3State
+Level3State -[hidden]down- Level10State
+Level10State -[hidden]down- Level11State
+
+note bottom of MapFactory
+    Factory creates MapRender instances
+    by loading JSON data through
+    TiledMapLoader and setting up
+    rendering capabilities
+end note
+
+note bottom of TransitionZone
+    Interactive zones that connect
+    different levels/maps with
+    visual effects and item
+    requirements
+end note
+
+@enduml
