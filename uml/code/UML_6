@@ -1,0 +1,166 @@
+@startuml UI System Diagram
+
+!define ABSTRACT_CLASS abstract class
+!define INTERFACE interface
+
+' Core UI Classes
+ABSTRACT_CLASS UIElement {
+    # position : Vector2
+    # size : Vector2  
+    # visible : bool
+    # elementID : string
+    + UIElement(pos, sz, id)
+    + {abstract} update(deltaTime : float) : void
+    + {abstract} render(renderer : UIRenderer*) : void
+    + {abstract} handleInput(event : SDL_Event&) : bool
+    + getPosition() : Vector2
+    + getSize() : Vector2
+    + isVisible() : bool
+    + getID() : string
+    + setPosition(pos : Vector2) : void
+    + setSize(sz : Vector2) : void
+    + setVisible(v : bool) : void
+    + setID(newID : string) : void
+}
+
+class UIButton {
+    - bounds : SDL_Rect
+    - texture : SDL_Texture*
+    - onClick : function<void()>
+    - hovered : bool
+    - pressed : bool
+    + UIButton(rect, texture, onClick)
+    + update(deltaTime : float) : void
+    + render(renderer : UIRenderer*) : void
+    + handleInput(event : SDL_Event&) : bool
+}
+
+class UILabel {
+    - text : string
+    - color : Color
+    - font : TTF_Font*
+    - outlineEnabled : bool
+    - outlineColor : Color
+    + UILabel(pos, sz, txt, clr, outlineColor, fnt, id)
+    + setText(newText : string) : void
+    + setColor(newColor : Color) : void
+    + setFont(newFont : TTF_Font*) : void
+    + getText() : string
+    + getColor() : Color
+    + getFont() : TTF_Font*
+    + enableOutline(color : Color) : void
+    + disableOutline() : void
+    + update(deltaTime : float) : void
+    + render(renderer : UIRenderer*) : void
+    + handleInput(event : SDL_Event&) : bool
+}
+
+' Input Management
+class UIInputHandler {
+    - elements : vector<shared_ptr<UIElement>>
+    + registerElement(element : shared_ptr<UIElement>) : void
+    + unregisterElement(element : shared_ptr<UIElement>) : void
+    + clearElements() : void
+    + handleEvent(event : SDL_Event&) : bool
+}
+
+' Rendering
+class UIRenderer {
+    - renderer : SDL_Renderer*
+    + UIRenderer(sdlRenderer : SDL_Renderer*)
+    + drawRect(rect : SDL_Rect&, color : Color&, filled : bool) : void
+    + drawTexture(texture : SDL_Texture*, destRect : SDL_Rect&, srcRect : SDL_Rect*) : void
+    + drawText(text : string&, font : TTF_Font*, color : Color&, pos : Vector2&) : void
+    + drawTextWithOutline(text : string&, font : TTF_Font*, textColor : Color&, outlineColor : Color&, pos : Vector2&) : void
+}
+
+' Tutorial System
+struct TutorialTip {
+    + text : string
+    + animationName : string
+    + TutorialTip(txt : string, anim : string)
+}
+
+struct TutorialStage {
+    + tips : vector<TutorialTip>
+    + addTip(text : string, animationName : string) : void
+}
+
+class Tutorial {
+    - isVisible : bool
+    - isPaused : bool
+    - textureManager : TutorialTextureManager*
+    - uiRenderer : UIRenderer*
+    - font : TTF_Font*
+    - titleFont : TTF_Font*
+    - counterFont : TTF_Font*
+    - titleLabel : UILabel*
+    - controlsFont : TTF_Font*
+    - controlsLabel : UILabel*
+    - pageCounterLabel : UILabel*
+    - stages : vector<TutorialStage>
+    - currentStage : int
+    - currentTip : int
+    - animationTimer : float
+    - currentFrame : int
+    - {static} BOOK_WIDTH : int
+    - {static} BOOK_HEIGHT : int
+    - {static} LEFT_PAGE_X : int
+    - {static} RIGHT_PAGE_X : int
+    - {static} PAGE_Y : int
+    - {static} ANIMATION_SIZE : int
+    - {static} ANIMATION_SPACING : int
+    - {static} TEXT_MARGIN : int
+    - {static} TEXT_LINE_HEIGHT : int
+    - initializeTutorialData() : void
+    - renderBackground(renderer : SDL_Renderer*) : void
+    - renderAnimations(renderer : SDL_Renderer*) : void
+    - renderItemsGrid(renderer : SDL_Renderer*) : void
+    - renderTexts() : void
+    - updateAnimation(deltaTime : float) : void
+    - wrapText(text : string, maxWidth : int) : vector<string>
+    + Tutorial(texManager : TutorialTextureManager*, renderer : UIRenderer*)
+    + open() : void
+    + close() : void
+    + nextTip() : void
+    + update(deltaTime : float) : void
+    + render(renderer : SDL_Renderer*) : void
+    + handleEvent(e : SDL_Event&) : void
+    + getVisible() : bool
+    + getPaused() : bool
+}
+
+class TutorialTextureManager {
+    ' Assumed external class
+}
+
+' External dependencies
+class Vector2 {
+}
+
+class Color {
+}
+
+' Relationships
+UIElement <|-- UIButton : inherits
+UIElement <|-- UILabel : inherits
+
+UIInputHandler o-- UIElement : manages >
+UIRenderer <-- UIElement : uses >
+
+Tutorial *-- TutorialStage : contains >
+TutorialStage *-- TutorialTip : contains >
+Tutorial --> UIRenderer : uses >
+Tutorial --> UILabel : creates/uses >
+Tutorial --> TutorialTextureManager : uses >
+
+' Notes
+note top of UIElement : Abstract base class for all UI components\nDefines common interface for update, render, and input handling
+
+note right of UIInputHandler : Manages input events for registered UI elements\nImplements centralized event handling
+
+note bottom of UIRenderer : Provides rendering services for UI components\nEncapsulates SDL2 drawing operations
+
+note left of Tutorial : Complex UI component for game tutorials\nManages multiple stages and tips with animations
+
+@enduml
