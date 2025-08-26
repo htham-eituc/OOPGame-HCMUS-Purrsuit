@@ -62,6 +62,47 @@ void CutsceneState::render(Game* game) {
         currentSubtitleIndex < subtitles[currentImageIndex].size()) {
         subtitleLabel->render(core::uiRenderer);
     }
+
+    SDL_Renderer* renderer = game->getRenderer();
+    const char* restartText = "Press [SPACE] to move to next scene";
+    SDL_Color textColor = {255, 255, 255, 255};
+
+    TTF_Font* popupFont = TTF_OpenFont("assets/fonts/Pixel12x10Mono-v1.1.0.ttf", 13);
+    if (popupFont) {
+        int textW, textH;
+        TTF_SizeText(popupFont, restartText, &textW, &textH);
+
+        int padding = 8;
+        int popupWidth  = textW + (padding * 2);
+        int popupHeight = textH + (padding * 2);
+
+        int popupX = (SCREEN_WIDTH - popupWidth) / 20;
+        int bottomMargin = 550;
+        int popupY = SCREEN_HEIGHT - popupHeight - bottomMargin;
+
+        SDL_Color bgColor = {20, 20, 20, 180};
+
+        SDL_SetRenderDrawColor(renderer, bgColor.r, bgColor.g, bgColor.b, bgColor.a);
+        SDL_Rect popupBg = { popupX, popupY, popupWidth, popupHeight };
+        SDL_RenderFillRect(renderer, &popupBg);
+
+        SDL_SetRenderDrawColor(renderer, textColor.r, textColor.g, textColor.b, 255);
+        SDL_RenderDrawRect(renderer, &popupBg);
+
+        UILabel restartLabel(
+            Vector2(popupX + padding, popupY + padding),
+            Vector2(textW, textH),
+            restartText,
+            Color(textColor.r, textColor.g, textColor.b, textColor.a),
+            Color(0, 0, 0, 255),
+            popupFont
+        );
+
+        restartLabel.enableOutline(Color(0, 0, 0, 255));
+        restartLabel.render(core::uiRenderer);
+
+        TTF_CloseFont(popupFont);
+    }
 }
 
 void CutsceneState::setupSubtitleLabel() {

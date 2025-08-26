@@ -31,7 +31,7 @@ void WinState::render(Game* game) {
     SDL_Texture* winTex = core::textures->getTexture(texture::win_screen);
     SDL_RenderCopy(renderer, winTex, nullptr, nullptr);
 
-    const char* restartText = "Press ENTER to Quit Game";
+    const char* restartText = "Press [SPACE] to Quit Game";
     SDL_Color textColor = {255, 255, 255, 255};
 
     TTF_Font* popupFont = TTF_OpenFont("assets/fonts/Pixel12x10Mono-v1.1.0.ttf", 13);

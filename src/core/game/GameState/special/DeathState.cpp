@@ -29,7 +29,7 @@ void DeathState::render(Game* game) {
     SDL_Texture* deathTex = core::textures->getTexture(texture::death_screen);
     SDL_RenderCopy(renderer, deathTex, nullptr, nullptr);
 
-    const char* restartText = "Press SPACE to Try Again";
+    const char* restartText = "Press [SPACE] to Try Again";
     SDL_Color textColor = {255, 255, 255, 255};
 
     TTF_Font* popupFont = TTF_OpenFont("assets/fonts/Pixel12x10Mono-v1.1.0.ttf", 16);
