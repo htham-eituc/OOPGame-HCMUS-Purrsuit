@@ -21,17 +21,6 @@
 
 ## Phase 1: Conceptualization & Architectural Design
 
-### ame Idea & Mechanics
-
-**Prompt Used:**  
-
-**AI Response Summary:**  
-- [Summarize key ideas suggested by the AI]
-
-**Decision & Application:**  
-- [Explain what you used, adapted, or rejected, and why]
-
----
 ### Game Roadmap 
 
 **Prompt Used:**  *(For suggestion)*  
@@ -808,22 +797,78 @@ Choose option 1, due to:
 -- Framework supports future additions such as **animated overlays**, **branching storylines**, or **subtitles**.  
 -- System remains modular and maintainable across multiple levels and cutscenes.
 ---
-### 🧹 Refactoring & Optimization
+### Refactoring & Optimization
 
-**Prompt Used:**  
+**Prompt Used:** 
+Refactor my SDL2-based cat game to be more professional and extensible. Use clean architecture/DDD, smart pointers, centralized asset & audio management, prepare for NPCs (zombies) with FSM and sound-driven AI, and load Tiled data dynamically.”
 
+**AI Response Summary:**
 
-**AI Response Summary:**  
-- [Summarize refactoring suggestions]
+* **Architecture & Structure**
 
-**Decision & Application:**  
-- [Did you accept changes? What improvements were made?]
+  * Adopt a **Clean Architecture / DDD** folder layout: `core/`, `domain/`, `app/`, `repo/`, `ui/` (+ optional `di/`, `events/`, `tests/`).
+  * Isolate frameworks (SDL2, audio libs) behind interfaces; keep domain logic pure.
+* **Memory & Ownership**
+
+  * Replace raw pointers with **`std::unique_ptr` / `std::shared_ptr`**; clarify lifetimes and pass refs where possible.
+* **Assets & Audio**
+
+  * Create a centralized **AssetManager** (textures, animations, maps) and **AudioManager** (IDs instead of raw `Mix_Chunk*`).
+  * Add **CharacterAssetManager** for character-specific sprites/animations/sfx.
+  * Introduce **CharacterAudioController** to decouple audio logic from `Player`/`Character`.
+* **Entities & Inheritance**
+
+  * Refactor a base **`Character`** with state (Idle/Walk), animation hooks, movement; derive **`Player`**, **`Zombie`**, etc.
+  * Keep `Game` lean; delegate systems (render, input mapping, audio, scene).
+* **AI & Gameplay Systems**
+
+  * Implement **FSM** for NPCs; plug in A\* pathfinding (or waypoints).
+  * Add **SoundEventManager** for sound-driven behaviors (publish/subscribe of sound cues).
+  * Define 5-second **item effects** via `ItemEffectHandler`:
+
+    * Catnip → silent; Apple → stackable speed; Milk → invincible; Mushroom → slow.
+  * **Zombie AI (hearing-based)**: react to footsteps & loud events; chase within hearing zone; wander when idle.
+* **Maps & Data**
+
+  * Use **tileson.hpp** to load **Tiled** JSON:
+
+    * `TiledMapLoader` reads object layer **“Spawning”** to place Player/Princess/Zombie.
+    * Optional **MapFactory** to construct maps/resources cleanly.
+* **Rendering & Collisions**
+
+  * Standardize **Vector2** math; AABB collision handling with clear response.
+  * Fix Tiled **flip/rotation** handling in renderer (bitmask flags).
+* **Testing & Tooling**
+
+  * Add unit tests for pathfinding, FSM transitions, item effects.
+  * Keep an **AI\_LOG.md** to capture prompts, responses, and decisions (this doc).
+
+**Decision & Application**
+
+* **Accepted & Implemented**
+
+  * Reorganized repo to **Clean Architecture / DDD** layout → clearer boundaries, easier onboarding.
+  * Replaced raw pointers with **smart pointers** → fewer leaks, simpler ownership.
+  * Added **AssetManager** and **AudioManager** (+ IDs) and **CharacterAudioController** → decoupled audio, fewer crashes from dangling audio pointers.
+  * Refactored `Character`/`Player`; `Game` no longer manages raw audio/resources → improved separation of concerns.
+  * Integrated **tileson** loading & **Spawning** layer → dynamic spawn points, zero hard-coded coordinates.
+  * Implemented **SoundEventManager** + **ItemEffectHandler** (5-sec timed effects) → modular gameplay buffs/debuffs.
+  * Built **Zombie** FSM with hearing logic & chase/wander behaviors → richer stealth gameplay.
+* **Planned / In Progress**
+
+  * **MapFactory** to finalize construction flow for maps & scenes.
+  * Unit tests for **A**\*, FSM transitions, and item effect timing.
+* **Improvements Observed**
+
+  * **Maintainability:** Modules are smaller, responsibilities clearer; easier feature additions.
+  * **Stability:** Smart pointers + managers reduced crashes and resource leaks.
+  * **Gameplay Depth:** Sound-driven zombie AI and timed item effects increased tension and player choice.
+  * **Productivity:** Dynamic Tiled loading sped up iteration (change map → run, no code edits).
+  * **Testability:** Core logic more deterministic and mockable (domain separate from SDL).
 
 ---
 
 ### UI Element System
-
----
 
 **Prompt Used:**  
 "I need a modular UI system for my SDL2 game, including interactive buttons, labels, and cursor rendering. Buttons should handle hover, click, and press states, and support callbacks. Labels should allow text rendering with outlines. The UI should work across different game states and integrate smoothly with the game’s input system."  
@@ -876,17 +921,22 @@ Choose option 1, due to:
 ---
 ## Summary & Reflections
 
-- **Overall Benefit:**  
--- Helped kickstart the brainstorming process accross the project, creating a basis for further discussion and elaboration on topics regarding themes, names and world building.
--- Provided crucial technical support, proved to be irreplaceable in idea realization, problems troubleshooting, as well as structure and ideas feedback.
--- Through good prompting and controlled usage, proved to be incredibly helpful throughout the completion of the project.
+**Overall Benefit:**  
+- Helped kickstart the brainstorming process accross the project, creating a basis for further discussion and elaboration on topics regarding themes, names and world building.
 
-- **Limitations Encountered:**  
--- One can rely heavily on AIs for problem solving and coming up with ideas, which can be detrimental to the learning process.
--- Due to limited budget, free plans can be hindrance to workflow.
--- If prompts are lackluster, blindly following AI's suggestion and generated code without understanding can be dangerous.
+- Provided crucial technical support, proved to be irreplaceable in idea realization, problems troubleshooting, as well as structure and ideas feedback.
 
-- **Final Thoughts:**  
+- Through good prompting and controlled usage, proved to be incredibly helpful throughout the completion of the project.
+
+**Limitations Encountered:**  
+
+- One can rely heavily on AIs for problem solving and coming up with ideas, which can be detrimental to the learning process.
+
+- Due to limited budget, free plans can be hindrance to workflow.
+
+- If prompts are lackluster, blindly following AI's suggestion and generated code without understanding can be dangerous.
+
+**Final Thoughts:**  
 We have come to the solution that with the correct treatment of AI as a tool or helper, it presents itself as an incredibly helpful tool for multiple purposes. In future usage, we will be sure to incorporate our lessons in making prompts and how to utilize AI to suit each needs, which are invaluable lessons we gained in this project.
 
 ---
