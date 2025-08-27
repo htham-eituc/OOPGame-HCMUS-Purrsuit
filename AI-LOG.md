@@ -878,13 +878,17 @@ Choose option 1, due to:
 ## 🧠 Summary & Reflections
 
 - **Overall Benefit:**  
-  [Describe how AI improved your workflow or learning]
+-- Helped kickstart the brainstorming process accross the project, creating a basis for further discussion and elaboration on topics regarding themes, names and world building.
+-- Provided crucial technical support, proved to be irreplaceable in idea realization, problems troubleshooting, as well as structure and ideas feedback.
+-- Through good prompting and controlled usage, proved to be incredibly helpful throughout the completion of the project.
 
 - **Limitations Encountered:**  
-  [Mention times AI was misleading, wrong, or unhelpful]
+-- One can rely heavily on AIs for problem solving and coming up with ideas, which can be detrimental to the learning process.
+-- Due to limited budget, free plans can be hindrance to workflow.
+-- If prompts are lackluster, blindly following AI's suggestion and generated code without understanding can be dangerous.
 
 - **Final Thoughts:**  
-  [Would you use AI in future projects? What would you do differently?]
+We have come to the solution that with the correct treatment of AI as a tool or helper, it presents itself as an incredibly helpful tool for multiple purposes. In future usage, we will be sure to incorporate our lessons in making prompts and how to utilize AI to suit each needs, which are invaluable lessons we gained in this project.
 
 ---
 
