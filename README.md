@@ -1,4 +1,4 @@
-# Purrsuit
+# Purrsuit: A Whisper, A Whisker ⚔️😼
 
 A C++ game project built with SDL2 and modern CMake.
 
