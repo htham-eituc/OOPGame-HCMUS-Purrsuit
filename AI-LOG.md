@@ -1,6 +1,6 @@
-# 🧠 AI Collaboration Log —  
+# AI Collaboration Log —  
 
-- **Project Name**: Purrsuit: A Whisker - A Whisper 😸⚔️
+- **Project Name**: Purrsuit: A Whisker - A Whisper 
 - **Team Members**:  
     1. **Ngo Huynh Tham** [GitHub](https://github.com/htham-eituc) | [Email](mailto:nhtham2413@clc.fitus.edu.vn)  
     2. **Nguyen Cao Thong** [GitHub](https://github.com/merdeput) | [Email](mailto:ncthong2427@clc.fitus.edu.vn)  
@@ -11,24 +11,17 @@
 
 ---
 
-## 📌 Table of Contents
+## Table of Contents
 
-- [Phase 1: Conceptualization & Architectural Design](#phase-1-conceptualization--architectural-design)
-  - [Game Idea & Mechanics](#game-idea--mechanics)
-  - [Core Class Design](#core-class-design)
-  - [UML & Design Artifacts](#uml--design-artifacts)
-  - [Design Patterns & Challenges](#design-patterns--challenges)
+- [Phase 1: Conceptualization & Architectural Design](#phase-1-conceptualization--architectural-design) 
 - [Phase 2: Implementation & Iteration](#phase-2-implementation--iteration)
-  - [Boilerplate & Code Generation](#boilerplate--code-generation)
-  - [Debugging Assistance](#debugging-assistance)
-  - [Refactoring & Optimization](#refactoring--optimization)
 - [Summary & Reflections](#summary--reflections)
 
 ---
 
-## 🧱 Phase 1: Conceptualization & Architectural Design
+## Phase 1: Conceptualization & Architectural Design
 
-### 🎮 Game Idea & Mechanics
+### ame Idea & Mechanics
 
 **Prompt Used:**  
 
@@ -39,7 +32,7 @@
 - [Explain what you used, adapted, or rejected, and why]
 
 ---
-### 📄 Game Roadmap 
+### Game Roadmap 
 
 **Prompt Used:**  *(For suggestion)*  
 We are doing an OOP project about a game, the story of the game is: you are a cat and you have to rescue your princess, in each map, you have to avoid obstacles and NPCs that are chasing you (it could contain from one to two NPCs to make the hard level). This is just a simple project, we can make a pixel game or else, make me a road map to implement this, please include as much as possible, such as: how to make the graphics, which programming languages and tools should be use, how to add the AI into your game, what i have to learn to make the game, and so on. You can give me multiple examples.
@@ -97,7 +90,7 @@ NPC behavior: patrol, chase, search, return
 ---
 
 
-### 🎮 Game plot
+### Game plot
 
 **Prompt Used:**  
   My cat game now need end game plot, i'm planning for my cat to collect item to creats cure for zombie cat to become normal cat again. In the last map, i don't know how my cat can spread/use the cure for all the zombie without much coding. We can use cut scene for this. Give at least 5 reasonable plot to handle this (using the game mechanism again, not heavy coding).  
@@ -182,19 +175,7 @@ Selected the mystical tree root concept (idea #2). It fits the natural and magic
 
 ---
 
-
-### 🧩 Core Class Design
-
-**Prompt Used:**  
-
-**AI Response Summary:**  
-- [List class suggestions, attributes, relationships]
-
-**Decision & Application:**  
-- [How you integrated or modified AI suggestions]
-
---- 
-### 🧩 Core Class Design
+### Core Class Design
 
 **Prompt Used:**  
 What is Domain-Driven Design? Should we apply it for my cat game. Suggest design for my game to use it.
@@ -263,18 +244,7 @@ Decide to use DDD for our game, due to:
 
 ---
 
-### 🗂 UML & Design Artifacts
-
-**Prompt Used:**  
-
-**AI Response Summary:**  
-- [Patterns suggested, pros and cons]
-
-**Decision & Application:**  
-- [Which patterns you chose and how they helped your architecture]
-
----
-### 🗂 Define AI state
+### Define AI state
 
 **Prompt Used:**  *(For design artifacts)*  
 I want to implement the pathfinding algorithm (AStar) and FSM, generate a visual FSM diagram so i could understand it.
@@ -403,21 +373,48 @@ This sequence ensures that the player appears behind elements like tree leaves b
 - Most of the assets cannot be use, but we have found other in the same web (itch.io). 
 - The step to parse map from Tiled is now using in
  our map, we have change map design layer to suit out gameplay. 
----
-
-## 🔁 Phase 2: Implementation & Iteration
-
-### 🏗 Boilerplate & Code Generation
-
-**Prompt Used:**  
-
-**AI Response Summary:**  
-- [How AI explained or helped fix the issue]
-
-**Decision & Application:**  
-- [Was the fix correct? Did it help identify the root cause?]
 
 ---
+### Design Pattern Apply
+
+**Prompt Used:**
+"I need to write AI-log for my game. My game is a plot-game so it has to manage a lot of stages. What design patterns would you recommend for handling complex plot progression and stage management?"
+
+**AI Response Summary:**
+
+The AI recommended four key design patterns for managing complex plot stages in a narrative-driven game:
+
+- **State Pattern**: Manage different plot stages as distinct states with their own behaviors, allowing clean separation of stage-specific logic and easy transitions between plot stages
+- **Factory Pattern**: Create appropriate plot stage objects based on game conditions, centralizing stage creation logic and making it easy to add new stage types
+- **Template Method Pattern**: Define common structure for all plot stages while allowing customization, ensuring consistent stage lifecycle (enter → update → exit) with shared functionality
+- **Facade Pattern**: Simplify complex subsystem interactions by providing a unified interface for plot management
+
+Additional patterns mentioned:
+- **Command Pattern** for player actions affecting plot progression
+- **Observer Pattern** for UI elements reacting to stage changes  
+- **Memento Pattern** for save states and plot history
+
+**Decision & Application:**
+
+**What we are using:**
+- **State Pattern**: Implementing as core architecture for plot stages - each major story beat becomes a separate state class with clean separation and easy debugging
+- **Factory Pattern**: Using for creating appropriate stage instances based on story progress and game conditions
+- **Template Method Pattern**: Adopting the lifecycle approach with consistent `onEnter()`, `update()`, `onExit()` methods across all stages
+
+**What we are rejecting:**
+- **Facade Pattern**: My game doesn't need this level of abstraction - the plot system isn't complex enough to warrant a facade layer
+- **Memento Pattern**: Not implementing save state pattern as suggested - using different approach for game saves
+
+**What we are adapting:**
+- **Command Pattern**: Already using this but for item handling system, not plot progression
+- **Observer Pattern**: Already implemented for UI updates and sound event manager, not specifically for plot changes
+
+**Final Architecture**: State + Factory + Template Method for clean, maintainable plot stage management without unnecessary complexity.
+
+---
+
+## Phase 2: Implementation & Iteration
+
 ### Zombie AI Cat  
 **Prompt Used:**  
 "Help me create AI for zombies in my game. Zombie cat AI behavior: 
@@ -446,6 +443,8 @@ This sequence ensures that the player appears behind elements like tree leaves b
 **Decision & Application:**  
 - **Architecture**: The state machine approach provided clean, maintainable code that's easy to debug and extend. Each zombie state has clear entry/exit conditions and specific behaviors.
 - **Pathfinding Success**: The A* implementation with grid-based collision detection effectively solved wall navigation issues, making zombies appear intelligent rather than getting stuck on obstacles.
+
+---
 
 ### Spawning and Zone Transition in tilemap
 **Prompt Used:** *(For generate code)*  
@@ -875,7 +874,7 @@ Choose option 1, due to:
 -- Ensures that UI behaves **predictably across different game states**, maintaining a polished, professional feel.   
 
 ---
-## 🧠 Summary & Reflections
+## Summary & Reflections
 
 - **Overall Benefit:**  
   [Describe how AI improved your workflow or learning]
