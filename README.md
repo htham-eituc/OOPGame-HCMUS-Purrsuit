@@ -2,48 +2,7 @@
 
 A C++ game project built with SDL2 and modern CMake.
 
-## Project Structure
-
-```
-Purrsuit/
-├── src/
-│   ├── app/
-│   │   ├── loader/
-│   │   ├── state/
-│   │   ├── saveGame/
-│   │   ├── service/
-│   │   └── ui/
-│   ├── core/
-│   │   ├── assets/
-│   │   │   └── texture/
-│   │   ├── utils/
-│   │   └── game/
-│   │       └── GameState/
-│   │           ├── cutscene/
-│   │           ├── level/
-│   │           └── special/
-│   ├── domain/
-│   │   ├── entities/
-│   │   │   ├── character/
-│   │   │   ├── items/
-│   │   │   └── map/
-│   │   ├── value_object/
-│   │   ├── services/
-│   │   │   └── item/
-│   │   └── ui/
-│   ├── repo/
-│   │   └── map/
-│   └── ui/
-│       ├── presentation/
-│       └── renderer/
-├── external/
-├── assets/
-├── build/
-├── CMakeLists.txt
-├── build.bat
-└── README.md
-```
-
+You can download the distribution via [Purrsuit_dist](https://drive.google.com/drive/folders/1JwROOJ-mXMtT8RjtUZRkc9PJSjtFNx76) (no setup needed).
 ## Requirements
 
 ### System Requirements
@@ -194,11 +153,3 @@ cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Debug
 3. Follow the existing code structure and naming conventions
 4. Test your changes thoroughly
 5. Submit a pull request
-
-## License
-
-[Add your license information here]
-
-## Contact
-
-[Add your contact information or project links here]
